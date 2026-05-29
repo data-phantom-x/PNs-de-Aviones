@@ -71,7 +71,7 @@
         }
 
         .search-box {
-            display: flex; gap: 10px; width: 100%; max-width: 500px;
+            display: flex; gap: 10px; width: 100%; max-width: 600px;
         }
 
         input[type="text"] {
@@ -107,7 +107,7 @@
         .results-title { font-size: 1.5em; font-weight: 800; color: var(--primary); margin: 0; }
         
         .pn-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;
         }
 
         .pn-card {
@@ -120,16 +120,34 @@
 
         .pn-desc {
             background-color: var(--primary); color: white; padding: 10px 15px;
-            font-size: 12px; font-weight: bold;
+            font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .pn-plane-badge {
+            background-color: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;
         }
 
         .pn-value-container {
-            padding: 15px; display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; display: flex; flex-direction: column; gap: 10px;
             background: #fafbfc;
+        }
+        
+        .pn-main-row {
+            display: flex; justify-content: space-between; align-items: center; width: 100%;
         }
 
         .pn-value {
             font-size: 18px; font-weight: 900; color: var(--accent); letter-spacing: 1px;
+        }
+        
+        .pn-alt-value {
+            font-size: 12px; color: var(--comment); font-weight: bold;
+        }
+
+        .pn-extra-info {
+            display: flex; justify-content: space-between; background: var(--light-gray);
+            padding: 8px; border-radius: 4px; font-size: 11px; color: var(--primary); font-weight: bold;
+            border: 1px solid var(--border);
         }
 
         .btn-copy {
@@ -148,16 +166,24 @@
         
         .modal-content {
             background-color: white; margin: 5% auto; padding: 25px;
-            border: none; width: 90%; max-width: 600px; border-radius: 8px;
+            border: none; width: 95%; max-width: 750px; border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto;
         }
         
         .modal-header { font-weight: 800; font-size: 1.2em; margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         
-        .component-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .component-row input { margin-bottom: 0 !important; }
-        .btn-remove-row { background: transparent; color: var(--accent); font-size: 16px; padding: 0 8px; height: 36px; border: 1px solid var(--accent); }
-        .btn-remove-row:hover { background: var(--accent); color: white; }
+        .component-row-wrapper { 
+            display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; 
+            background: var(--light-gray); padding: 12px; border-radius: 6px; border: 1px solid var(--border);
+            position: relative;
+        }
+        .component-row-top, .component-row-bottom {
+            display: flex; gap: 10px; width: 100%; align-items: center;
+        }
+        .component-row-wrapper input { margin-bottom: 0 !important; }
+        
+        .btn-remove-row { background: transparent; color: var(--danger); font-size: 16px; padding: 0 8px; height: 36px; border: 1px solid var(--danger); border-radius: 4px;}
+        .btn-remove-row:hover { background: var(--danger); color: white; }
 
         .modal-footer { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); justify-content: flex-end; }
         
@@ -179,7 +205,8 @@
             .results-header { flex-direction: column; gap: 15px; align-items: stretch; text-align: center; }
             .results-header > div { display: flex; flex-direction: column; gap: 10px; }
             .results-header > div button { margin-left: 0 !important; width: 100%; }
-            .component-row { flex-direction: column; align-items: stretch; background: var(--light-gray); padding: 10px; border-radius: 4px;}
+            .component-row-top, .component-row-bottom { flex-direction: column; }
+            .btn-remove-row { width: 100%; margin-top: 5px; }
         }
     </style>
 </head>
@@ -212,17 +239,17 @@
     </div>
 
     <div class="search-container">
-        <div style="font-size: 12px; font-weight: bold; color: var(--primary);">INGRESE LA MATRÍCULA DEL AVIÓN PARA CONSULTAR:</div>
+        <div style="font-size: 12px; font-weight: bold; color: var(--primary);">INGRESE LA MATRÍCULA, P/N O DESCRIPCIÓN PARA CONSULTAR:</div>
         <div class="search-box">
-            <input type="text" id="search-reg" placeholder="EJ: CC-BEM" list="aviones-list" onkeypress="if(event.key === 'Enter') searchAvion()" maxlength="6" oninput="formatMatricula(this)">
-            <button class="btn-accent" onclick="searchAvion()" style="font-size: 14px;">🔍 BUSCAR P/N</button>
+            <input type="text" id="search-reg" placeholder="EJ: CC-BEM, 12345-67, CORTINA..." list="aviones-list" onkeypress="if(event.key === 'Enter') performSearch()">
+            <button class="btn-accent" onclick="performSearch()" style="font-size: 14px;">🔍 BUSCAR P/N</button>
         </div>
     </div>
 
     <div id="results-area" style="display: none;">
         <div class="results-header">
             <h2 class="results-title" id="display-reg">CC-BEM</h2>
-            <div class="leader-only">
+            <div class="leader-only" id="leader-actions-container">
                 <button class="btn-outline" onclick="openEditModal()">✏️ EDITAR ESTA LISTA</button>
                 <button class="btn-leader" onclick="openAddModal()" style="margin-left: 10px;">➕ NUEVO AVIÓN</button>
             </div>
@@ -233,7 +260,7 @@
     </div>
 
     <div id="welcome-area" class="no-results">
-        Busca una matrícula registrada para comenzar.
+        Busca una matrícula, componente o P/N registrado para comenzar.
     </div>
 
 </div>
@@ -255,7 +282,7 @@
         <div id="components-container">
             </div>
 
-        <button class="btn-outline" onclick="addComponentRow('', '')" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR OTRA FILA DE COMPONENTE</button>
+        <button class="btn-outline" onclick="addComponentRow('', '', '', '', '', '')" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR OTRA FILA DE COMPONENTE</button>
         
         <div class="modal-footer">
             <button class="btn-outline" onclick="closeModal('avion-modal')" style="padding: 10px 20px;">CANCELAR</button>
@@ -287,6 +314,7 @@
     let avionesDB = {};
     let currentEditingReg = null;
     let isTeamLeader = false;
+    let isGlobalSearchView = false; // Bandera para saber si estamos en vista de un avión o búsqueda global
 
     const correosAutorizados = [
         "ndfuentesa@gmail.com",
@@ -393,100 +421,176 @@
         avionesDB = snapshot.val() || {};
         updateDatalist();
         
-        // Si hay una búsqueda activa, actualizar los datos en pantalla
-        const currentSearch = document.getElementById('display-reg').innerText;
-        if (currentSearch && avionesDB[currentSearch] && document.getElementById('results-area').style.display !== 'none') {
-            renderResults(currentSearch);
+        // Si hay una búsqueda activa de UN avión en particular, actualizar los datos en pantalla
+        const currentSearch = document.getElementById('search-reg').value.trim().toUpperCase();
+        if (!isGlobalSearchView && currentSearch && avionesDB[currentSearch] && document.getElementById('results-area').style.display !== 'none') {
+            renderResults(currentSearch, avionesDB[currentSearch].parts || []);
         }
     });
 
+    // Carga datalist con matrículas, descripciones y PNs para un buscador "Tipo Google"
     function updateDatalist() {
         const datalist = document.getElementById('aviones-list');
         datalist.innerHTML = '';
-        Object.keys(avionesDB).sort().forEach(reg => {
+        
+        let suggestions = new Set();
+        
+        Object.keys(avionesDB).forEach(reg => {
+            suggestions.add(reg); // Agrega la matrícula
+            const parts = avionesDB[reg].parts || [];
+            parts.forEach(p => {
+                if(p.desc) suggestions.add(p.desc);
+                if(p.pn) suggestions.add(p.pn);
+                if(p.pnAlt) suggestions.add(p.pnAlt);
+            });
+        });
+
+        Array.from(suggestions).sort().forEach(val => {
             const option = document.createElement('option');
-            option.value = reg;
+            option.value = val;
             datalist.appendChild(option);
         });
     }
 
+    // Formateo exclusivo para cuando se crea/edita una matrícula
     function formatMatricula(input) {
         let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
         if (val.length > 2) input.value = val.substring(0, 2) + '-' + val.substring(2, 5); 
         else input.value = val;
     }
 
-    function searchAvion() {
+    // Buscador Inteligente Global
+    function performSearch() {
         const input = document.getElementById('search-reg');
-        const reg = input.value.trim().toUpperCase();
+        const query = input.value.trim().toUpperCase();
         
-        if (!reg || reg.length !== 6) {
-            alert("Por favor, ingrese una matrícula válida (ej: CC-BEM).");
+        if (!query) {
+            alert("Por favor, ingrese un término de búsqueda.");
             return;
         }
 
-        if (avionesDB[reg]) {
-            renderResults(reg);
+        // 1. Si el usuario ingresó exactamente una matrícula registrada
+        if (avionesDB[query]) {
+            isGlobalSearchView = false;
+            renderResults(query, avionesDB[query].parts || []);
+            return;
+        }
+
+        // 2. Si no es una matrícula, hacer búsqueda global en descripciones, P/Ns, etc.
+        let matchResults = [];
+        Object.keys(avionesDB).forEach(reg => {
+            const parts = avionesDB[reg].parts || [];
+            parts.forEach(part => {
+                const descStr = (part.desc || "").toUpperCase();
+                const pnStr = (part.pn || "").toUpperCase();
+                const pnAltStr = (part.pnAlt || "").toUpperCase();
+                const ataStr = (part.ata || "").toUpperCase();
+                
+                if (descStr.includes(query) || pnStr.includes(query) || pnAltStr.includes(query) || ataStr.includes(query)) {
+                    // Copiamos el objeto y le añadimos de qué avión proviene
+                    matchResults.push({ planeReg: reg, ...part });
+                }
+            });
+        });
+
+        if (matchResults.length > 0) {
+            isGlobalSearchView = true;
+            renderGlobalResults(query, matchResults);
         } else {
-            showEmptyState(reg);
+            showEmptyState(query);
         }
     }
 
-    function showEmptyState(reg) {
+    function showEmptyState(query) {
         document.getElementById('results-area').style.display = 'none';
         document.getElementById('welcome-area').style.display = 'block';
         
-        if (isTeamLeader) {
+        // Si el término parece una matrícula, permitimos agregarla
+        const isLikelyMatricula = query.length === 6 && query.includes('-');
+        
+        if (isTeamLeader && isLikelyMatricula) {
             document.getElementById('welcome-area').innerHTML = `
-                No hay Part Numbers registrados para <strong>${reg}</strong>.<br><br>
-                <button class="btn-leader" onclick="openAddModal('${reg}')">➕ CREAR REGISTRO PARA ${reg}</button>
+                No se encontraron resultados para <strong>${query}</strong>.<br><br>
+                ¿Deseas registrar este avión en el sistema?<br><br>
+                <button class="btn-leader" onclick="openAddModal('${query}')">➕ CREAR REGISTRO PARA ${query}</button>
             `;
         } else {
             document.getElementById('welcome-area').innerHTML = `
-                No hay Part Numbers registrados para <strong>${reg}</strong>.<br><br>
-                <span style="font-size: 13px; color: var(--comment);">Contacte a un Team Leader para ingresar este avión a la base de datos.</span>
+                No se encontraron resultados en la base de datos para <strong>"${query}"</strong>.<br><br>
+                <span style="font-size: 13px; color: var(--comment);">Intente con otra palabra clave, P/N o matrícula.</span>
             `;
         }
     }
 
     function refreshWelcomeArea() {
         const resultsArea = document.getElementById('results-area');
-        const searchInput = document.getElementById('search-reg').value.trim().toUpperCase();
-        
-        if (resultsArea.style.display === 'none' && searchInput.length === 6) {
-            showEmptyState(searchInput);
-        } else if (resultsArea.style.display === 'none') {
-            document.getElementById('welcome-area').innerHTML = "Busca una matrícula registrada para comenzar.";
+        if (resultsArea.style.display === 'none') {
+            const searchInput = document.getElementById('search-reg').value.trim().toUpperCase();
+            if(searchInput) {
+                 showEmptyState(searchInput);
+            } else {
+                 document.getElementById('welcome-area').innerHTML = "Busca una matrícula, componente o P/N registrado para comenzar.";
+            }
         }
     }
 
-    function renderResults(reg) {
+    // Renderizar resultados para UN avión en particular
+    function renderResults(reg, parts) {
         document.getElementById('welcome-area').style.display = 'none';
         document.getElementById('results-area').style.display = 'block';
-        document.getElementById('display-reg').innerText = reg;
+        document.getElementById('display-reg').innerText = `✈️ ${reg}`;
+        document.getElementById('leader-actions-container').style.display = 'block'; // Mostrar botones de edición
         currentEditingReg = reg;
 
         const container = document.getElementById('pn-grid-container');
         container.innerHTML = '';
 
-        const parts = avionesDB[reg].parts || [];
-        
         if (parts.length === 0) {
             container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 20px; color: var(--comment); border: 1px dashed var(--border);">No hay componentes cargados aún en este avión.</div>';
             return;
         }
 
-        parts.forEach(part => {
-            container.innerHTML += `
-                <div class="pn-card">
-                    <div class="pn-desc">${part.desc}</div>
-                    <div class="pn-value-container">
-                        <div class="pn-value">${part.pn}</div>
+        parts.forEach(part => container.innerHTML += buildCardHtml(part, null));
+    }
+
+    // Renderizar resultados de una búsqueda general (Muestra componentes de varios aviones)
+    function renderGlobalResults(query, parts) {
+        document.getElementById('welcome-area').style.display = 'none';
+        document.getElementById('results-area').style.display = 'block';
+        document.getElementById('display-reg').innerText = `🔍 RESULTADOS PARA "${query}"`;
+        document.getElementById('leader-actions-container').style.display = 'none'; // Ocultar botones de edición para búsquedas globales
+        currentEditingReg = null;
+
+        const container = document.getElementById('pn-grid-container');
+        container.innerHTML = '';
+
+        parts.forEach(part => container.innerHTML += buildCardHtml(part, part.planeReg));
+    }
+
+    // Función constructora del HTML de la tarjeta para usarla en ambos render
+    function buildCardHtml(part, planeReg) {
+        const altPnHtml = part.pnAlt ? `<div class="pn-alt-value">ALT: ${part.pnAlt}</div>` : '';
+        const badgeHtml = planeReg ? `<span class="pn-plane-badge">${planeReg}</span>` : '';
+        
+        return `
+            <div class="pn-card">
+                <div class="pn-desc">${part.desc} ${badgeHtml}</div>
+                <div class="pn-value-container">
+                    <div class="pn-main-row">
+                        <div>
+                            <div class="pn-value">${part.pn}</div>
+                            ${altPnHtml}
+                        </div>
                         <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
                     </div>
+                    <div class="pn-extra-info">
+                        <div><span style="color:var(--comment); font-weight:normal;">POS:</span> ${part.pos || '-'}</div>
+                        <div><span style="color:var(--comment); font-weight:normal;">ATA:</span> ${part.ata || '-'}</div>
+                        <div><span style="color:var(--comment); font-weight:normal;">CANT:</span> ${part.qty || '-'}</div>
+                    </div>
                 </div>
-            `;
-        });
+            </div>
+        `;
     }
 
     function copyPN(text) {
@@ -511,7 +615,7 @@
         regInput.disabled = false;
         
         document.getElementById('components-container').innerHTML = '';
-        addComponentRow('', ''); // Fila vacía inicial
+        addComponentRow('', '', '', '', '', ''); // Fila vacía inicial
         
         document.getElementById('avion-modal').style.display = 'block';
     }
@@ -530,22 +634,31 @@
         
         const parts = avionesDB[currentEditingReg].parts || [];
         if (parts.length === 0) {
-            addComponentRow('', '');
+            addComponentRow('', '', '', '', '', '');
         } else {
-            parts.forEach(p => addComponentRow(p.desc, p.pn));
+            parts.forEach(p => addComponentRow(p.desc, p.pn, p.pnAlt || '', p.pos || '', p.ata || '', p.qty || ''));
         }
         
         document.getElementById('avion-modal').style.display = 'block';
     }
 
-    function addComponentRow(desc, pn) {
+    // Nueva estructura de fila para abarcar todos los campos nuevos
+    function addComponentRow(desc, pn, pnAlt, pos, ata, qty) {
         const container = document.getElementById('components-container');
         const row = document.createElement('div');
-        row.className = 'component-row';
+        row.className = 'component-row-wrapper';
         row.innerHTML = `
-            <input type="text" class="part-desc" placeholder="DESCRIPCIÓN (EJ: CORTINA DELANTERA)" value="${desc}" style="flex: 2;">
-            <input type="text" class="part-pn" placeholder="PART NUMBER (EJ: 12345-67)" value="${pn}" style="flex: 1; font-weight:bold; color: var(--accent);">
-            <button class="btn-remove-row" onclick="this.parentElement.remove()" title="Eliminar fila">✖</button>
+            <div class="component-row-top">
+                <input type="text" class="part-desc" placeholder="DESCRIPCIÓN (EJ: RADAR)" value="${desc}" style="flex: 2;">
+                <input type="text" class="part-pn" placeholder="P/N PRINCIPAL" value="${pn}" style="flex: 1; font-weight:bold; color: var(--accent);">
+                <input type="text" class="part-pnalt" placeholder="P/N ALTERNATIVO" value="${pnAlt}" style="flex: 1;">
+            </div>
+            <div class="component-row-bottom">
+                <input type="text" class="part-pos" placeholder="POSICIÓN" value="${pos}" style="flex: 1;">
+                <input type="text" class="part-ata" placeholder="ATA REF." value="${ata}" style="flex: 1;">
+                <input type="text" class="part-qty" placeholder="CANTIDAD" value="${qty}" style="flex: 1;">
+                <button class="btn-remove-row" onclick="this.parentElement.parentElement.remove()" title="Eliminar fila">✖</button>
+            </div>
         `;
         container.appendChild(row);
     }
@@ -558,14 +671,19 @@
             return;
         }
 
-        const rows = document.querySelectorAll('.component-row');
+        const rows = document.querySelectorAll('.component-row-wrapper');
         let parts = [];
         
         rows.forEach(row => {
             const desc = row.querySelector('.part-desc').value.trim().toUpperCase();
             const pn = row.querySelector('.part-pn').value.trim().toUpperCase();
+            const pnAlt = row.querySelector('.part-pnalt').value.trim().toUpperCase();
+            const pos = row.querySelector('.part-pos').value.trim().toUpperCase();
+            const ata = row.querySelector('.part-ata').value.trim().toUpperCase();
+            const qty = row.querySelector('.part-qty').value.trim().toUpperCase();
+            
             if (desc && pn) {
-                parts.push({ desc, pn });
+                parts.push({ desc, pn, pnAlt, pos, ata, qty });
             }
         });
 
@@ -577,7 +695,7 @@
         }).then(() => {
             closeModal('avion-modal');
             document.getElementById('search-reg').value = reg;
-            searchAvion(); // Recargar la vista con el avión guardado
+            performSearch(); // Recargar la vista con los nuevos datos
         }).catch(error => {
             console.error("Error guardando datos: ", error);
             alert("Hubo un error al guardar los datos.");
@@ -588,9 +706,9 @@
         document.getElementById(modalId).style.display = 'none'; 
     }
 
-    // Exportar funciones globales necesarias
+    // Exportar funciones globales necesarias para el HTML
     Object.assign(window, {
-        formatMatricula, searchAvion, openAddModal, openEditModal, 
+        formatMatricula, performSearch, openAddModal, openEditModal, 
         addComponentRow, saveAvionData, closeModal, copyPN, toggleMode, logoutLeader
     });
 
