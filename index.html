@@ -125,7 +125,9 @@
         
         .pn-plane-badge {
             background-color: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;
+            transition: background-color 0.2s;
         }
+        .pn-plane-badge:hover { background-color: white; color: var(--accent); }
 
         .pn-value-container {
             padding: 15px; display: flex; flex-direction: column; gap: 10px;
@@ -213,6 +215,7 @@
 <body>
 
 <datalist id="aviones-list"></datalist>
+<datalist id="descripciones-list"></datalist>
 
 <div class="container">
     
@@ -242,7 +245,7 @@
         <div style="font-size: 12px; font-weight: bold; color: var(--primary);">INGRESE LA MATRÍCULA, P/N O DESCRIPCIÓN PARA CONSULTAR:</div>
         <div class="search-box">
             <input type="text" id="search-reg" placeholder="EJ: CC-BEM, 12345-67, CORTINA..." list="aviones-list" onkeypress="if(event.key === 'Enter') performSearch()">
-            <button class="btn-accent" onclick="performSearch()" style="font-size: 14px;">🔍 BUSCAR P/N</button>
+            <button class="btn-accent" onclick="performSearch()" style="font-size: 14px;">🔍 BUSCAR</button>
         </div>
     </div>
 
@@ -251,6 +254,7 @@
             <h2 class="results-title" id="display-reg">CC-BEM</h2>
             <div class="leader-only" id="leader-actions-container">
                 <button class="btn-outline" onclick="openEditModal()">✏️ EDITAR ESTA LISTA</button>
+                <button class="btn-danger-outline" onclick="deleteAvion()" style="margin-left: 10px;">🗑️ BORRAR AVIÓN</button>
                 <button class="btn-leader" onclick="openAddModal()" style="margin-left: 10px;">➕ NUEVO AVIÓN</button>
             </div>
         </div>
@@ -314,7 +318,7 @@
     let avionesDB = {};
     let currentEditingReg = null;
     let isTeamLeader = false;
-    let isGlobalSearchView = false; // Bandera para saber si estamos en vista de un avión o búsqueda global
+    let isGlobalSearchView = false;
 
     const correosAutorizados = [
         "ndfuentesa@gmail.com",
@@ -421,25 +425,31 @@
         avionesDB = snapshot.val() || {};
         updateDatalist();
         
-        // Si hay una búsqueda activa de UN avión en particular, actualizar los datos en pantalla
         const currentSearch = document.getElementById('search-reg').value.trim().toUpperCase();
         if (!isGlobalSearchView && currentSearch && avionesDB[currentSearch] && document.getElementById('results-area').style.display !== 'none') {
             renderResults(currentSearch, avionesDB[currentSearch].parts || []);
         }
     });
 
-    // Carga datalist con matrículas, descripciones y PNs para un buscador "Tipo Google"
+    // Carga datalists con un buscador inteligente e indexador de descripciones
     function updateDatalist() {
         const datalist = document.getElementById('aviones-list');
         datalist.innerHTML = '';
         
+        const descDatalist = document.getElementById('descripciones-list');
+        if (descDatalist) descDatalist.innerHTML = '';
+        
         let suggestions = new Set();
+        let descSuggestions = new Set();
         
         Object.keys(avionesDB).forEach(reg => {
-            suggestions.add(reg); // Agrega la matrícula
+            suggestions.add(reg);
             const parts = avionesDB[reg].parts || [];
             parts.forEach(p => {
-                if(p.desc) suggestions.add(p.desc);
+                if(p.desc) {
+                    suggestions.add(p.desc);
+                    descSuggestions.add(p.desc);
+                }
                 if(p.pn) suggestions.add(p.pn);
                 if(p.pnAlt) suggestions.add(p.pnAlt);
             });
@@ -450,9 +460,14 @@
             option.value = val;
             datalist.appendChild(option);
         });
+
+        Array.from(descSuggestions).sort().forEach(val => {
+            const option = document.createElement('option');
+            option.value = val;
+            descDatalist.appendChild(option);
+        });
     }
 
-    // Formateo exclusivo para cuando se crea/edita una matrícula
     function formatMatricula(input) {
         let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
         if (val.length > 2) input.value = val.substring(0, 2) + '-' + val.substring(2, 5); 
@@ -469,14 +484,12 @@
             return;
         }
 
-        // 1. Si el usuario ingresó exactamente una matrícula registrada
         if (avionesDB[query]) {
             isGlobalSearchView = false;
             renderResults(query, avionesDB[query].parts || []);
             return;
         }
 
-        // 2. Si no es una matrícula, hacer búsqueda global en descripciones, P/Ns, etc.
         let matchResults = [];
         Object.keys(avionesDB).forEach(reg => {
             const parts = avionesDB[reg].parts || [];
@@ -487,7 +500,6 @@
                 const ataStr = (part.ata || "").toUpperCase();
                 
                 if (descStr.includes(query) || pnStr.includes(query) || pnAltStr.includes(query) || ataStr.includes(query)) {
-                    // Copiamos el objeto y le añadimos de qué avión proviene
                     matchResults.push({ planeReg: reg, ...part });
                 }
             });
@@ -505,7 +517,6 @@
         document.getElementById('results-area').style.display = 'none';
         document.getElementById('welcome-area').style.display = 'block';
         
-        // Si el término parece una matrícula, permitimos agregarla
         const isLikelyMatricula = query.length === 6 && query.includes('-');
         
         if (isTeamLeader && isLikelyMatricula) {
@@ -534,12 +545,11 @@
         }
     }
 
-    // Renderizar resultados para UN avión en particular
     function renderResults(reg, parts) {
         document.getElementById('welcome-area').style.display = 'none';
         document.getElementById('results-area').style.display = 'block';
         document.getElementById('display-reg').innerText = `✈️ ${reg}`;
-        document.getElementById('leader-actions-container').style.display = 'block'; // Mostrar botones de edición
+        document.getElementById('leader-actions-container').style.display = 'block'; 
         currentEditingReg = reg;
 
         const container = document.getElementById('pn-grid-container');
@@ -553,12 +563,11 @@
         parts.forEach(part => container.innerHTML += buildCardHtml(part, null));
     }
 
-    // Renderizar resultados de una búsqueda general (Muestra componentes de varios aviones)
     function renderGlobalResults(query, parts) {
         document.getElementById('welcome-area').style.display = 'none';
         document.getElementById('results-area').style.display = 'block';
         document.getElementById('display-reg').innerText = `🔍 RESULTADOS PARA "${query}"`;
-        document.getElementById('leader-actions-container').style.display = 'none'; // Ocultar botones de edición para búsquedas globales
+        document.getElementById('leader-actions-container').style.display = 'none'; 
         currentEditingReg = null;
 
         const container = document.getElementById('pn-grid-container');
@@ -567,14 +576,14 @@
         parts.forEach(part => container.innerHTML += buildCardHtml(part, part.planeReg));
     }
 
-    // Función constructora del HTML de la tarjeta para usarla en ambos render
     function buildCardHtml(part, planeReg) {
         const altPnHtml = part.pnAlt ? `<div class="pn-alt-value">ALT: ${part.pnAlt}</div>` : '';
-        const badgeHtml = planeReg ? `<span class="pn-plane-badge">${planeReg}</span>` : '';
+        // Al tocar el tag del avión, viaja directamente a la lista enfocada de esa matrícula
+        const badgeHtml = planeReg ? `<span class="pn-plane-badge" style="cursor:pointer;" onclick="goToPlane('${planeReg}')" title="Ir a la lista completa de ${planeReg}">✈️ ${planeReg}</span>` : '';
         
         return `
             <div class="pn-card">
-                <div class="pn-desc">${part.desc} ${badgeHtml}</div>
+                <div class="pn-desc"><span>${part.desc}</span> ${badgeHtml}</div>
                 <div class="pn-value-container">
                     <div class="pn-main-row">
                         <div>
@@ -591,6 +600,35 @@
                 </div>
             </div>
         `;
+    }
+
+    // Navegar automáticamente a la vista de un avión específico
+    function goToPlane(reg) {
+        if (avionesDB[reg]) {
+            document.getElementById('search-reg').value = reg;
+            isGlobalSearchView = false;
+            renderResults(reg, avionesDB[reg].parts || []);
+        }
+    }
+
+    // Eliminar un avión por completo de la base de datos
+    function deleteAvion() {
+        if (!isTeamLeader) return;
+        if (!currentEditingReg) return;
+        
+        if (confirm(`⚠️ ¿ESTÁ COMPLETAMENTE SEGURO DE BORRAR EL AVIÓN ${currentEditingReg}?\nEsta acción eliminará todos los Part Numbers vinculados de manera permanente.`)) {
+            const avionRef = ref(db, `mantenimiento/pns_aviones/${currentEditingReg}`);
+            set(avionRef, null).then(() => {
+                alert(`El avión ${currentEditingReg} ha sido removido con éxito.`);
+                document.getElementById('search-reg').value = '';
+                document.getElementById('results-area').style.display = 'none';
+                document.getElementById('welcome-area').style.display = 'block';
+                document.getElementById('welcome-area').innerHTML = "Busca una matrícula registrada para comenzar.";
+            }).catch(error => {
+                console.error("Error al eliminar avión: ", error);
+                alert("Ocurrió un error al intentar borrar el avión.");
+            });
+        }
     }
 
     function copyPN(text) {
@@ -615,7 +653,7 @@
         regInput.disabled = false;
         
         document.getElementById('components-container').innerHTML = '';
-        addComponentRow('', '', '', '', '', ''); // Fila vacía inicial
+        addComponentRow('', '', '', '', '', ''); 
         
         document.getElementById('avion-modal').style.display = 'block';
     }
@@ -627,7 +665,7 @@
         document.getElementById('modal-title').innerText = '✏️ EDITAR COMPONENTES';
         const regInput = document.getElementById('modal-reg');
         regInput.value = currentEditingReg;
-        regInput.disabled = true; // No permitir cambiar matrícula al editar
+        regInput.disabled = true; 
         
         const container = document.getElementById('components-container');
         container.innerHTML = '';
@@ -642,14 +680,14 @@
         document.getElementById('avion-modal').style.display = 'block';
     }
 
-    // Nueva estructura de fila para abarcar todos los campos nuevos
     function addComponentRow(desc, pn, pnAlt, pos, ata, qty) {
         const container = document.getElementById('components-container');
         const row = document.createElement('div');
         row.className = 'component-row-wrapper';
+        // Se añade list="descripciones-list" al campo descripción para sugerir las existentes
         row.innerHTML = `
             <div class="component-row-top">
-                <input type="text" class="part-desc" placeholder="DESCRIPCIÓN (EJ: RADAR)" value="${desc}" style="flex: 2;">
+                <input type="text" class="part-desc" placeholder="DESCRIPCIÓN" list="descripciones-list" value="${desc}" style="flex: 2;">
                 <input type="text" class="part-pn" placeholder="P/N PRINCIPAL" value="${pn}" style="flex: 1; font-weight:bold; color: var(--accent);">
                 <input type="text" class="part-pnalt" placeholder="P/N ALTERNATIVO" value="${pnAlt}" style="flex: 1;">
             </div>
@@ -687,7 +725,6 @@
             }
         });
 
-        // Guardar en Firebase
         const avionRef = ref(db, `mantenimiento/pns_aviones/${reg}`);
         set(avionRef, {
             reg: reg,
@@ -695,7 +732,7 @@
         }).then(() => {
             closeModal('avion-modal');
             document.getElementById('search-reg').value = reg;
-            performSearch(); // Recargar la vista con los nuevos datos
+            performSearch(); 
         }).catch(error => {
             console.error("Error guardando datos: ", error);
             alert("Hubo un error al guardar los datos.");
@@ -706,10 +743,11 @@
         document.getElementById(modalId).style.display = 'none'; 
     }
 
-    // Exportar funciones globales necesarias para el HTML
+    // Exportar funciones globales necesarias para interactuar con el DOM
     Object.assign(window, {
         formatMatricula, performSearch, openAddModal, openEditModal, 
-        addComponentRow, saveAvionData, closeModal, copyPN, toggleMode, logoutLeader
+        addComponentRow, saveAvionData, closeModal, copyPN, toggleMode, logoutLeader,
+        goToPlane, deleteAvion
     });
 
 </script>
