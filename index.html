@@ -467,15 +467,26 @@
         if (isTeamLeader) {
             deactivateLeaderUI();
         } else {
-            const email = prompt("🔒 ACCESO TEAM LEADER\nIngrese su correo corporativo autorizado:");
-            if (!email) return; 
-            const emailLower = email.trim().toLowerCase();
-            if (correosAutorizados.includes(emailLower)) {
-                localStorage.setItem('tl_email', emailLower);
-                localStorage.setItem('tl_login_time', Date.now().toString());
+            // AQUÍ ESTÁ LA MAGIA: Primero revisamos si ya hay una sesión válida en memoria
+            const savedEmail = localStorage.getItem('tl_email');
+            const loginTime = localStorage.getItem('tl_login_time');
+            
+            // Verificamos si existe, no ha expirado las 12 horas, y está en la lista de correos
+            if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && correosAutorizados.includes(savedEmail)) {
+                // Si la sesión sigue vigente, simplemente la volvemos a activar sin pedir prompt
                 activateLeaderUI();
             } else {
-                alert(`ACCESO DENEGADO.\nEl correo ${emailLower} no está autorizado.`);
+                // Solo si NO hay sesión o ya pasaron 12 horas, pedimos el correo
+                const email = prompt("🔒 ACCESO TEAM LEADER\nIngrese su correo corporativo autorizado:");
+                if (!email) return; 
+                const emailLower = email.trim().toLowerCase();
+                if (correosAutorizados.includes(emailLower)) {
+                    localStorage.setItem('tl_email', emailLower);
+                    localStorage.setItem('tl_login_time', Date.now().toString());
+                    activateLeaderUI();
+                } else {
+                    alert(`ACCESO DENEGADO.\nEl correo ${emailLower} no está autorizado.`);
+                }
             }
         }
     }
