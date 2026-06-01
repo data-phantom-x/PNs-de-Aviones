@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="6.1708026"
-     inkscape:cx="388.36115"
-     inkscape:cy="71.060448"
+     inkscape:cx="1115.6571"
+     inkscape:cy="139.77112"
      inkscape:window-width="1680"
      inkscape:window-height="1050"
      inkscape:window-x="0"
@@ -36827,7 +36827,7 @@
        d="m 360.62676,164.03712 -1.778,4.78367 0.381,0.29633 0.42333,0.21167 0.46567,0.127 h 0.508"
        style="fill:none;stroke:#000000;stroke-width:0.0423333;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" />
     <g
-       id="AFT">
+       id="id__AFT_">
       <path
          id="path8437"
          d="m 355.75734,161.54074 c 0.0124,-0.12797 -0.0813,-0.24181 -0.2093,-0.25421 -0.12801,-0.0124 -0.2418,0.0813 -0.25421,0.20929"
@@ -36906,7 +36906,7 @@
          style="fill:none;stroke:#000000;stroke-width:0.0423333;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
-       id="FWD">
+       id="id__FWD_">
       <path
          id="path625"
          d="m 0,0 c 0.886,-2.906 3.959,-4.543 6.865,-3.657 2.905,0.885 4.543,3.959 3.657,6.864"
@@ -41359,7 +41359,7 @@
        d="m 124.53376,138.38312 40.767,-4.99533"
        style="fill:none;stroke:#000000;stroke-width:0.0423333;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" />
     <g
-       id="MCD">
+       id="id__MCD_">
       <path
          id="path10290"
          d="m 141.5941,160.73512 -0.67734,0.635"
