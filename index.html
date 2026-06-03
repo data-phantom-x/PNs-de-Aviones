@@ -88,52 +88,31 @@
             background-color: white;
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 30px 10px; /* Un poco más de padding por si el scale se sale del borde */
+            padding: 20px 10px;
             margin-bottom: 25px;
             box-sizing: border-box;
             position: relative;
-            transition: all 0.3s ease;
         }
 
         /* Estilos aplicados dinámicamente al SVG inyectado */
-        .svg-group { 
-            cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transición suave tipo "resorte" */
-            transform-origin: center center;
-            transform-box: fill-box; /* Fundamental: escala desde el centro de la propia pieza, no del canvas */
-        }
-
+        .svg-group { cursor: pointer; transition: all 0.2s ease; }
         .svg-clickable {
-            transition: all 0.3s ease;
-            pointer-events: all; /* Hace que toda el área de la forma responda al mouse, facilitando el clic sin usar cajas invisibles */
+            transition: all 0.2s ease;
         }
 
-        /* Efecto Hover: Resalta color orgánicamente */
         .svg-group:hover .svg-clickable {
-            stroke: var(--accent) !important;
-            stroke-width: 1.5px !important;
+            fill: #d1d9e0 !important;
+            stroke: var(--primary) !important;
         }
 
-        /* --- Opacar sutilmente las zonas NO seleccionadas --- */
-        .plane-svg-container.has-active-zone .svg-group:not(.active-zone) {
-            opacity: 0.2; /* Suave, manteniendo el diseño limpio sin ensuciarlo con gris */
-        }
-
-        /* --- ZONA ACTIVA (Seleccionada) --- */
-        .svg-group.active-zone {
-            transform: scale(1.08); /* Agrandamos la pieza un 8% */
-        }
-
+        /* Clase para cuando el filtro está activo (Uso de !important para sobreescribir estilos crudos del SVG) */
         .svg-group.active-zone .svg-clickable {
-            stroke: var(--accent) !important;
-            stroke-width: 2.5px !important; /* Engrosa la línea misma del avión */
-            fill: rgba(237, 22, 80, 0.08) !important; /* Un relleno transparente súper delicado */
-            filter: drop-shadow(0px 4px 10px rgba(237, 22, 80, 0.4)); /* Sombra que sigue perfectamente las líneas, sin cuadros */
-        }
-        
-        .svg-group.active-zone text, .svg-group.active-zone .svg-text {
             fill: var(--accent) !important;
-            font-weight: bold;
+            stroke: white !important;
+            stroke-width: 2px !important;
+        }
+        .svg-group.active-zone text, .svg-group.active-zone .svg-text {
+            fill: white !important;
         }
 
         /* Botones Generales */
@@ -303,7 +282,7 @@
 
     <div id="main-plane-area" style="display: none;">
         
-        <div class="plane-svg-container" id="svg-container-box">
+        <div class="plane-svg-container">
             <div style="text-align: center; font-size: 11px; font-weight: bold; color: var(--comment); margin-bottom: 5px;">2. USE LOS BOTONES DEL AVIÓN PARA FILTRAR (OPCIONAL)</div>
             
             <div id="plane-svg-wrapper" style="width: 100%; display: flex; justify-content: center; align-items: center; min-height: 150px; flex-direction: column;">
@@ -395,6 +374,8 @@
     const SESSION_EXPIRATION_MS = 12 * 60 * 60 * 1000;
 
     // ----- LOGICA PARA CARGAR SVG DESDE GITHUB -----
+    
+    // ⚠️ REEMPLAZA ESTE ENLACE POR TU LINK "RAW" DE GITHUB
     const GITHUB_SVG_URL = "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320.svg"; 
 
     async function loadPlaneSVG() {
@@ -412,14 +393,13 @@
                 svgElement.style.width = '100%';
                 svgElement.style.height = 'auto';
                 svgElement.style.maxHeight = '300px'; 
-                // Añadimos padding interno al SVG para evitar que al escalar (scale) se corte en los bordes
-                svgElement.style.padding = '10px';
-                svgElement.style.boxSizing = 'border-box';
             }
 
             // Mapeo automático de Botones interactivos del SVG
+            // Busca elementos que tengan los IDs FWD, MCD o AFT
             const zones = ['FWD', 'MCD', 'AFT'];
             zones.forEach(zone => {
+                // Buscamos si en tu Illustrator/Inkscape lo llamaste "FWD" o "btn-fwd"
                 const btn = document.getElementById(zone) || document.getElementById('btn-' + zone.toLowerCase());
                 
                 if (btn) {
@@ -535,11 +515,7 @@
                     // Retraso ligero para permitir que el SVG cargue desde la red antes de pintarlo
                     setTimeout(() => {
                         const zoneBtn = document.getElementById(memorizedFilter) || document.getElementById(`btn-${memorizedFilter.toLowerCase()}`);
-                        const container = document.getElementById('svg-container-box');
-                        if (zoneBtn) {
-                            zoneBtn.classList.add('active-zone');
-                            container.classList.add('has-active-zone');
-                        }
+                        if (zoneBtn) zoneBtn.classList.add('active-zone');
                     }, 500);
                 }
                 
@@ -629,20 +605,15 @@
 
         // Permite encontrar el ID sea "FWD" (directo en tu SVG nuevo) o "btn-fwd" (antiguo)
         const zoneBtn = document.getElementById(zone) || document.getElementById(`btn-${zone.toLowerCase()}`);
-        const container = document.getElementById('svg-container-box');
 
         if (currentZoneFilter === zone) {
             currentZoneFilter = null;
             clearSVGHighlights();
-            container.classList.remove('has-active-zone');
             localStorage.removeItem('saved_plane_filter');
         } else {
             currentZoneFilter = zone;
             clearSVGHighlights();
-            if(zoneBtn) {
-                zoneBtn.classList.add('active-zone');
-                container.classList.add('has-active-zone');
-            }
+            if(zoneBtn) zoneBtn.classList.add('active-zone');
             localStorage.setItem('saved_plane_filter', zone);
         }
 
@@ -651,7 +622,6 @@
 
     function clearSVGHighlights() {
         document.querySelectorAll('.svg-group').forEach(group => group.classList.remove('active-zone'));
-        document.getElementById('svg-container-box').classList.remove('has-active-zone');
     }
 
     function renderPlaneData() {
@@ -868,4 +838,4 @@
 
 </script>
 </body>
-</html>
+</html> 
