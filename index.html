@@ -92,12 +92,16 @@
             margin-bottom: 25px;
             box-sizing: border-box;
             position: relative;
+            transition: all 0.3s ease;
         }
 
         /* Estilos aplicados dinámicamente al SVG inyectado */
-        .svg-group { cursor: pointer; transition: all 0.3s ease; }
+        .svg-group { 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+        }
         .svg-clickable {
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .svg-group:hover .svg-clickable {
@@ -105,23 +109,25 @@
             stroke: var(--primary) !important;
         }
 
-        /* Clase para cuando el filtro está activo (Uso de !important para sobreescribir estilos crudos del SVG) */
+        /* --- NUEVO: Opacar las zonas no seleccionadas cuando hay un filtro activo --- */
+        .plane-svg-container.has-active-zone .svg-group:not(.active-zone) {
+            opacity: 0.25;
+            filter: grayscale(100%);
+        }
+
+        /* --- NUEVO: Efecto de brillo y color para la zona seleccionada --- */
+        .svg-group.active-zone {
+            filter: drop-shadow(0px 0px 8px var(--accent));
+        }
+
         .svg-group.active-zone .svg-clickable {
             fill: var(--accent) !important;
             stroke: white !important;
             stroke-width: 2px !important;
         }
+        
         .svg-group.active-zone text, .svg-group.active-zone .svg-text {
             fill: white !important;
-        }
-
-        /* ----- NUEVA LÓGICA DE OPACIDAD PARA DESATACAR LA SELECCIÓN ----- */
-        #plane-svg-wrapper.has-active-zone .svg-group:not(.active-zone) {
-            opacity: 0.15 !important;
-            filter: grayscale(100%);
-        }
-        #plane-svg-wrapper {
-            transition: all 0.3s ease;
         }
 
         /* Botones Generales */
@@ -291,7 +297,7 @@
 
     <div id="main-plane-area" style="display: none;">
         
-        <div class="plane-svg-container">
+        <div class="plane-svg-container" id="svg-container-box">
             <div style="text-align: center; font-size: 11px; font-weight: bold; color: var(--comment); margin-bottom: 5px;">2. USE LOS BOTONES DEL AVIÓN PARA FILTRAR (OPCIONAL)</div>
             
             <div id="plane-svg-wrapper" style="width: 100%; display: flex; justify-content: center; align-items: center; min-height: 150px; flex-direction: column;">
@@ -383,8 +389,6 @@
     const SESSION_EXPIRATION_MS = 12 * 60 * 60 * 1000;
 
     // ----- LOGICA PARA CARGAR SVG DESDE GITHUB -----
-    
-    // ⚠️ REEMPLAZA ESTE ENLACE POR TU LINK "RAW" DE GITHUB
     const GITHUB_SVG_URL = "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320.svg"; 
 
     async function loadPlaneSVG() {
@@ -405,12 +409,37 @@
             }
 
             // Mapeo automático de Botones interactivos del SVG
+            // Truco Experto: Hacemos visible temporalmente el área para que getBBox() devuelva las dimensiones correctas
+            const mainArea = document.getElementById('main-plane-area');
+            const originalDisplay = mainArea.style.display;
+            mainArea.style.display = 'block';
+
             const zones = ['FWD', 'MCD', 'AFT'];
             zones.forEach(zone => {
                 const btn = document.getElementById(zone) || document.getElementById('btn-' + zone.toLowerCase());
                 
                 if (btn) {
                     btn.classList.add('svg-group');
+                    
+                    // --- CREACIÓN DEL HITBOX (Área de selección inteligente) ---
+                    try {
+                        const bbox = btn.getBBox();
+                        if (bbox.width > 0 && bbox.height > 0) {
+                            const hitbox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                            hitbox.setAttribute("x", bbox.x);
+                            hitbox.setAttribute("y", bbox.y);
+                            hitbox.setAttribute("width", bbox.width);
+                            hitbox.setAttribute("height", bbox.height);
+                            hitbox.setAttribute("fill", "transparent");
+                            hitbox.style.cursor = "pointer";
+                            // Se inyecta al fondo del grupo para no tapar los elementos visuales
+                            btn.insertBefore(hitbox, btn.firstChild);
+                        }
+                    } catch (e) {
+                        console.warn("No se pudo calcular el hitbox para: " + zone);
+                    }
+                    // -----------------------------------------------------------
+
                     btn.onclick = () => toggleZoneFilter(zone);
                     
                     // Asignar clase a los sub-elementos para que cambien de color al hacer hover/click
@@ -418,11 +447,9 @@
                     paths.forEach(p => p.classList.add('svg-clickable'));
                 }
             });
-            
-            // Re-ejecutar mejora de clics si el SVG cargó después de mostrar el menú
-            if (document.getElementById('main-plane-area').style.display === 'block') {
-                setTimeout(enhanceSVGClickAreas, 100);
-            }
+
+            // Restauramos la visibilidad original para evitar saltos en la pantalla
+            mainArea.style.display = originalDisplay;
 
         } catch (error) {
             console.error("Error al inyectar el SVG:", error);
@@ -437,48 +464,6 @@
     // Disparar carga del SVG en cuanto arranque el script
     loadPlaneSVG();
     // ------------------------------------------------
-
-    // ----- NUEVA FUNCIÓN: MEJORA DE ÁREAS DE CLIC INTELIGENTES -----
-    function enhanceSVGClickAreas() {
-        const wrapper = document.getElementById('plane-svg-wrapper');
-        if (!wrapper || wrapper.dataset.enhanced === "true") return;
-
-        let allEnhanced = true;
-        const zones = ['FWD', 'MCD', 'AFT'];
-        
-        zones.forEach(zone => {
-            const btn = document.getElementById(zone) || document.getElementById('btn-' + zone.toLowerCase());
-            if (btn) {
-                try {
-                    // getBBox requiere que el elemento esté visible (display != none)
-                    const bbox = btn.getBBox();
-                    if (bbox.width > 0 && bbox.height > 0) {
-                        // Crear un escudo transparente expansivo
-                        const hitBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-                        const padding = 15; // Expande el área de selección en 15px
-                        
-                        hitBox.setAttribute("x", bbox.x - padding);
-                        hitBox.setAttribute("y", bbox.y - padding);
-                        hitBox.setAttribute("width", bbox.width + (padding * 2));
-                        hitBox.setAttribute("height", bbox.height + (padding * 2));
-                        hitBox.setAttribute("fill", "transparent");
-                        
-                        // Añadir al SVG. Al no tener la clase 'svg-clickable', 
-                        // atrapará el clic y pasará el hover al resto del grupo automáticamente
-                        btn.appendChild(hitBox);
-                    } else {
-                        allEnhanced = false;
-                    }
-                } catch(e) {
-                    allEnhanced = false;
-                }
-            }
-        });
-
-        if (allEnhanced) {
-            wrapper.dataset.enhanced = "true";
-        }
-    }
 
     function updateClock() {
         const now = new Date();
@@ -569,17 +554,16 @@
                     // Retraso ligero para permitir que el SVG cargue desde la red antes de pintarlo
                     setTimeout(() => {
                         const zoneBtn = document.getElementById(memorizedFilter) || document.getElementById(`btn-${memorizedFilter.toLowerCase()}`);
-                        const wrapper = document.getElementById('plane-svg-wrapper');
+                        const container = document.getElementById('svg-container-box');
                         if (zoneBtn) {
                             zoneBtn.classList.add('active-zone');
-                            if(wrapper) wrapper.classList.add('has-active-zone');
+                            container.classList.add('has-active-zone');
                         }
                     }, 500);
                 }
                 
                 document.getElementById('welcome-area').style.display = 'none';
                 document.getElementById('main-plane-area').style.display = 'block';
-                setTimeout(enhanceSVGClickAreas, 100);
                 renderPlaneData();
             }
         } else {
@@ -656,7 +640,6 @@
         document.getElementById('welcome-area').style.display = 'none';
         document.getElementById('main-plane-area').style.display = 'block';
         
-        setTimeout(enhanceSVGClickAreas, 100);
         renderPlaneData();
     }
 
@@ -665,18 +648,19 @@
 
         // Permite encontrar el ID sea "FWD" (directo en tu SVG nuevo) o "btn-fwd" (antiguo)
         const zoneBtn = document.getElementById(zone) || document.getElementById(`btn-${zone.toLowerCase()}`);
-        const wrapper = document.getElementById('plane-svg-wrapper');
+        const container = document.getElementById('svg-container-box');
 
         if (currentZoneFilter === zone) {
             currentZoneFilter = null;
             clearSVGHighlights();
+            container.classList.remove('has-active-zone');
             localStorage.removeItem('saved_plane_filter');
         } else {
             currentZoneFilter = zone;
             clearSVGHighlights();
             if(zoneBtn) {
                 zoneBtn.classList.add('active-zone');
-                if(wrapper) wrapper.classList.add('has-active-zone');
+                container.classList.add('has-active-zone');
             }
             localStorage.setItem('saved_plane_filter', zone);
         }
@@ -686,8 +670,7 @@
 
     function clearSVGHighlights() {
         document.querySelectorAll('.svg-group').forEach(group => group.classList.remove('active-zone'));
-        const wrapper = document.getElementById('plane-svg-wrapper');
-        if(wrapper) wrapper.classList.remove('has-active-zone');
+        document.getElementById('svg-container-box').classList.remove('has-active-zone');
     }
 
     function renderPlaneData() {
