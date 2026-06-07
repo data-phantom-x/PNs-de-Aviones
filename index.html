@@ -15,30 +15,51 @@
             --leader-color: #0066cc;
             --danger: #e53e3e;
             --comment: #64748b;
-        }
-
-        body, input, select, button, textarea {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-transform: uppercase;
+            --warning: #f59e0b;
         }
 
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--primary);
             margin: 0;
             padding: 20px;
+            text-transform: uppercase;
         }
 
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* NORMALIZACIÓN MAESTRA DE INPUTS Y SELECTS */
+        input, select, textarea {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            text-transform: uppercase !important;
+            font-size: 13px !important;
+            color: var(--primary) !important;
+            font-weight: 700 !important;
+            padding: 10px 15px !important;
+            border: 2px solid var(--border) !important;
+            border-radius: 6px !important;
+            outline: none !important;
+            box-sizing: border-box !important;
+            background-color: white !important;
+            transition: all 0.2s ease !important;
+            height: auto !important;
+            margin: 0 !important;
+        }
 
-        /* Barra superior general */
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(27, 0, 136, 0.1) !important;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
         .top-bar {
             display: flex; justify-content: space-between; margin-bottom: 25px;
             background-color: var(--light-gray); padding: 12px 15px;
             border-radius: 6px; align-items: center; border: 1px solid var(--border);
+            flex-wrap: wrap; gap: 15px;
         }
 
-        .top-bar-left { display: flex; gap: 10px; }
+        .top-bar-left { display: flex; gap: 10px; flex-wrap: wrap; }
 
         .live-clock {
             display: flex; gap: 12px; font-size: 11px; font-weight: bold;
@@ -46,135 +67,114 @@
             align-items: center; justify-content: center; height: 34px; box-sizing: border-box;
         }
 
-        /* Lógica de visualización Team Leader */
         body:not(.team-leader-mode) .leader-only { display: none !important; }
 
-        /* Estructura de Encabezado Principal y Logo */
         .main-header-wrapper {
-            display: flex; align-items: center; gap: 20px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
             margin-bottom: 25px; border-bottom: 3px solid var(--primary); padding-bottom: 15px;
         }
         
-        .logo-container svg { width: 140px; height: auto; }
+        .logo-container { width: 140px; }
+        .logo-container svg { width: 100%; height: auto; }
         
         .document-header { 
-            font-size: 1.3em; font-weight: 800; color: var(--primary); margin: 0; 
-            flex: 1; text-align: center; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
+            font-size: 1.5em; font-weight: 800; color: var(--primary); margin: 0; 
+            text-align: center; letter-spacing: 1px; flex: 1;
         }
 
-        /* ----- SELECTOR DE MATRÍCULA ----- */
-        .selector-container {
-            background-color: var(--light-gray); padding: 20px; border-radius: 6px;
-            margin-bottom: 25px; display: flex; flex-direction: column; align-items: center;
-            border: 1px solid var(--border);
-        }
+        .header-spacer { width: 140px; } /* Elemento invisible para balancear */
 
-        .selector-box {
-            display: flex; width: 100%; max-width: 500px; justify-content: center; align-items: center;
+        /* NUEVO ÁREA DE SELECCIÓN DE MATRÍCULA */
+        .plane-selector-card {
+            background: white; border: 1px solid var(--border); border-radius: 8px;
+            padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
+            justify-content: space-between; margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
-
-        select {
-            padding: 8px 15px; border: 2px solid var(--border);
-            border-radius: 4px; font-size: 16px; outline: none; box-sizing: border-box;
-            width: 100%; font-weight: bold; height: 40px; cursor: pointer;
-            color: var(--primary);
+        .selector-info { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 280px; }
+        .selector-info label { font-size: 12px; font-weight: 800; color: var(--comment); }
+        .selector-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .title-select { 
+            font-size: 20px !important; font-weight: 900 !important; color: var(--primary) !important;
+            border: 2px solid var(--primary) !important; padding: 12px 20px !important; border-radius: 8px !important;
+            background: #f8fafc !important; cursor: pointer; flex: 1; max-width: 400px;
         }
-        select:focus { border-color: var(--primary); }
+        .badge-eff {
+            background: var(--light-gray); padding: 8px 12px; border-radius: 6px;
+            font-size: 14px; font-weight: 800; color: var(--leader-color); border: 1px solid #d1d9e0;
+        }
+        .selector-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-        /* ----- ESTILOS SVG INTERACTIVO A320 ----- */
         .plane-svg-container {
-            width: 100%;
-            background-color: white;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 20px 10px;
-            margin-bottom: 25px;
-            box-sizing: border-box;
-            position: relative;
+            width: 100%; background-color: white; border: 1px solid var(--border);
+            border-radius: 6px; padding: 20px 10px; margin-bottom: 25px;
+            box-sizing: border-box; position: relative;
         }
 
-        /* Estilos aplicados dinámicamente al SVG inyectado */
         .svg-group { cursor: pointer; transition: all 0.2s ease; }
-        .svg-clickable {
-            transition: all 0.2s ease;
+        
+        .svg-clickable { 
+            transition: all 0.2s ease; 
+            stroke: transparent;
+            stroke-width: 15px; 
+            pointer-events: all;
+        }
+        .svg-group:hover .svg-clickable { stroke: var(--primary) !important; stroke-width: 3px !important; }
+        .svg-group.active-zone .svg-clickable { 
+            fill: rgba(237, 22, 80, 0.1) !important; 
+            stroke: var(--accent) !important; 
+            stroke-width: 6px !important; 
+            opacity: 1 !important;
         }
 
-        .svg-group:hover .svg-clickable {
-            fill: #d1d9e0 !important;
-            stroke: var(--primary) !important;
-        }
-
-        /* Clase para cuando el filtro está activo (Uso de !important para sobreescribir estilos crudos del SVG) */
-        .svg-group.active-zone .svg-clickable {
-            fill: var(--accent) !important;
-            stroke: white !important;
-            stroke-width: 2px !important;
-        }
-        .svg-group.active-zone text, .svg-group.active-zone .svg-text {
-            fill: white !important;
-        }
-
-        /* Botones Generales */
         button { 
             background-color: var(--primary); color: white; border: none; cursor: pointer; 
             font-weight: 700; transition: all 0.2s; padding: 0 20px; border-radius: 4px;
             display: inline-flex; align-items: center; justify-content: center; font-size: 12px;
-            height: 36px; box-sizing: border-box;
+            height: 38px; box-sizing: border-box; text-transform: uppercase; font-family: inherit;
         }
         button:hover { opacity: 0.9; }
         
         .btn-accent { background-color: var(--accent); }
-        .btn-leader { background-color: var(--leader-color); height: 40px;}
+        .btn-leader { background-color: var(--leader-color); }
         .btn-outline { background-color: transparent; border: 1px solid var(--comment); color: var(--comment); }
         .btn-outline:hover { background-color: var(--comment); color: white; border-color: var(--comment); }
         .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
         .btn-danger-outline:hover { background: var(--danger); color: white; }
+        .btn-action-small { background-color: var(--light-gray); color: var(--primary); border: 1px solid var(--border); height: 28px; font-size: 10px; padding: 0 8px; }
+        .btn-action-small:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-        /* Resultados */
-        .results-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px;
-        }
-        
-        .results-title { font-size: 1.5em; font-weight: 800; color: var(--primary); margin: 0; }
-        
-        .pn-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;
-        }
+        .badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-left: 8px; display: inline-block; }
+        .badge-exception { background: #fef7e0; color: var(--warning); border: 1px solid #feefc3; }
+        .badge-custom { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
+        .badge-app { background: var(--primary); color: white; border-radius: 20px; padding: 2px 8px; font-size: 10px; }
+
+        .pn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
 
         .pn-card {
             border: 1px solid var(--border); border-radius: 6px; background: white;
             box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-direction: column;
             overflow: hidden; transition: transform 0.2s;
         }
-
         .pn-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); border-color: var(--primary); }
+        .pn-card.card-exception { border: 2px solid var(--warning); }
+        .pn-card.card-custom { border: 2px solid #4338ca; }
 
         .pn-desc {
             background-color: var(--primary); color: white; padding: 10px 15px;
             font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;
         }
+        .pn-card.card-exception .pn-desc { background-color: var(--warning); color: #fff; }
+        .pn-card.card-custom .pn-desc { background-color: #4338ca; color: #fff; }
 
-        .pn-value-container {
-            padding: 15px; display: flex; flex-direction: column; gap: 10px;
-            background: #fafbfc;
-        }
-        
-        .pn-main-row {
-            display: flex; justify-content: space-between; align-items: center; width: 100%;
-        }
-
-        .pn-value {
-            font-size: 18px; font-weight: 900; color: var(--accent); letter-spacing: 1px;
-        }
-        
-        .pn-alt-value { font-size: 12px; color: var(--comment); font-weight: bold; }
+        .pn-value-container { padding: 15px; display: flex; flex-direction: column; gap: 10px; background: #fafbfc; flex: 1; }
+        .pn-main-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .pn-value { font-size: 18px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
 
         .pn-extra-info {
             display: flex; justify-content: space-between; background: var(--light-gray);
             padding: 8px; border-radius: 4px; font-size: 11px; color: var(--primary); font-weight: bold;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border); flex-wrap: wrap; gap: 5px; margin-top: auto;
         }
 
         .btn-copy {
@@ -186,36 +186,45 @@
         .no-results {
             text-align: center; padding: 40px; color: var(--comment); font-style: italic;
             border: 2px dashed var(--border); border-radius: 6px; background: white;
+            grid-column: 1 / -1;
         }
 
-        /* Modal */
+        /* Modales */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(4px); }
-        
         .modal-content {
-            background-color: white; margin: 5% auto; padding: 25px;
-            border: none; width: 95%; max-width: 750px; border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto;
+            background-color: white; margin: 3% auto; padding: 25px;
+            border: none; width: 95%; max-width: 1000px; border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;
         }
-        
         .modal-header { font-weight: 800; font-size: 1.2em; margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         
+        /* DISEÑO DE TABLA EXCEL */
+        .table-headers {
+            display: flex; gap: 8px; font-size: 10px; font-weight: bold; color: var(--comment);
+            margin-bottom: 5px; padding: 0 40px 0 12px;
+        }
         .component-row-wrapper { 
-            display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; 
-            background: var(--light-gray); padding: 12px; border-radius: 6px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; 
+            background: var(--light-gray); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);
             position: relative;
         }
-        .component-row-top, .component-row-bottom { display: flex; gap: 10px; width: 100%; align-items: center; }
-        .component-row-wrapper input, .component-row-wrapper select { 
-            margin-bottom: 0 !important; width: 100%; padding: 8px; 
-            border: 1px solid var(--border); border-radius: 4px; font-weight: bold; box-sizing: border-box;
-        }
+        .row-exception { border: 2px solid var(--warning) !important; background: #fffbeb !important; }
         
-        .btn-remove-row { background: transparent; color: var(--danger); font-size: 16px; padding: 0 8px; height: 36px; border: 1px solid var(--danger); border-radius: 4px;}
+        .component-row-main { display: flex; gap: 8px; width: 100%; align-items: center; }
+        
+        /* Columnas Distribuidas */
+        .col-desc { flex: 3; }
+        .col-pn { flex: 2; }
+        .col-pos { flex: 2; }
+        .col-ata { flex: 1.5; }
+        .col-app { flex: 1.5; }
+        
+        .btn-remove-row { background: transparent; color: var(--danger); font-size: 14px; padding: 0 8px; height: 36px; border: 1px solid var(--danger); border-radius: 4px; flex: 0 0 auto;}
         .btn-remove-row:hover { background: var(--danger); color: white; }
-
-        .modal-footer { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); justify-content: flex-end; }
         
-        /* Notificación Toast */
+        .override-controls { display: flex; gap: 10px; margin-top: 5px; padding-top: 5px; border-top: 1px dashed var(--border); justify-content: flex-end; align-items: center;}
+        .modal-footer { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); justify-content: flex-end; flex-wrap: wrap; }
+        
         #toast {
             visibility: hidden; min-width: 250px; background-color: var(--primary); color: #fff;
             text-align: center; border-radius: 4px; padding: 12px; position: fixed; z-index: 1001;
@@ -224,620 +233,996 @@
         }
         #toast.show { visibility: visible; opacity: 1; }
 
-        @media (max-width: 600px) {
-            .top-bar { flex-direction: column; gap: 10px; align-items: stretch; }
-            .top-bar-left { flex-direction: column; width: 100%; }
-            .top-bar-left button { width: 100%; }
-            .selector-box select { width: 100%; }
-            .results-header { flex-direction: column; gap: 15px; align-items: stretch; text-align: center; }
-            .results-header > div { display: flex; flex-direction: column; gap: 10px; }
-            .results-header > div button { margin-left: 0 !important; width: 100%; }
-            .component-row-top, .component-row-bottom { flex-direction: column; }
-            .btn-remove-row { width: 100%; margin-top: 5px; }
+        @media (max-width: 800px) {
+            .table-headers { display: none; }
+            .component-row-main { flex-direction: column; gap: 8px; align-items: stretch; background: white; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
+            .col-desc, .col-pn, .col-pos, .col-ata, .col-app { width: 100% !important; flex: none !important; margin: 0 !important; }
+            .btn-remove-row { width: 100%; height: 38px; margin-top: 5px; }
+            .component-row-wrapper { padding: 10px; background: var(--light-gray); }
+            
+            .plane-selector-card { flex-direction: column; align-items: stretch; }
+            .selector-actions { flex-direction: column; width: 100%; }
+            .selector-actions button { width: 100%; margin: 0 !important; }
+            .header-spacer { display: none; }
+            .document-header { margin-top: 15px; }
         }
     </style>
 </head>
 <body>
+    <datalist id="descripciones-list"></datalist>
+    <datalist id="pn-list"></datalist>
+    <datalist id="ata-list"></datalist>
 
-<datalist id="descripciones-list"></datalist>
-<datalist id="pn-list"></datalist>
-<datalist id="ata-list"></datalist>
-
-<div class="container">
-    
-    <div class="top-bar no-print">
-        <div class="top-bar-left">
-            <button type="button" id="btn-mode-toggle" class="btn-primary" onclick="toggleMode()">MODO TÉCNICO</button>
-            <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="background-color: var(--danger); color:white; border:none;">CERRAR SESIÓN</button>
-        </div>
-        <div id="live-clock" class="live-clock"></div>
-    </div>
-
-    <div class="main-header-wrapper">
-        <div class="logo-container">
-            <svg viewBox="0.13 -0.275 234.736 70.807" xmlns="http://www.w3.org/2000/svg">
-                <g fill="none" fill-rule="evenodd">
-                    <path d="M228.193 54.161c-4.395 0-7.267 1.82-7.267 4.63 0 2.646 2.196 3.639 5.745 4.3l1.69.33c2.535.496 3.886 1.323 3.886 2.646 0 1.322-1.35 2.316-4.731 2.316-3.041 0-5.408-.994-6.084-1.49l-.677 2.316c.677.33 3.043 1.323 6.591 1.323 4.734 0 7.438-1.82 7.438-4.63 0-2.645-2.367-3.968-6.085-4.63l-1.69-.331c-2.704-.496-3.549-.992-3.549-2.315 0-1.322 1.522-2.314 4.562-2.314 2.536 0 4.395.495 5.24.826l.509-1.984c-1.015-.33-2.875-.993-5.578-.993zM75.596 70.366h2.533l-7.604-15.212c-.337-.497-.676-.662-1.182-.662h-1.859l-7.942 15.874h2.534l2.029-4.133h9.462l2.03 4.133zm31.261 0v-5.787c1.184.66 2.874.992 4.734.992 1.013 0 1.69 0 2.533-.165l3.38 4.96h2.704l-3.718-5.622c2.368-.992 3.887-2.976 3.887-5.291 0-2.976-2.534-5.126-7.097-5.126h-8.956v16.039zm62.866 0V57.304l11.152 12.4c.338.497.845.662 1.52.662h1.523V54.492h-2.367V67.06l-10.985-11.905c-.337-.497-.673-.662-1.519-.662h-1.691v15.874h2.367zm-97.17-6.283h-7.434l3.717-7.44zm39.206-.662c-1.86 0-3.718-.495-4.902-1.157v-5.952h6.592c3.212 0 4.394 1.653 4.394 3.14 0 2.15-1.692 3.97-6.084 3.97zm19.433 6.945h11.83v-2.15h-9.295V54.492h-2.535zm-41.91 0h2.537V54.492h-2.537v15.874zm107.309-15.874v15.874h13.013V68.05h-10.477v-4.96h9.123v-2.15h-9.123v-4.299h10.138v-2.15h-12.674zm-44.275 15.874h2.537V54.492h-2.537zM114.97 37.164h7.874L110.58 13.522c-.643-1.164-1.279-1.608-2.747-1.608h-6.77l-12.905 25.25h7.866l2.29-4.655h14.46l2.195 4.655zm64.528 0h7.778l-12.268-23.642c-.636-1.164-1.276-1.608-2.739-1.608h-6.773l-12.906 25.25h7.871l2.287-4.655h14.462zm27.728-6.177c.279.895 1.375 1.522 2.565 1.522h7.414l5.491-14.86 5.215 19.515h6.955l-5.764-22.383c-.543-2.239-1.829-2.867-3.933-2.867h-7.232l-5.214 14.777-4.122-12.543c-.545-1.606-1.557-2.234-3.203-2.234h-8.143l-6.684 25.25h7.052l5.118-19.515zm-32.574-3.584h-9.615l4.856-10.117zm-64.44 0h-9.608l4.854-10.117 4.755 10.117zm-27.545 9.761l2.927-5.822h-17.3V11.914h-7.412v25.25zm51.437 0h7.133v-19.43l12.453-.806v-5.014h-32.036v5.014l12.45-.805zM10.655 62.807l6.316-2.249c1.316-.468 1.316.568 1.316 2.113v2.844c0 2.3-.79 2.58-1.842 2.955l-5.79 2.062zm0-12.616l16.053-5.717c1.315-.468 1.315.567 1.315 2.112v2.832c0 2.312-.79 2.593-1.842 2.968l-15.526 5.53V50.19M9.34 32.214l-8.158-2.905C.13 28.934.13 27.533.13 27.019c0 0 0 1.688 1.578 1.126L41.707 13.9c3.158-1.125 3.158-1.992 1.842-2.46 1.316.468 1.316.468 1.316 4.25 0 3.604 0 4.81-1.579 5.372L11.971 32.214c-1.316.469-1.316.469-2.631 0" fill="#1b0088"/>
-                    <path d="M3.55 17.536l13.974 4.976 10.845-3.862L2.235 9.343C.393 8.687.13 8.593.13 9.881v3.347c0 3.09 2.368 3.933 3.42 4.308m40 6.52l-4.336-1.544-10.845 3.862 6.868 2.446 6.47-2.304c3.158-1.124 3.158-1.991 1.842-2.46" fill="#ed1650"/>
-                    <path d="M43.55 24.056c1.315.469 1.315 1.336-1.843 2.46L10.655 37.575v7.724l32.631-11.62c1.579-.563 1.579-1.769 1.579-5.374 0-3.78 0-3.78-1.316-4.249" fill="#1b0088"/>
-                    <path d="M43.55 11.44L12.76.475c-1.841-.656-2.105-.75-2.105.538V4.36c0 3.09 2.368 3.933 3.42 4.308l21.162 7.536 6.47-2.304c3.158-1.125 3.158-1.992 1.842-2.46M1.708 28.145l8.948-3.187-8.421-2.999C.393 21.303.13 21.21.13 22.497v4.521s0 1.689 1.578 1.127" fill="#ed1650"/>
-                </g>
-            </svg>
-        </div>
-        <h1 class="document-header">CONSULTOR DE PART NUMBERS</h1>
-    </div>
-
-    <div class="selector-container">
-        <div style="display: flex; justify-content: space-between; width: 100%; max-width: 500px; align-items: center; margin-bottom: 10px;">
-            <div style="font-size: 13px; font-weight: bold; color: var(--primary);">1. SELECCIONE EL AVIÓN</div>
-            <button class="btn-outline leader-only" onclick="openAddModal()" style="height: 26px; font-size: 10px; padding: 0 8px; font-weight: 800;">➕ NUEVO AVIÓN</button>
-        </div>
-        
-        <div class="selector-box">
-            <select id="plane-select" onchange="loadSelectedPlane()">
-                <option value="">-- ELIJA UNA MATRÍCULA --</option>
-            </select>
-        </div>
-    </div>
-
-    <div id="main-plane-area" style="display: none;">
-        
-        <div class="plane-svg-container">
-            <div style="text-align: center; font-size: 11px; font-weight: bold; color: var(--comment); margin-bottom: 5px;">2. SELECCIONE UNA CORTINA O MCD DEL AVIÓN (OPCIONAL)</div>
-            
-            <div id="plane-svg-wrapper" style="width: 100%; display: flex; justify-content: center; align-items: center; min-height: 150px; flex-direction: column;">
-                <span style="color: var(--primary); font-weight: bold;">Cargando DWG A320... ✈️</span>
+    <div class="container">
+        <div class="top-bar no-print">
+            <div class="top-bar-left">
+                <button type="button" id="btn-mode-toggle" onclick="toggleMode()">MODO TÉCNICO</button>
+                <button type="button" class="btn-outline leader-only" onclick="openEffManager()" style="background-color: white; color: var(--primary); border-color: var(--primary);">⚙️ GESTOR DE CATÁLOGOS</button>
+                <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="background-color: var(--danger); color:white; border:none;">CERRAR SESIÓN</button>
             </div>
-            
+            <div id="live-clock" class="live-clock"></div>
         </div>
 
-        <div class="results-header">
-            <h2 class="results-title" id="display-reg">--</h2>
-            <div class="leader-only" id="leader-actions-container">
-                <button class="btn-outline" onclick="openEditModal()">✏️ EDITAR COMPONENTES</button>
-                <button class="btn-danger-outline" onclick="deleteAvion()" style="margin-left: 10px;">🗑️ BORRAR AVIÓN</button>
+        <div class="main-header-wrapper">
+            <div class="logo-container">
+                <svg viewBox="0.13 -0.275 234.736 70.807" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="none" fill-rule="evenodd">
+                        <path d="M228.193 54.161c-4.395 0-7.267 1.82-7.267 4.63 0 2.646 2.196 3.639 5.745 4.3l1.69.33c2.535.496 3.886 1.323 3.886 2.646 0 1.322-1.35 2.316-4.731 2.316-3.041 0-5.408-.994-6.084-1.49l-.677 2.316c.677.33 3.043 1.323 6.591 1.323 4.734 0 7.438-1.82 7.438-4.63 0-2.645-2.367-3.968-6.085-4.63l-1.69-.331c-2.704-.496-3.549-.992-3.549-2.315 0-1.322 1.522-2.314 4.562-2.314 2.536 0 4.395.495 5.24.826l.509-1.984c-1.015-.33-2.875-.993-5.578-.993zM75.596 70.366h2.533l-7.604-15.212c-.337-.497-.676-.662-1.182-.662h-1.859l-7.942 15.874h2.534l2.029-4.133h9.462l2.03 4.133zm31.261 0v-5.787c1.184.66 2.874.992 4.734.992 1.013 0 1.69 0 2.533-.165l3.38 4.96h2.704l-3.718-5.622c2.368-.992 3.887-2.976 3.887-5.291 0-2.976-2.534-5.126-7.097-5.126h-8.956v16.039zm62.866 0V57.304l11.152 12.4c.338.497.845.662 1.52.662h1.523V54.492h-2.367V67.06l-10.985-11.905c-.337-.497-.673-.662-1.519-.662h-1.691v15.874h2.367zm-97.17-6.283h-7.434l3.717-7.44zm39.206-.662c-1.86 0-3.718-.495-4.902-1.157v-5.952h6.592c3.212 0 4.394 1.653 4.394 3.14 0 2.15-1.692 3.97-6.084 3.97zm19.433 6.945h11.83v-2.15h-9.295V54.492h-2.535zm-41.91 0h2.537V54.492h-2.537v15.874zm107.309-15.874v15.874h13.013V68.05h-10.477v-4.96h9.123v-2.15h-9.123v-4.299h10.138v-2.15h-12.674zm-44.275 15.874h2.537V54.492h-2.537zM114.97 37.164h7.874L110.58 13.522c-.643-1.164-1.279-1.608-2.747-1.608h-6.77l-12.905 25.25h7.866l2.29-4.655h14.46l2.195 4.655zm64.528 0h7.778l-12.268-23.642c-.636-1.164-1.276-1.608-2.739-1.608h-6.773l-12.906 25.25h7.871l2.287-4.655h14.462zm27.728-6.177c.279.895 1.375 1.522 2.565 1.522h7.414l5.491-14.86 5.215 19.515h6.955l-5.764-22.383c-.543-2.239-1.829-2.867-3.933-2.867h-7.232l-5.214 14.777-4.122-12.543c-.545-1.606-1.557-2.234-3.203-2.234h-8.143l-6.684 25.25h7.052l5.118-19.515zm-32.574-3.584h-9.615l4.856-10.117zm-64.44 0h-9.608l4.854-10.117 4.755 10.117zm-27.545 9.761l2.927-5.822h-17.3V11.914h-7.412v25.25zm51.437 0h7.133v-19.43l12.453-.806v-5.014h-32.036v5.014l12.45-.805zM10.655 62.807l6.316-2.249c1.316-.468 1.316.568 1.316 2.113v2.844c0 2.3-.79 2.58-1.842 2.955l-5.79 2.062zm0-12.616l16.053-5.717c1.315-.468 1.315.567 1.315 2.112v2.832c0 2.312-.79 2.593-1.842 2.968l-15.526 5.53V50.19M9.34 32.214l-8.158-2.905C.13 28.934.13 27.533.13 27.019c0 0 0 1.688 1.578 1.126L41.707 13.9c3.158-1.125 3.158-1.992 1.842-2.46 1.316.468 1.316.468 1.316 4.25 0 3.604 0 4.81-1.579 5.372L11.971 32.214c-1.316.469-1.316.469-2.631 0" fill="#1b0088"/>
+                        <path d="M3.55 17.536l13.974 4.976 10.845-3.862L2.235 9.343C.393 8.687.13 8.593.13 9.881v3.347c0 3.09 2.368 3.933 3.42 4.308m40 6.52l-4.336-1.544-10.845 3.862 6.868 2.446 6.47-2.304c3.158-1.124 3.158-1.991 1.842-2.46" fill="#ed1650"/>
+                        <path d="M43.55 24.056c1.315.469 1.315 1.336-1.843 2.46L10.655 37.575v7.724l32.631-11.62c1.579-.563 1.579-1.769 1.579-5.374 0-3.78 0-3.78-1.316-4.249" fill="#1b0088"/>
+                        <path d="M43.55 11.44L12.76.475c-1.841-.656-2.105-.75-2.105.538V4.36c0 3.09 2.368 3.933 3.42 4.308l21.162 7.536 6.47-2.304c3.158-1.125 3.158-1.992 1.842-2.46M1.708 28.145l8.948-3.187-8.421-2.999C.393 21.303.13 21.21.13 22.497v4.521s0 1.689 1.578 1.127" fill="#ed1650"/>
+                    </g>
+                </svg>
             </div>
-        </div>
-        
-        <div class="pn-grid" id="pn-grid-container">
-            </div>
-    </div>
-
-    <div id="welcome-area" class="no-results">
-        Selecciona una matrícula en el menú superior para cargar el avión y sus componentes.
-    </div>
-
-</div>
-
-<div id="avion-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <span id="modal-title" style="color: var(--leader-color);">✈️ AGREGAR AVIÓN</span>
-            <button onclick="closeModal('avion-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto;">✖</button>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-            <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">MATRÍCULA:</label>
-            <input type="text" id="modal-reg" placeholder="EJ: CC-BEM" maxlength="6" oninput="formatMatricula(this)" style="width: 150px; font-size: 14px; padding: 8px; border: 2px solid var(--border); border-radius: 4px; font-weight:bold;">
+            <h1 class="document-header">CONSULTOR DE PART NUMBERS</h1>
+            <div class="header-spacer"></div>
         </div>
 
-        <div style="font-size: 11px; font-weight: bold; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">COMPONENTES Y PART NUMBERS:</div>
-        
-        <div id="components-container"></div>
-
-        <button class="btn-outline" onclick="addComponentRow('', '', '', '', '', '')" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR OTRA FILA DE COMPONENTE</button>
-        
-        <div class="modal-footer">
-            <button class="btn-outline" onclick="closeModal('avion-modal')" style="padding: 10px 20px;">CANCELAR</button>
-            <button class="btn-leader" onclick="saveAvionData()" style="padding: 10px 20px;">💾 GUARDAR DATOS</button>
-        </div>
-    </div>
-</div>
-
-<div id="toast">✅ Part Number copiado al portapapeles</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyADC1Wwcypek8g1gwOTcgqKskpqiTo0-oM",
-      authDomain: "programacion-diaria-3dddb.firebaseapp.com",
-      databaseURL: "https://programacion-diaria-3dddb-default-rtdb.firebaseio.com",
-      projectId: "programacion-diaria-3dddb",
-      storageBucket: "programacion-diaria-3dddb.firebasestorage.app",
-      messagingSenderId: "449926089536",
-      appId: "1:449926089536:web:052ba8ea546f4d39b708a5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const pnsRef = ref(db, 'mantenimiento/pns_aviones');
-
-    let avionesDB = {};
-    let currentLoadedReg = null; 
-    let currentZoneFilter = null; 
-    let isTeamLeader = false;
-    let isInitialLoad = true; 
-
-    const correosAutorizados = [
-        "ndfuentesa@gmail.com",
-        "nelson.fuentes@latam.com",
-        "hector.vargas@latam.com",
-        "richard.shenk@latam.com",
-        "pablo.monti@latam.com",
-        "marco.santelices@latam.com",
-        "pamela.perezs@latam.com",
-        "mauricio.munozv@latam.com",
-        "claudio.saldias@latam.com",
-        "guido.contrerasG@latam.com"
-    ];
-
-    const SESSION_EXPIRATION_MS = 12 * 60 * 60 * 1000;
-
-    // ----- LOGICA PARA CARGAR SVG DESDE GITHUB -----
-    
-    // ⚠️ REEMPLAZA ESTE ENLACE POR TU LINK "RAW" DE GITHUB
-    const GITHUB_SVG_URL = "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320.svg"; 
-
-    async function loadPlaneSVG() {
-        try {
-            const response = await fetch(GITHUB_SVG_URL);
-            if (!response.ok) throw new Error("No se pudo cargar el SVG. Verifica la URL.");
-            const svgText = await response.text();
-            
-            const wrapper = document.getElementById('plane-svg-wrapper');
-            wrapper.innerHTML = svgText;
-
-            // Ajuste responsivo del SVG recién cargado
-            const svgElement = wrapper.querySelector('svg');
-            if(svgElement) {
-                svgElement.style.width = '100%';
-                svgElement.style.height = 'auto';
-                svgElement.style.maxHeight = '300px'; 
-            }
-
-            // Mapeo automático de Botones interactivos del SVG
-            // Busca elementos que tengan los IDs FWD, MCD o AFT
-            const zones = ['FWD', 'MCD', 'AFT'];
-            zones.forEach(zone => {
-                // Buscamos si en tu Illustrator/Inkscape lo llamaste "FWD" o "btn-fwd"
-                const btn = document.getElementById(zone) || document.getElementById('btn-' + zone.toLowerCase());
-                
-                if (btn) {
-                    btn.classList.add('svg-group');
-                    btn.onclick = () => toggleZoneFilter(zone);
-                    
-                    // Asignar clase a los sub-elementos para que cambien de color al hacer hover/click
-                    const paths = btn.querySelectorAll('path, rect, polygon, circle, g');
-                    paths.forEach(p => p.classList.add('svg-clickable'));
-                }
-            });
-
-        } catch (error) {
-            console.error("Error al inyectar el SVG:", error);
-            document.getElementById('plane-svg-wrapper').innerHTML = 
-                `<div style="color: var(--danger); font-weight: bold; padding: 20px; border: 1px dashed var(--danger);">
-                 Error al cargar el archivo A320.svg desde GitHub.<br>
-                 Asegúrate de haber pegado el enlace "Raw" en la variable GITHUB_SVG_URL.
-                 </div>`;
-        }
-    }
-    
-    // Disparar carga del SVG en cuanto arranque el script
-    loadPlaneSVG();
-    // ------------------------------------------------
-
-    function updateClock() {
-        const now = new Date();
-        const local = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const utc = now.toLocaleTimeString('es-ES', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const clockEl = document.getElementById('live-clock');
-        if (clockEl) clockEl.innerHTML = `<span style="color:var(--accent)">🌍 LOCAL: ${local}</span> <span style="color:var(--comment)">✈️ UTC: ${utc}</span>`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    checkSession();
-
-    function checkSession() {
-        const savedEmail = localStorage.getItem('tl_email');
-        const loginTime = localStorage.getItem('tl_login_time');
-        if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS) {
-            if (correosAutorizados.includes(savedEmail)) activateLeaderUI();
-            else logoutLeader();
-        } else {
-            deactivateLeaderUI();
-        }
-    }
-
-    function activateLeaderUI() {
-        isTeamLeader = true;
-        document.body.classList.add('team-leader-mode');
-        const btnToggle = document.getElementById('btn-mode-toggle');
-        btnToggle.innerText = "MODO TEAM LEADER";
-        btnToggle.style.backgroundColor = "var(--leader-color)";
-        btnToggle.style.color = "white";
-    }
-
-    function deactivateLeaderUI() {
-        isTeamLeader = false;
-        document.body.classList.remove('team-leader-mode');
-        const btnToggle = document.getElementById('btn-mode-toggle');
-        btnToggle.innerText = "MODO TÉCNICO";
-        btnToggle.style.backgroundColor = "var(--primary)";
-        btnToggle.style.color = "white";
-    }
-
-    function toggleMode() {
-        if (isTeamLeader) {
-            deactivateLeaderUI();
-        } else {
-            const savedEmail = localStorage.getItem('tl_email');
-            const loginTime = localStorage.getItem('tl_login_time');
-            
-            if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && correosAutorizados.includes(savedEmail)) {
-                activateLeaderUI();
-            } else {
-                const email = prompt("🔒 ACCESO TEAM LEADER\nIngrese su correo corporativo autorizado:");
-                if (!email) return; 
-                const emailLower = email.trim().toLowerCase();
-                if (correosAutorizados.includes(emailLower)) {
-                    localStorage.setItem('tl_email', emailLower);
-                    localStorage.setItem('tl_login_time', Date.now().toString());
-                    activateLeaderUI();
-                } else {
-                    alert(`ACCESO DENEGADO.\nEl correo ${emailLower} no está autorizado.`);
-                }
-            }
-        }
-    }
-
-    function logoutLeader() {
-        localStorage.removeItem('tl_email');
-        localStorage.removeItem('tl_login_time');
-        deactivateLeaderUI();
-    }
-
-    onValue(pnsRef, (snapshot) => {
-        avionesDB = snapshot.val() || {};
-        updateSelector();
-        
-        if (isInitialLoad) {
-            isInitialLoad = false;
-            const memorizedPlane = localStorage.getItem('saved_plane_reg');
-            const memorizedFilter = localStorage.getItem('saved_plane_filter');
-            
-            if (memorizedPlane && avionesDB[memorizedPlane]) {
-                document.getElementById('plane-select').value = memorizedPlane;
-                currentLoadedReg = memorizedPlane;
-                
-                if (memorizedFilter) {
-                    currentZoneFilter = memorizedFilter;
-                    // Retraso ligero para permitir que el SVG cargue desde la red antes de pintarlo
-                    setTimeout(() => {
-                        const zoneBtn = document.getElementById(memorizedFilter) || document.getElementById(`btn-${memorizedFilter.toLowerCase()}`);
-                        if (zoneBtn) zoneBtn.classList.add('active-zone');
-                    }, 500);
-                }
-                
-                document.getElementById('welcome-area').style.display = 'none';
-                document.getElementById('main-plane-area').style.display = 'block';
-                renderPlaneData();
-            }
-        } else {
-            if (currentLoadedReg && avionesDB[currentLoadedReg]) {
-                renderPlaneData();
-            } else if (currentLoadedReg && !avionesDB[currentLoadedReg]) {
-                resetView();
-            }
-        }
-    });
-
-    function updateSelector() {
-        const select = document.getElementById('plane-select');
-        const currentSelection = select.value;
-        select.innerHTML = '<option value="">-- ELIJA UNA MATRÍCULA --</option>';
-        
-        const descDatalist = document.getElementById('descripciones-list');
-        const pnDatalist = document.getElementById('pn-list');
-        const ataDatalist = document.getElementById('ata-list');
-        
-        descDatalist.innerHTML = '';
-        pnDatalist.innerHTML = '';
-        ataDatalist.innerHTML = '';
-        
-        let descSuggestions = new Set();
-        let pnSuggestions = new Set();
-        let ataSuggestions = new Set();
-        
-        Object.keys(avionesDB).sort().forEach(reg => {
-            const option = document.createElement('option');
-            option.value = reg;
-            option.text = `✈️ ${reg}`;
-            select.appendChild(option);
-            
-            const parts = avionesDB[reg].parts || [];
-            parts.forEach(p => { 
-                if(p.desc) descSuggestions.add(p.desc); 
-                if(p.pn) pnSuggestions.add(p.pn);
-                if(p.ata) ataSuggestions.add(p.ata);
-            });
-        });
-
-        Array.from(descSuggestions).sort().forEach(val => {
-            const option = document.createElement('option'); option.value = val; descDatalist.appendChild(option);
-        });
-        Array.from(pnSuggestions).sort().forEach(val => {
-            const option = document.createElement('option'); option.value = val; pnDatalist.appendChild(option);
-        });
-        Array.from(ataSuggestions).sort().forEach(val => {
-            const option = document.createElement('option'); option.value = val; ataDatalist.appendChild(option);
-        });
-
-        if (currentSelection && avionesDB[currentSelection]) {
-            select.value = currentSelection;
-        }
-    }
-
-    function loadSelectedPlane() {
-        const select = document.getElementById('plane-select');
-        const reg = select.value;
-        
-        if (!reg) {
-            resetView();
-            return;
-        }
-
-        currentLoadedReg = reg;
-        currentZoneFilter = null; 
-        clearSVGHighlights();
-        
-        localStorage.setItem('saved_plane_reg', reg);
-        localStorage.removeItem('saved_plane_filter');
-        
-        document.getElementById('welcome-area').style.display = 'none';
-        document.getElementById('main-plane-area').style.display = 'block';
-        
-        renderPlaneData();
-    }
-
-    function toggleZoneFilter(zone) {
-        if (!currentLoadedReg) return; 
-
-        // Permite encontrar el ID sea "FWD" (directo en tu SVG nuevo) o "btn-fwd" (antiguo)
-        const zoneBtn = document.getElementById(zone) || document.getElementById(`btn-${zone.toLowerCase()}`);
-
-        if (currentZoneFilter === zone) {
-            currentZoneFilter = null;
-            clearSVGHighlights();
-            localStorage.removeItem('saved_plane_filter');
-        } else {
-            currentZoneFilter = zone;
-            clearSVGHighlights();
-            if(zoneBtn) zoneBtn.classList.add('active-zone');
-            localStorage.setItem('saved_plane_filter', zone);
-        }
-
-        renderPlaneData();
-    }
-
-    function clearSVGHighlights() {
-        document.querySelectorAll('.svg-group').forEach(group => group.classList.remove('active-zone'));
-    }
-
-    function renderPlaneData() {
-        let displayTitle = `✈️ ${currentLoadedReg}`;
-        if (currentZoneFilter) {
-            displayTitle += ` <span style="color:var(--comment); font-size:14px;">(FILTRO: ${currentZoneFilter})</span>`;
-        }
-        document.getElementById('display-reg').innerHTML = displayTitle;
-
-        const container = document.getElementById('pn-grid-container');
-        container.innerHTML = '';
-
-        let parts = avionesDB[currentLoadedReg].parts || [];
-
-        if (currentZoneFilter) {
-            parts = parts.filter(p => {
-                const posStr = (p.pos || "").toUpperCase();
-                const descStr = (p.desc || "").toUpperCase();
-                return posStr.includes(currentZoneFilter) || descStr.includes(currentZoneFilter);
-            });
-        }
-
-        if (parts.length === 0) {
-            if (currentZoneFilter) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px; color: var(--comment); border: 1px dashed var(--border);">No se encontraron componentes en la zona <strong>${currentZoneFilter}</strong> para este avión.</div>`;
-            } else {
-                container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 20px; color: var(--comment); border: 1px dashed var(--border);">No hay componentes cargados aún en este avión. Usa el botón "Editar Componentes".</div>';
-            }
-            return;
-        }
-
-        parts.forEach(part => {
-            container.innerHTML += buildCardHtml(part);
-        });
-    }
-
-    function buildCardHtml(part) {
-        const altPnHtml = part.pnAlt ? `<div class="pn-alt-value">ALT: ${part.pnAlt}</div>` : '';
-        return `
-            <div class="pn-card">
-                <div class="pn-desc"><span>${part.desc}</span></div>
-                <div class="pn-value-container">
-                    <div class="pn-main-row">
-                        <div>
-                            <div class="pn-value">${part.pn}</div>
-                            ${altPnHtml}
-                        </div>
-                        <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
-                    </div>
-                    <div class="pn-extra-info">
-                        <div><span style="color:var(--comment); font-weight:normal;">POS:</span> ${part.pos || '-'}</div>
-                        <div><span style="color:var(--comment); font-weight:normal;">ATA:</span> ${part.ata || '-'}</div>
-                        <div><span style="color:var(--comment); font-weight:normal;">CANT:</span> ${part.qty || '-'}</div>
-                    </div>
+        <div class="plane-selector-card">
+            <div class="selector-info">
+                <label>1. SELECCIONE EL AVIÓN Y MATRÍCULA</label>
+                <div class="selector-row">
+                    <select id="plane-select" onchange="loadSelectedPlane()" class="title-select">
+                        <option value="">-- ELIJA UNA MATRÍCULA --</option>
+                    </select>
+                    <span id="plane-eff-badge" class="badge-eff" style="display: none;"></span>
                 </div>
             </div>
-        `;
-    }
-
-    function resetView() {
-        currentLoadedReg = null;
-        currentZoneFilter = null;
-        clearSVGHighlights();
-        document.getElementById('plane-select').value = "";
-        document.getElementById('main-plane-area').style.display = 'none';
-        document.getElementById('welcome-area').style.display = 'block';
-        
-        localStorage.removeItem('saved_plane_reg');
-        localStorage.removeItem('saved_plane_filter');
-    }
-
-    function formatMatricula(input) {
-        let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
-        if (val.length > 2) input.value = val.substring(0, 2) + '-' + val.substring(2, 5); 
-        else input.value = val;
-    }
-
-    function deleteAvion() {
-        if (!isTeamLeader || !currentLoadedReg) return;
-        
-        const confirmacion = prompt(`⚠️ ATENCIÓN: Va a eliminar permanentemente el avión ${currentLoadedReg}.\n\nPara confirmar esta acción de forma segura, escriba la matrícula exacta a continuación:`);
-        
-        if (confirmacion === currentLoadedReg) {
-            const avionRef = ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}`);
-            set(avionRef, null).then(() => {
-                alert(`El avión ${currentLoadedReg} ha sido removido con éxito.`);
-                resetView();
-            }).catch(error => {
-                console.error("Error al eliminar avión: ", error);
-                alert("Ocurrió un error al intentar borrar el avión.");
-            });
-        } else if (confirmacion !== null) {
-            alert("❌ La matrícula ingresada no coincide. Operación cancelada por seguridad.");
-        }
-    }
-
-    function copyPN(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            const toast = document.getElementById("toast");
-            toast.className = "show";
-            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 2500);
-        });
-    }
-
-    function openAddModal() {
-        if (!isTeamLeader) return;
-        document.getElementById('modal-title').innerText = '✈️ AGREGAR NUEVO AVIÓN';
-        const regInput = document.getElementById('modal-reg');
-        regInput.value = '';
-        regInput.disabled = false;
-        
-        document.getElementById('components-container').innerHTML = '';
-        addComponentRow('', '', '', '', '', ''); 
-        
-        document.getElementById('avion-modal').style.display = 'block';
-    }
-
-    function openEditModal() {
-        if (!isTeamLeader || !currentLoadedReg) return;
-        
-        document.getElementById('modal-title').innerText = `✏️ EDITAR: ${currentLoadedReg}`;
-        const regInput = document.getElementById('modal-reg');
-        regInput.value = currentLoadedReg;
-        regInput.disabled = true; 
-        
-        const container = document.getElementById('components-container');
-        container.innerHTML = '';
-        
-        const parts = avionesDB[currentLoadedReg].parts || [];
-        if (parts.length === 0) {
-            addComponentRow('', '', '', '', '', '');
-        } else {
-            parts.forEach(p => addComponentRow(p.desc, p.pn, p.pnAlt || '', p.pos || '', p.ata || '', p.qty || ''));
-        }
-        
-        document.getElementById('avion-modal').style.display = 'block';
-    }
-
-    function addComponentRow(desc, pn, pnAlt, pos, ata, qty) {
-        const container = document.getElementById('components-container');
-        const row = document.createElement('div');
-        row.className = 'component-row-wrapper';
-        
-        const isFwd = pos === 'FWD' ? 'selected' : '';
-        const isMcd = pos === 'MCD' ? 'selected' : '';
-        const isAft = pos === 'AFT' ? 'selected' : '';
-        const isGen = pos === 'GENERAL' ? 'selected' : '';
-        const isOther = (!isFwd && !isMcd && !isAft && !isGen && pos !== '') ? `selected value="${pos}"` : '';
-
-        row.innerHTML = `
-            <div class="component-row-top">
-                <input type="text" class="part-desc" placeholder="DESCRIPCIÓN" list="descripciones-list" value="${desc}" style="flex: 2;">
-                <input type="text" class="part-pn" placeholder="P/N PRINCIPAL" list="pn-list" value="${pn}" style="flex: 1; font-weight:bold; color: var(--accent);">
-                <input type="text" class="part-pnalt" placeholder="P/N ALTERNATIVO" list="pn-list" value="${pnAlt}" style="flex: 1;">
+            <div class="selector-actions leader-only">
+                <button class="btn-leader" onclick="openPlaneModal(false)">➕ NUEVO AVIÓN</button>
+                <button class="btn-outline" id="btn-edit-plane" onclick="openPlaneModal(true)" style="display: none;">✏️ EDITAR EXCEPCIONES</button>
+                <button class="btn-danger-outline" id="btn-delete-plane" onclick="deleteAvion()" style="display: none;">🗑️ BORRAR</button>
             </div>
-            <div class="component-row-bottom">
-                <select class="part-pos" style="flex: 1;">
-                    <option value="">ZONA / POSICIÓN</option>
-                    <option value="FWD" ${isFwd}>FWD</option>
-                    <option value="MCD" ${isMcd}>MCD</option>
-                    <option value="AFT" ${isAft}>AFT</option>
-                    <option value="GENERAL" ${isGen}>GENERAL</option>
-                    ${isOther ? `<option ${isOther}>${pos}</option>` : ''}
-                </select>
-                <input type="text" class="part-ata" placeholder="ATA REF." list="ata-list" value="${ata}" style="flex: 1;">
-                <input type="text" class="part-qty" placeholder="CANTIDAD" value="${qty}" style="flex: 1;">
-                <button class="btn-remove-row" onclick="this.parentElement.parentElement.remove()" title="Eliminar fila">✖</button>
-            </div>
-        `;
-        container.appendChild(row);
-    }
+        </div>
 
-    function saveAvionData() {
-        if (!isTeamLeader) return;
-        const reg = document.getElementById('modal-reg').value.trim().toUpperCase();
-        if (!reg || reg.length !== 6) {
-            alert("La matrícula debe estar completa (ej: CC-BEM).");
-            return;
-        }
-
-        const rows = document.querySelectorAll('.component-row-wrapper');
-        let parts = [];
-        
-        rows.forEach(row => {
-            const desc = row.querySelector('.part-desc').value.trim().toUpperCase();
-            const pn = row.querySelector('.part-pn').value.trim().toUpperCase();
-            const pnAlt = row.querySelector('.part-pnalt').value.trim().toUpperCase();
-            const pos = row.querySelector('.part-pos').value.trim().toUpperCase();
-            const ata = row.querySelector('.part-ata').value.trim().toUpperCase();
-            const qty = row.querySelector('.part-qty').value.trim().toUpperCase();
+        <div id="main-plane-area" style="display: none;">
             
-            if (desc && pn) parts.push({ desc, pn, pnAlt, pos, ata, qty });
+            <div class="plane-svg-container">
+                <div style="text-align: center; font-size: 11px; font-weight: bold; color: var(--comment); margin-bottom: 5px;">2. SELECCIONE UNA ZONA DEL AVIÓN (OPCIONAL)</div>
+                <div id="plane-svg-wrapper" style="width: 100%; display: flex; justify-content: center; align-items: center; min-height: 150px; flex-direction: column;">
+                    <span style="color: var(--primary); font-weight: bold;">Cargando DWG A320... ✈️</span>
+                </div>
+            </div>
+            
+            <div id="zone-filter-alert"></div>
+            <div class="pn-grid" id="pn-grid-container"></div>
+        </div>
+
+        <div id="welcome-area" class="no-results">
+            Seleccione una matrícula en el menú superior para cargar el avión y sus componentes.
+        </div>
+    </div>
+
+    <div id="eff-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span style="color: var(--leader-color);">⚙️ GESTOR DE CATÁLOGOS</span>
+                <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto;">✖</button>
+            </div>
+            
+            <div style="margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 250px;">
+                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">SELECCIONAR CATÁLOGO:</label>
+                    <select id="modal-eff-select" onchange="loadEffIntoModal()" style="width: 100%;">
+                        <option value="">-- ELIJA UN CATÁLOGO --</option>
+                    </select>
+                </div>
+                <button class="btn-outline" onclick="renameCatalog()" style="height: 38px; padding: 0 15px;">✏️ EDITAR NOMBRE</button>
+                <button class="btn-leader" onclick="createNewCatalog()" style="height: 38px; padding: 0 15px;">✨ CREAR NUEVO</button>
+            </div>
+
+            <div id="eff-components-area" style="display: none;">
+                <p style="font-size: 11px; color: var(--comment); margin-top: 0; display:flex; justify-content:space-between; flex-wrap: wrap; gap: 10px;">
+                    <span><b>APP (APLICABILIDAD):</b> En blanco aplica a todos. Filtros permitidos ej: <code>015-018, 019-050</code>.</span>
+                    <span id="display-catalog-name" style="font-weight:bold; color:var(--primary);"></span>
+                </p>
+                
+                <div class="table-headers" id="eff-headers">
+                    <div class="col-desc">DESCRIPCIÓN</div>
+                    <div class="col-pn">P/N</div>
+                    <div class="col-pos">ZONA</div>
+                    <div class="col-ata">ATA</div>
+                    <div class="col-app">APLICABILIDAD (APP)</div>
+                    <div style="width: 30px;"></div>
+                </div>
+
+                <div id="eff-components-container"></div>
+
+                <button class="btn-outline" onclick="addComponentRow('eff-components-container', '', true, 'standard', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR NUEVA PIEZA</button>
+                
+                <div class="modal-footer">
+                    <button class="btn-danger-outline" onclick="deleteEfectividad()" style="margin-right: auto;">🗑️ ELIMINAR CATÁLOGO</button>
+                    <button class="btn-outline" onclick="closeModal('eff-modal')" style="padding: 10px 20px;">CANCELAR</button>
+                    <button class="btn-leader" onclick="saveEfectividadData()" style="padding: 10px 20px;">💾 GUARDAR CATÁLOGO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="avion-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-title" style="color: var(--leader-color);">✈️ AGREGAR / EDITAR AVIÓN</span>
+                <button onclick="closeModal('avion-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto;">✖</button>
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; background: var(--light-gray); padding: 15px; border-radius: 6px; align-items: center;">
+                <div>
+                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">MATRÍCULA:</label>
+                    <input type="text" id="modal-plane-reg" placeholder="EJ: CC-BEM" maxlength="6" oninput="formatMatricula(this)" style="width: 140px;">
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">EFECTIVIDAD DEL AVIÓN (EJ: 019):</label>
+                    <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="width: 180px; border-color: var(--leader-color) !important; background-color: #f0f4ff !important;">
+                </div>
+                <div style="flex:1; text-align:right; font-size:11px; color:var(--comment); min-width: 250px;">
+                    El sistema asociará automáticamente las piezas que cumplan el código de aplicabilidad configurado en el Gestor.
+                </div>
+            </div>
+
+            <div style="font-size: 11px; font-weight: bold; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">CONFIGURACIÓN RESULTANTE (HERENCIA + EXCEPCIONES):</div>
+            
+            <div class="table-headers" id="plane-headers">
+                <div class="col-desc">DESCRIPCIÓN</div>
+                <div class="col-pn">P/N</div>
+                <div class="col-pos">ZONA</div>
+                <div class="col-ata">ATA</div>
+                <div style="width: 30px;"></div>
+            </div>
+
+            <div id="plane-components-container"></div>
+
+            <button class="btn-outline" onclick="addComponentRow('plane-components-container', '', false, 'custom', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed; color: #4338ca; border-color: #c7d2fe;">+ AÑADIR PIEZA CUSTOM (SOLO ESTE AVIÓN)</button>
+            
+            <div class="modal-footer">
+                <button class="btn-outline" onclick="closeModal('avion-modal')" style="padding: 10px 20px;">CANCELAR</button>
+                <button class="btn-leader" onclick="savePlaneData()" style="padding: 10px 20px;">💾 GUARDAR AVIÓN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">✅ Acción realizada con éxito</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyADC1Wwcypek8g1gwOTcgqKskpqiTo0-oM",
+            authDomain: "programacion-diaria-3dddb.firebaseapp.com",
+            databaseURL: "https://programacion-diaria-3dddb-default-rtdb.firebaseio.com",
+            projectId: "programacion-diaria-3dddb",
+            storageBucket: "programacion-diaria-3dddb.firebasestorage.app",
+            messagingSenderId: "449926089536",
+            appId: "1:449926089536:web:052ba8ea546f4d39b708a5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        const flotaRef = ref(db, 'mantenimiento/pns_aviones');
+        const effRef = ref(db, 'mantenimiento/efectividades');
+
+        let flotaDB = {};
+        let efectividadesDB = {};
+        
+        let currentLoadedReg = null; 
+        let currentZoneFilter = null; 
+        let currentEditingCatalog = null;
+        let isTeamLeader = false;
+        let isInitialLoad = true; 
+
+        const correosAutorizados = [
+            "ndfuentesa@gmail.com", "nelson.fuentes@latam.com", "hector.vargas@latam.com",
+            "richard.shenk@latam.com", "pablo.monti@latam.com", "marco.santelices@latam.com",
+            "pamela.perezs@latam.com", "mauricio.munozv@latam.com", "claudio.saldias@latam.com",
+            "guido.contrerasG@latam.com"
+        ];
+        const SESSION_EXPIRATION_MS = 12 * 60 * 60 * 1000;
+        const GITHUB_SVG_URL = "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320.svg"; 
+
+        const generateId = () => 'p_' + Math.random().toString(36).substr(2, 9);
+        
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.innerText = msg;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        // --- SVG LOGIC ---
+        async function loadPlaneSVG() {
+            try {
+                const response = await fetch(GITHUB_SVG_URL);
+                if (!response.ok) throw new Error("SVG Network error");
+                const svgText = await response.text();
+                const wrapper = document.getElementById('plane-svg-wrapper');
+                wrapper.innerHTML = svgText;
+                const svgElement = wrapper.querySelector('svg');
+                if(svgElement) {
+                    svgElement.style.width = '100%'; svgElement.style.height = 'auto'; svgElement.style.maxHeight = '300px'; 
+                }
+                
+                // ACTUALIZACIÓN DE NOMBRES A: FWD, AFT, MCD_CENTRAL, MCD_LH, MCD_RH
+                ['FWD', 'AFT', 'MCD_CENTRAL', 'MCD_LH', 'MCD_RH'].forEach(zone => {
+                    const btn = document.getElementById(zone) || document.getElementById('btn-' + zone.toLowerCase().replace(/_/g, '-'));
+                    if (btn) {
+                        btn.classList.add('svg-group');
+                        btn.onclick = () => toggleZoneFilter(zone);
+                        btn.querySelectorAll('path, rect, polygon, circle, g').forEach(p => p.classList.add('svg-clickable'));
+                    }
+                });
+            } catch (error) {
+                document.getElementById('plane-svg-wrapper').innerHTML = `<div style="color: var(--danger); font-weight: bold; padding: 20px;">Error al cargar esquema A320.</div>`;
+            }
+        }
+        loadPlaneSVG();
+
+        // --- CLOCK ---
+        function updateClock() {
+            const now = new Date();
+            const local = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const utc = now.toLocaleTimeString('es-ES', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) clockEl.innerHTML = `<span style="color:var(--accent)">🌍 LOCAL: ${local}</span> <span style="color:var(--comment)">✈️ UTC: ${utc}</span>`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- AUTH ---
+        function checkSession() {
+            const savedEmail = localStorage.getItem('tl_email');
+            const loginTime = localStorage.getItem('tl_login_time');
+            if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && correosAutorizados.includes(savedEmail)) {
+                activateLeaderUI();
+            } else { deactivateLeaderUI(); }
+        }
+        checkSession();
+
+        function activateLeaderUI() {
+            isTeamLeader = true; document.body.classList.add('team-leader-mode');
+            const btnToggle = document.getElementById('btn-mode-toggle');
+            btnToggle.innerText = "MODO TEAM LEADER"; btnToggle.style.backgroundColor = "var(--leader-color)"; btnToggle.style.color = "white";
+        }
+
+        function deactivateLeaderUI() {
+            isTeamLeader = false; document.body.classList.remove('team-leader-mode');
+            const btnToggle = document.getElementById('btn-mode-toggle');
+            btnToggle.innerText = "MODO TÉCNICO"; btnToggle.style.backgroundColor = "var(--primary)"; btnToggle.style.color = "white";
+        }
+
+        function toggleMode() {
+            if (isTeamLeader) { deactivateLeaderUI(); } 
+            else {
+                if (localStorage.getItem('tl_email') && correosAutorizados.includes(localStorage.getItem('tl_email'))) { activateLeaderUI(); } 
+                else {
+                    const email = prompt("🔒 ACCESO TEAM LEADER\nIngrese correo corporativo:");
+                    if (!email) return; 
+                    const emailLower = email.trim().toLowerCase();
+                    if (correosAutorizados.includes(emailLower)) {
+                        localStorage.setItem('tl_email', emailLower); localStorage.setItem('tl_login_time', Date.now().toString());
+                        activateLeaderUI();
+                    } else alert("ACCESO DENEGADO.");
+                }
+            }
+        }
+        function logoutLeader() { localStorage.removeItem('tl_email'); localStorage.removeItem('tl_login_time'); deactivateLeaderUI(); }
+
+        // --- DATA LISTENERS ---
+        onValue(effRef, (snapshot) => {
+            efectividadesDB = snapshot.val() || {};
+            updateSelector();
+            if(currentLoadedReg) renderPlaneData();
         });
 
-        const avionRef = ref(db, `mantenimiento/pns_aviones/${reg}`);
-        set(avionRef, { reg: reg, parts: parts }).then(() => {
+        onValue(flotaRef, (snapshot) => {
+            flotaDB = snapshot.val() || {};
+            updateSelector();
+            
+            if (isInitialLoad) {
+                isInitialLoad = false;
+                const memorizedPlane = localStorage.getItem('saved_plane_reg');
+                if (memorizedPlane && flotaDB[memorizedPlane]) {
+                    document.getElementById('plane-select').value = memorizedPlane;
+                    currentLoadedReg = memorizedPlane;
+                    document.getElementById('welcome-area').style.display = 'none';
+                    document.getElementById('main-plane-area').style.display = 'block';
+                    renderPlaneData();
+                }
+            } else {
+                if (currentLoadedReg && flotaDB[currentLoadedReg]) renderPlaneData();
+                else if (currentLoadedReg && !flotaDB[currentLoadedReg]) resetView();
+            }
+        });
+
+        // =====================================================================
+        // --- MOTOR ESTRICTO E INFALIBLE DE APLICABILIDAD ---
+        // =====================================================================
+
+        function isEffectivityStrictlyValid(appCode) {
+            if (!appCode || appCode.trim() === '') return false;
+            const pEff = parseInt(appCode, 10);
+            if (isNaN(pEff)) return false;
+
+            let isRecognized = false;
+
+            const checkRule = (rule) => {
+                if (!rule || rule.trim() === '' || rule.toUpperCase() === 'ALL') return;
+                const ranges = rule.split(',');
+                for (let i = 0; i < ranges.length; i++) {
+                    const bounds = ranges[i].trim().split('-');
+                    if (bounds.length === 1) {
+                        const val = parseInt(bounds[0], 10);
+                        if (!isNaN(val) && val === pEff) isRecognized = true;
+                    } else if (bounds.length === 2) {
+                        const min = parseInt(bounds[0], 10);
+                        const max = parseInt(bounds[1], 10);
+                        if (!isNaN(min) && !isNaN(max) && pEff >= min && pEff <= max) isRecognized = true;
+                    }
+                }
+            };
+
+            Object.values(efectividadesDB).forEach(catalog => {
+                checkRule(catalog.catalogCode);
+                if (catalog.parts) {
+                    Object.values(catalog.parts).forEach(p => {
+                        checkRule(p.app);
+                    });
+                }
+            });
+
+            return isRecognized;
+        }
+
+        function isAppMatch(planeEffStr, partAppStr, catalogCodeStr) {
+            if (!planeEffStr || planeEffStr.trim() === '') return false;
+            const pEff = parseInt(planeEffStr, 10);
+            if (isNaN(pEff)) return false;
+
+            const matchesRule = (rule) => {
+                if (!rule || rule.trim() === '' || rule.toUpperCase() === 'ALL') return null; 
+                let explicitlyMatches = false;
+                let hasValidRanges = false;
+                
+                const ranges = rule.split(',');
+                for (let i = 0; i < ranges.length; i++) {
+                    const bounds = ranges[i].trim().split('-');
+                    if (bounds.length === 1) {
+                        const val = parseInt(bounds[0], 10);
+                        if (!isNaN(val)) {
+                            hasValidRanges = true;
+                            if (val === pEff) explicitlyMatches = true;
+                        }
+                    } else if (bounds.length === 2) {
+                        const min = parseInt(bounds[0], 10);
+                        const max = parseInt(bounds[1], 10);
+                        if (!isNaN(min) && !isNaN(max)) {
+                            hasValidRanges = true;
+                            if (pEff >= min && pEff <= max) explicitlyMatches = true;
+                        }
+                    }
+                }
+                return hasValidRanges ? explicitlyMatches : null;
+            };
+
+            const partMatch = matchesRule(partAppStr);
+            if (partMatch === true) return true;
+            if (partMatch === false) return false;
+
+            const catMatch = matchesRule(catalogCodeStr);
+            if (catMatch === true) return true;
+            if (catMatch === false) return false;
+
+            return true; 
+        }
+
+        function getMergedPlaneParts(reg) {
+            const plane = flotaDB[reg];
+            if (!plane) return [];
+            
+            if (!plane.appCode && plane.parts && Array.isArray(plane.parts)) {
+                return plane.parts.map(p => ({ id: generateId(), ...p, status: 'legacy', isBase: false }));
+            }
+
+            const planeAppCode = plane.appCode || ''; 
+            let baseParts = {};
+            const exceptions = plane.exceptions || {};
+            let merged = [];
+
+            if (planeAppCode !== '') {
+                if (!isEffectivityStrictlyValid(planeAppCode)) {
+                    Object.keys(exceptions).forEach(partId => {
+                        if (!exceptions[partId]._deleted) {
+                            merged.push({ id: partId, ...exceptions[partId], status: 'custom', isBase: false });
+                        }
+                    });
+                    merged._invalidEffectivity = true; 
+                    return merged;
+                }
+            }
+            
+            Object.values(efectividadesDB).forEach(catalog => {
+                if(catalog.parts) {
+                    Object.keys(catalog.parts).forEach(partId => {
+                        const p = catalog.parts[partId];
+                        if (isAppMatch(planeAppCode, p.app, catalog.catalogCode)) {
+                            baseParts[partId] = { ...p, _catalogSource: catalog.catalogCode };
+                        }
+                    });
+                }
+            });
+
+            Object.keys(baseParts).forEach(partId => {
+                const basePart = baseParts[partId];
+                if (exceptions[partId]) {
+                    if(!exceptions[partId]._deleted) {
+                        merged.push({ id: partId, ...basePart, ...exceptions[partId], status: 'exception', isBase: true });
+                    }
+                } else {
+                    merged.push({ id: partId, ...basePart, status: 'standard', isBase: true });
+                }
+            });
+            
+            Object.keys(exceptions).forEach(partId => {
+                if (!baseParts[partId] && !exceptions[partId]._deleted) {
+                    merged.push({ id: partId, ...exceptions[partId], status: 'custom', isBase: false });
+                }
+            });
+            
+            return merged;
+        }
+
+        // --- INTERFACE UPDATES ---
+        function updateSelector() {
+            const selectPlane = document.getElementById('plane-select');
+            const selectModalEff = document.getElementById('modal-eff-select');
+            const currentSelection = selectPlane.value;
+            const currentModalEff = selectModalEff.value;
+            
+            selectPlane.innerHTML = '<option value="">-- ELIJA UNA MATRÍCULA --</option>';
+            selectModalEff.innerHTML = '<option value="">-- ELIJA UN CATÁLOGO --</option>';
+            
+            Object.keys(flotaDB).sort().forEach(reg => {
+                selectPlane.add(new Option(`✈️ ${reg}`, reg));
+            });
+            if (currentSelection && flotaDB[currentSelection]) selectPlane.value = currentSelection;
+
+            Object.keys(efectividadesDB).sort().forEach(code => {
+                selectModalEff.add(new Option(`⚙️ ${code}`, code));
+            });
+            if (currentModalEff && efectividadesDB[currentModalEff]) selectModalEff.value = currentModalEff;
+
+            const descSet = new Set(); const pnSet = new Set(); const ataSet = new Set();
+            const scanPart = p => { if(p.desc) descSet.add(p.desc); if(p.pn) pnSet.add(p.pn); if(p.ata) ataSet.add(p.ata); };
+            
+            Object.values(efectividadesDB).forEach(e => Object.values(e.parts || {}).forEach(scanPart));
+            Object.values(flotaDB).forEach(a => {
+                let parts = getMergedPlaneParts(a.reg);
+                if (!parts._invalidEffectivity) parts.forEach(scanPart);
+            });
+
+            const fillDatalist = (id, set) => {
+                const dl = document.getElementById(id); dl.innerHTML = '';
+                Array.from(set).sort().forEach(v => { const o = document.createElement('option'); o.value = v; dl.appendChild(o); });
+            };
+            fillDatalist('descripciones-list', descSet); fillDatalist('pn-list', pnSet); fillDatalist('ata-list', ataSet);
+        }
+
+        window.loadSelectedPlane = function() {
+            const reg = document.getElementById('plane-select').value;
+            if (!reg) return resetView();
+            currentLoadedReg = reg; currentZoneFilter = null; 
+            document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
+            localStorage.setItem('saved_plane_reg', reg);
+            document.getElementById('welcome-area').style.display = 'none';
+            document.getElementById('main-plane-area').style.display = 'block';
+            
+            renderPlaneData();
+        }
+
+        window.toggleZoneFilter = function(zone) {
+            if (!currentLoadedReg) return;
+            const btn = document.getElementById(zone) || document.getElementById(`btn-${zone.toLowerCase().replace(/_/g, '-')}`);
+            document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
+            if (currentZoneFilter === zone) { currentZoneFilter = null; } 
+            else { currentZoneFilter = zone; if(btn) btn.classList.add('active-zone'); }
+            renderPlaneData();
+        }
+
+        function renderPlaneData() {
+            const plane = flotaDB[currentLoadedReg];
+            const badgeEl = document.getElementById('plane-eff-badge');
+            const alertZoneEl = document.getElementById('zone-filter-alert');
+            
+            // Actualizar visibilidad de botones de líder
+            const editBtn = document.getElementById('btn-edit-plane');
+            const delBtn = document.getElementById('btn-delete-plane');
+            if (editBtn) editBtn.style.display = 'inline-flex';
+            if (delBtn) delBtn.style.display = 'inline-flex';
+
+            if(plane && plane.appCode) {
+                badgeEl.innerText = `APP: ${plane.appCode}`;
+                badgeEl.style.display = 'inline-block';
+            } else {
+                badgeEl.style.display = 'none';
+            }
+            
+            const container = document.getElementById('pn-grid-container');
+            container.innerHTML = '';
+
+            let parts = getMergedPlaneParts(currentLoadedReg);
+            let warningHtml = '';
+            
+            if (parts._invalidEffectivity) {
+                warningHtml = `
+                    <div style="grid-column: 1/-1;" class="no-results">
+                        <span style="color:var(--danger); font-size:1.2em; font-weight:800;">⚠️ EFECTIVIDAD "${plane.appCode}" NO ES RECONOCIDA EN EL CATÁLOGO</span><br><br>
+                        Esta efectividad no está explícitamente autorizada en las reglas maestras. No se ha cargado ninguna pieza base.
+                    </div>
+                `;
+            }
+
+            if (currentZoneFilter) {
+                alertZoneEl.innerHTML = `<div style="background: var(--light-gray); padding: 10px 15px; border-radius: 4px; font-weight: bold; color: var(--accent); border: 1px solid var(--border); margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <span>🔍 FILTRO DE ZONA ACTIVO: ${currentZoneFilter}</span>
+                    <button onclick="toggleZoneFilter('${currentZoneFilter}')" style="height: 26px; padding: 0 10px; font-size: 10px; background: white; color: var(--primary); border: 1px solid var(--primary);">✖ QUITAR FILTRO</button>
+                </div>`;
+                parts = parts.filter(p => (p.pos || "").toUpperCase().includes(currentZoneFilter) || (p.desc || "").toUpperCase().includes(currentZoneFilter));
+            } else {
+                alertZoneEl.innerHTML = '';
+            }
+
+            if (parts.length === 0) {
+                container.innerHTML = warningHtml || `<div style="grid-column: 1/-1;" class="no-results">No se encontraron componentes aplicables a esta configuración/efectividad.</div>`;
+                return;
+            }
+
+            if (warningHtml) container.innerHTML += warningHtml;
+
+            parts.forEach(part => {
+                let badge = '';
+                if (part.status === 'exception') badge = `<span class="badge badge-exception">⚠️ MODIFICADO</span>`;
+                else if (part.status === 'custom') badge = `<span class="badge badge-custom">➕ CUSTOM</span>`;
+
+                const cardClass = part.status === 'exception' ? 'card-exception' : (part.status === 'custom' ? 'card-custom' : '');
+                
+                container.innerHTML += `
+                    <div class="pn-card ${cardClass}">
+                        <div class="pn-desc"><span>${part.desc}</span> ${badge}</div>
+                        <div class="pn-value-container">
+                            <div class="pn-main-row">
+                                <div class="pn-value">${part.pn}</div>
+                                <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
+                            </div>
+                            <div class="pn-extra-info">
+                                <div><span style="color:var(--comment); font-weight:normal;">ZONA:</span> ${part.pos || '-'}</div>
+                                <div><span style="color:var(--comment); font-weight:normal;">ATA:</span> ${part.ata || '-'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function resetView() {
+            currentLoadedReg = null; currentZoneFilter = null;
+            document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
+            document.getElementById('plane-select').value = "";
+            document.getElementById('main-plane-area').style.display = 'none';
+            document.getElementById('welcome-area').style.display = 'block';
+            
+            document.getElementById('btn-edit-plane').style.display = 'none';
+            document.getElementById('btn-delete-plane').style.display = 'none';
+            document.getElementById('plane-eff-badge').style.display = 'none';
+            document.getElementById('zone-filter-alert').innerHTML = '';
+            
+            localStorage.removeItem('saved_plane_reg');
+        }
+
+        // --- GESTOR DE CATÁLOGOS ---
+        window.openEffManager = function() {
+            if (!isTeamLeader) return;
+            document.getElementById('eff-components-area').style.display = 'none';
+            document.getElementById('eff-modal').style.display = 'block';
+        }
+
+        window.createNewCatalog = function() {
+            const name = prompt("Ingrese nombre para el nuevo Catálogo:");
+            if(!name) return;
+            const code = name.trim().toUpperCase();
+            if(efectividadesDB[code]) return alert("Ese catálogo ya existe.");
+            
+            set(ref(db, `mantenimiento/efectividades/${code}`), { catalogCode: code, parts: {} }).then(() => {
+                showToast("Catálogo Creado");
+                document.getElementById('modal-eff-select').value = code;
+                loadEffIntoModal(code);
+            });
+        }
+
+        window.renameCatalog = function() {
+            if(!currentEditingCatalog) return alert("Seleccione un catálogo primero.");
+            const name = prompt(`Modificar identificador para el catálogo ${currentEditingCatalog}:`, currentEditingCatalog);
+            if(!name) return;
+            const newCode = name.trim().toUpperCase();
+            if(newCode === currentEditingCatalog) return;
+            if(efectividadesDB[newCode]) return alert("Ese código de catálogo ya existe.");
+
+            if(confirm(`¿Confirmar cambio de nombre de "${currentEditingCatalog}" a "${newCode}"?`)) {
+                const oldRef = ref(db, `mantenimiento/efectividades/${currentEditingCatalog}`);
+                const newRef = ref(db, `mantenimiento/efectividades/${newCode}`);
+                const data = efectividadesDB[currentEditingCatalog];
+                data.catalogCode = newCode;
+                
+                set(newRef, data).then(() => {
+                    set(oldRef, null).then(() => {
+                        showToast("Catálogo Renombrado");
+                        currentEditingCatalog = newCode;
+                        updateSelector();
+                        document.getElementById('modal-eff-select').value = newCode;
+                        loadEffIntoModal(newCode);
+                    });
+                });
+            }
+        }
+
+        window.loadEffIntoModal = function(overrideCode = null) {
+            const code = overrideCode || document.getElementById('modal-eff-select').value;
+            if(!code) {
+                document.getElementById('eff-components-area').style.display = 'none';
+                return;
+            }
+            currentEditingCatalog = code;
+            
+            const container = document.getElementById('eff-components-container');
+            container.innerHTML = '';
+            
+            const eff = efectividadesDB[code];
+            if (eff && eff.parts) {
+                Object.keys(eff.parts).forEach(id => {
+                    const p = eff.parts[id];
+                    addComponentRow('eff-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.app, code);
+                });
+            }
+            document.getElementById('eff-components-area').style.display = 'block';
+            document.getElementById('display-catalog-name').innerText = "CATÁLOGO ACTIVO: " + code;
+        }
+
+        window.saveEfectividadData = function() {
+            if(!currentEditingCatalog) return;
+            const rows = document.getElementById('eff-components-container').querySelectorAll('.component-row-wrapper');
+            let partsData = {};
+            
+            rows.forEach(row => {
+                const id = row.dataset.id || generateId();
+                const desc = row.querySelector('.part-desc').value.trim().toUpperCase();
+                const pn = row.querySelector('.part-pn').value.trim().toUpperCase();
+                if (desc && pn) {
+                    partsData[id] = {
+                        desc, pn, 
+                        pos: row.querySelector('.part-pos').value.trim().toUpperCase(),
+                        ata: row.querySelector('.part-ata').value.trim().toUpperCase(),
+                        app: row.querySelector('.part-app').value.trim().toUpperCase()
+                    };
+                }
+            });
+            
+            set(ref(db, `mantenimiento/efectividades/${currentEditingCatalog}`), { catalogCode: currentEditingCatalog, parts: partsData }).then(() => {
+                showToast("Catálogo Guardado");
+                closeModal('eff-modal');
+                if(currentLoadedReg) loadSelectedPlane(); 
+            });
+        }
+
+        window.deleteEfectividad = function() {
+            if(!currentEditingCatalog) return;
+            if(confirm(`⚠️ ¿Eliminar el catálogo ${currentEditingCatalog}?`)) {
+                set(ref(db, `mantenimiento/efectividades/${currentEditingCatalog}`), null).then(() => {
+                    showToast("Catálogo Eliminado"); closeModal('eff-modal');
+                    currentEditingCatalog = null;
+                });
+            }
+        }
+
+        window.handleEffChange = function() {
+            const input = document.getElementById('modal-plane-appcode');
+            
+            let val = input.value.replace(/[^0-9]/g, '');
+            if(val !== '') val = val.padStart(3, '0');
+            input.value = val;
+            
+            const appCode = val;
+            const container = document.getElementById('plane-components-container');
+            
+            let currentCustoms = [];
+            container.querySelectorAll('.component-row-wrapper').forEach(row => {
+                if (row.dataset.status === 'custom') {
+                    const desc = row.querySelector('.part-desc').value.trim().toUpperCase();
+                    const pn = row.querySelector('.part-pn').value.trim().toUpperCase();
+                    const pos = row.querySelector('.part-pos').value.trim().toUpperCase();
+                    const ata = row.querySelector('.part-ata').value.trim().toUpperCase();
+                    if (desc || pn) currentCustoms.push({ id: row.dataset.id, desc, pn, pos, ata });
+                }
+            });
+
+            container.innerHTML = '';
+            let count = 0;
+
+            if (appCode !== '') {
+                if (!isEffectivityStrictlyValid(appCode)) {
+                    alert(`⚠️ AVISO: La efectividad "${appCode}" NO es reconocida formalmente en los catálogos maestros.\nEl avión quedará en blanco y no heredará piezas del estándar.`);
+                    showToast("Efectividad Bloqueada");
+                } else {
+                    Object.values(efectividadesDB).forEach(catalog => {
+                        const parts = catalog.parts || {};
+                        Object.keys(parts).forEach(id => {
+                            const p = parts[id];
+                            if(isAppMatch(appCode, p.app, catalog.catalogCode)) {
+                                addComponentRow('plane-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.app, catalog.catalogCode);
+                                count++;
+                            }
+                        });
+                    });
+                }
+            }
+
+            currentCustoms.forEach(c => {
+                 addComponentRow('plane-components-container', c.id, false, 'custom', c.desc, c.pn, c.pos, c.ata, '', null);
+            });
+
+            if (count > 0) {
+                showToast(`Herencia aplicada: ${count} piezas vinculadas.`);
+            }
+        }
+
+        // --- COMPONENT ROWS GENERATOR ---
+        window.addComponentRow = function(containerId, id, isBase, status, desc, pn, pos, ata, app, catalogSource) {
+            const container = document.getElementById(containerId);
+            const row = document.createElement('div');
+            if(!id) id = generateId();
+            
+            row.className = `component-row-wrapper ${status === 'exception' ? 'row-exception' : ''}`;
+            row.dataset.id = id; row.dataset.isBase = isBase; row.dataset.status = status;
+            if(catalogSource) row.dataset.catalogSource = catalogSource;
+            
+            const isFwd = pos === 'FWD' ? 'selected' : '';
+            const isAft = pos === 'AFT' ? 'selected' : '';
+            const isMdcCentral = pos === 'MCD_CENTRAL' ? 'selected' : '';
+            const isMcdLh = pos === 'MCD_LH' ? 'selected' : '';
+            const isMcdRh = pos === 'MCD_RH' ? 'selected' : '';
+            const isOther = (!isFwd && !isAft && !isMdcCentral && !isMcdLh && !isMcdRh && pos !== '') ? `selected value="${pos}"` : '';
+
+            let overrideHtml = '';
+            const isPlaneModal = containerId === 'plane-components-container';
+            
+            // LA COLUMNA APP SE OMITE EN EL MODAL DEL AVIÓN SEGÚN LO SOLICITADO
+            let appInputHtml = isPlaneModal ? '' : `<input type="text" class="part-app col-app" placeholder="APP" value="${app || ''}">`;
+
+            if (isPlaneModal && status === 'exception') {
+                overrideHtml = `
+                    <div class="override-controls">
+                        <span style="font-size:10px; color:var(--warning); margin-right:auto; font-weight:bold;">⚠️ EXCEPCIÓN LOCAL</span>
+                        <button class="btn-action-small" onclick="revertRowToStandard(this)">↺ REVERTIR AL ESTÁNDAR</button>
+                        <button class="btn-action-small" style="background: var(--primary); color:white;" onclick="forceUpdateStandard(this)">⬆️ FORZAR A FLOTA</button>
+                    </div>`;
+            } else if (isPlaneModal && status === 'custom') {
+                 overrideHtml = `<div class="override-controls"><span style="font-size:10px; color:#4338ca; font-weight:bold;">➕ PIEZA CUSTOM (No existe en catálogo)</span></div>`;
+            }
+
+            row.innerHTML = `
+                <div class="component-row-main">
+                    <input type="text" class="part-desc col-desc" placeholder="DESC" list="descripciones-list" value="${desc || ''}">
+                    <input type="text" class="part-pn col-pn" placeholder="P/N" list="pn-list" value="${pn || ''}">
+                    
+                    <select class="part-pos col-pos">
+                        <option value="">ZONA</option>
+                        <option value="FWD" ${isFwd}>FWD</option>
+                        <option value="AFT" ${isAft}>AFT</option>
+                        <option value="MCD_CENTRAL" ${isMdcCentral}>MCD_CENTRAL</option>
+                        <option value="MCD_LH" ${isMcdLh}>MCD_LH</option>
+                        <option value="MCD_RH" ${isMcdRh}>MCD_RH</option>
+                        ${isOther ? `<option ${isOther}>${pos}</option>` : ''}
+                    </select>
+                    
+                    <input type="text" class="part-ata col-ata" placeholder="ATA" list="ata-list" value="${ata || ''}">
+                    ${appInputHtml}
+                    
+                    <button class="btn-remove-row" onclick="this.parentElement.parentElement.remove()" title="Eliminar">✖</button>
+                </div>
+                ${overrideHtml}
+            `;
+            container.appendChild(row);
+            
+            if (isPlaneModal && isBase && status === 'standard') {
+                const inputs = row.querySelectorAll('input:not(.part-app), select');
+                inputs.forEach(input => {
+                    input.addEventListener('change', function() {
+                        row.classList.add('row-exception');
+                        row.dataset.status = 'exception';
+                    }, {once: true});
+                });
+            }
+        }
+
+        // --- REVERT & FORCE ---
+        window.revertRowToStandard = function(btn) {
+            const row = btn.closest('.component-row-wrapper');
+            const catalogCode = row.dataset.catalogSource;
+            if(!catalogCode || !efectividadesDB[catalogCode]) return;
+
+            const basePart = efectividadesDB[catalogCode].parts[row.dataset.id];
+            if (basePart) {
+                row.querySelector('.part-desc').value = basePart.desc || '';
+                row.querySelector('.part-pn').value = basePart.pn || '';
+                row.querySelector('.part-pos').value = basePart.pos || '';
+                row.querySelector('.part-ata').value = basePart.ata || '';
+                row.classList.remove('row-exception');
+                row.dataset.status = 'standard';
+                const controls = row.querySelector('.override-controls');
+                if (controls) controls.remove();
+            }
+        }
+
+        window.forceUpdateStandard = async function(btn) {
+            if(!confirm("⚠️ ¿Modificar el Catálogo Maestro y sincronizar la flota con este P/N?")) return;
+            
+            const row = btn.closest('.component-row-wrapper');
+            const catalogCode = row.dataset.catalogSource;
+            if(!catalogCode) return alert("Error de origen.");
+            const id = row.dataset.id;
+            
+            // Si la columna APP existe se rescata, de lo contrario se deja su valor original del catálogo.
+            const appEl = row.querySelector('.part-app');
+            const baseApp = efectividadesDB[catalogCode].parts[id]?.app || '';
+            
+            const newData = {
+                desc: row.querySelector('.part-desc').value.trim().toUpperCase(),
+                pn: row.querySelector('.part-pn').value.trim().toUpperCase(),
+                pos: row.querySelector('.part-pos').value.trim().toUpperCase(),
+                ata: row.querySelector('.part-ata').value.trim().toUpperCase(),
+                app: appEl ? appEl.value.trim().toUpperCase() : baseApp
+            };
+
+            await set(ref(db, `mantenimiento/efectividades/${catalogCode}/parts/${id}`), newData);
+            
+            const reg = document.getElementById('modal-plane-reg').value.trim().toUpperCase();
+            if (flotaDB[reg] && flotaDB[reg].exceptions && flotaDB[reg].exceptions[id]) {
+                await set(ref(db, `mantenimiento/pns_aviones/${reg}/exceptions/${id}`), null);
+            }
+            showToast("Catálogo Sincronizado");
             closeModal('avion-modal');
-            document.getElementById('plane-select').value = reg;
-            loadSelectedPlane(); 
-        }).catch(error => {
-            console.error("Error guardando datos: ", error);
-            alert("Hubo un error al guardar los datos.");
-        });
-    }
+        }
 
-    function closeModal(modalId) { 
-        document.getElementById(modalId).style.display = 'none'; 
-    }
+        // --- SAVE & DELETE ---
+        window.savePlaneData = function() {
+            if (!isTeamLeader) return;
+            const reg = document.getElementById('modal-plane-reg').value.trim().toUpperCase();
+            if (!reg || reg.length !== 6) return alert("Matrícula inválida.");
 
-    Object.assign(window, {
-        formatMatricula, loadSelectedPlane, toggleZoneFilter, openAddModal, openEditModal, 
-        addComponentRow, saveAvionData, closeModal, copyPN, toggleMode, logoutLeader, deleteAvion
-    });
+            const appCode = document.getElementById('modal-plane-appcode').value.trim();
+            const rows = document.getElementById('plane-components-container').querySelectorAll('.component-row-wrapper');
+            
+            let exceptions = {};
+            let expectedBaseParts = {};
+            
+            if (appCode !== '') {
+                if (isEffectivityStrictlyValid(appCode)) {
+                    Object.values(efectividadesDB).forEach(catalog => {
+                        if(catalog.parts) {
+                            Object.keys(catalog.parts).forEach(partId => {
+                                if(isAppMatch(appCode, catalog.parts[partId].app, catalog.catalogCode)) {
+                                    expectedBaseParts[partId] = catalog.parts[partId];
+                                }
+                            });
+                        }
+                    });
+                }
+            }
 
-</script>
+            const rowsInDom = new Set();
+
+            rows.forEach(row => {
+                const id = row.dataset.id;
+                const isBase = row.dataset.isBase === 'true';
+                const desc = row.querySelector('.part-desc').value.trim().toUpperCase();
+                const pn = row.querySelector('.part-pn').value.trim().toUpperCase();
+                const pos = row.querySelector('.part-pos').value.trim().toUpperCase();
+                const ata = row.querySelector('.part-ata').value.trim().toUpperCase();
+                
+                if (!desc || !pn) return;
+                const currentData = { desc, pn, pos, ata };
+                rowsInDom.add(id);
+
+                if (isBase) {
+                    if (expectedBaseParts[id]) {
+                        const base = expectedBaseParts[id];
+                        if (base.desc !== desc || base.pn !== pn || base.pos !== pos || base.ata !== ata) {
+                            exceptions[id] = currentData;
+                        }
+                    }
+                } else { 
+                    exceptions[id] = currentData; 
+                }
+            });
+
+            Object.keys(expectedBaseParts).forEach(baseId => {
+                if (!rowsInDom.has(baseId)) exceptions[baseId] = { _deleted: true }; 
+            });
+
+            set(ref(db, `mantenimiento/pns_aviones/${reg}`), { reg, appCode, exceptions }).then(() => {
+                closeModal('avion-modal');
+                document.getElementById('plane-select').value = reg;
+                loadSelectedPlane(); 
+                showToast("Avión Guardado Correctamente");
+            });
+        }
+
+        window.openPlaneModal = function(isEdit = false) {
+            if (!isTeamLeader) return;
+            const regInput = document.getElementById('modal-plane-reg');
+            const appCodeInput = document.getElementById('modal-plane-appcode');
+            const container = document.getElementById('plane-components-container');
+            container.innerHTML = '';
+            
+            if (isEdit && currentLoadedReg) {
+                regInput.value = currentLoadedReg; regInput.disabled = true;
+                const plane = flotaDB[currentLoadedReg];
+                
+                if(plane.appCode) {
+                    let val = plane.appCode.replace(/[^0-9]/g, '');
+                    appCodeInput.value = val ? val.padStart(3, '0') : '';
+                } else {
+                    appCodeInput.value = '';
+                }
+                
+                const mergedParts = getMergedPlaneParts(currentLoadedReg);
+                mergedParts.forEach(p => {
+                    addComponentRow('plane-components-container', p.id, p.isBase, p.status, p.desc, p.pn, p.pos, p.ata, p.app, p._catalogSource);
+                });
+            } else {
+                regInput.value = ''; regInput.disabled = false;
+                appCodeInput.value = '';
+                addComponentRow('plane-components-container', generateId(), false, 'custom', '', '', '', '', '', null);
+            }
+            document.getElementById('modal-title').innerText = isEdit ? `✏️ EDITAR EXCEPCIONES: ${currentLoadedReg}` : '✈️ AGREGAR AVIÓN';
+            document.getElementById('avion-modal').style.display = 'block';
+        }
+
+        window.deleteAvion = function() {
+            if (!isTeamLeader || !currentLoadedReg) return;
+            if (prompt(`⚠️ Eliminar ${currentLoadedReg}.\nEscriba la matrícula para confirmar:`) === currentLoadedReg) {
+                set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}`), null).then(() => {
+                    showToast("Avión Eliminado"); resetView();
+                });
+            }
+        }
+        
+        window.formatMatricula = function(input) {
+            let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
+            if (val.length > 2) input.value = val.substring(0, 2) + '-' + val.substring(2, 5); else input.value = val;
+        }
+        window.copyPN = function(text) { navigator.clipboard.writeText(text).then(() => showToast("📋 Copiado al Portapapeles")); }
+        window.closeModal = function(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        window.toggleMode = toggleMode; window.logoutLeader = logoutLeader;
+    </script>
 </body>
-</html> 
+</html>
