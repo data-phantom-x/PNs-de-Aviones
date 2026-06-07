@@ -280,7 +280,7 @@
 
         <div class="plane-selector-card">
             <div class="selector-info">
-                <label>1. SELECCIONE EL AVIÓN Y MATRÍCULA</label>
+                <label>1. SELECCIONE EL AVIÓN</label>
                 <div class="selector-row">
                     <select id="plane-select" onchange="loadSelectedPlane()" class="title-select">
                         <option value="">-- ELIJA UNA MATRÍCULA --</option>
@@ -290,7 +290,7 @@
             </div>
             <div class="selector-actions leader-only">
                 <button class="btn-leader" onclick="openPlaneModal(false)">➕ NUEVO AVIÓN</button>
-                <button class="btn-outline" id="btn-edit-plane" onclick="openPlaneModal(true)" style="display: none;">✏️ EDITAR EXCEPCIONES</button>
+                <button class="btn-outline" id="btn-edit-plane" onclick="openPlaneModal(true)" style="display: none;">✏️ EDITAR</button>
                 <button class="btn-danger-outline" id="btn-delete-plane" onclick="deleteAvion()" style="display: none;">🗑️ BORRAR</button>
             </div>
         </div>
@@ -316,24 +316,24 @@
     <div id="eff-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span style="color: var(--leader-color);">⚙️ GESTOR DE CATÁLOGOS</span>
+                <span style="color: var(--leader-color);">⚙️ GESTOR DE EFECTIVIDADES</span>
                 <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto;">✖</button>
             </div>
             
             <div style="margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 250px;">
-                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">SELECCIONAR CATÁLOGO:</label>
+                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">SELECCIONAR CATÁLOGO DE EFECTIVIDAD:</label>
                     <select id="modal-eff-select" onchange="loadEffIntoModal()" style="width: 100%;">
                         <option value="">-- ELIJA UN CATÁLOGO --</option>
                     </select>
                 </div>
                 <button class="btn-outline" onclick="renameCatalog()" style="height: 38px; padding: 0 15px;">✏️ EDITAR NOMBRE</button>
-                <button class="btn-leader" onclick="createNewCatalog()" style="height: 38px; padding: 0 15px;">✨ CREAR NUEVO</button>
+                <button class="btn-leader" onclick="createNewCatalog()" style="height: 38px; padding: 0 15px;">➕ CREAR NUEVO</button>
             </div>
 
             <div id="eff-components-area" style="display: none;">
                 <p style="font-size: 11px; color: var(--comment); margin-top: 0; display:flex; justify-content:space-between; flex-wrap: wrap; gap: 10px;">
-                    <span><b>APP (APLICABILIDAD):</b> En blanco aplica a todos. Filtros permitidos ej: <code>015-018, 019-050</code>.</span>
+                    <span><b>APLICABILIDAD:</b> En blanco aplica a todos. Filtros permitidos ej: <code>015-018, 019-050</code>.</span>
                     <span id="display-catalog-name" style="font-weight:bold; color:var(--primary);"></span>
                 </p>
                 
@@ -342,7 +342,7 @@
                     <div class="col-pn">P/N</div>
                     <div class="col-pos">ZONA</div>
                     <div class="col-ata">ATA</div>
-                    <div class="col-app">APLICABILIDAD (APP)</div>
+                    <div class="col-app">APLICABILIDAD</div>
                     <div style="width: 30px;"></div>
                 </div>
 
@@ -777,7 +777,7 @@
                 warningHtml = `
                     <div style="grid-column: 1/-1;" class="no-results">
                         <span style="color:var(--danger); font-size:1.2em; font-weight:800;">⚠️ EFECTIVIDAD "${plane.appCode}" NO ES RECONOCIDA EN EL CATÁLOGO</span><br><br>
-                        Esta efectividad no está explícitamente autorizada en las reglas maestras. No se ha cargado ninguna pieza base.
+                        Esta efectividad no está explícitamente autorizada. No se ha cargado ninguna pieza.
                     </div>
                 `;
             }
@@ -969,7 +969,7 @@
 
             if (appCode !== '') {
                 if (!isEffectivityStrictlyValid(appCode)) {
-                    alert(`⚠️ AVISO: La efectividad "${appCode}" NO es reconocida formalmente en los catálogos maestros.\nEl avión quedará en blanco y no heredará piezas del estándar.`);
+                    alert(`⚠️ AVISO: La efectividad "${appCode}" NO es reconocida formalmente en el catálogo de efectividades.\nEl avión quedará en blanco y no heredará piezas del catálogo.`);
                     showToast("Efectividad Bloqueada");
                 } else {
                     Object.values(efectividadesDB).forEach(catalog => {
