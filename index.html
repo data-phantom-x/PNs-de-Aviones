@@ -59,13 +59,7 @@
             flex-wrap: wrap; gap: 15px;
         }
 
-        .top-bar-left { display: flex; gap: 10px; flex-wrap: wrap; }
-
-        .live-clock {
-            display: flex; gap: 12px; font-size: 11px; font-weight: bold;
-            background: white; padding: 0 15px; border-radius: 4px; border: 1px solid var(--border);
-            align-items: center; justify-content: center; height: 34px; box-sizing: border-box;
-        }
+        .top-bar-left { display: flex; gap: 10px; flex-wrap: wrap; width: 100%; }
 
         body:not(.team-leader-mode) .leader-only { display: none !important; }
 
@@ -149,7 +143,7 @@
         .badge-custom { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
         .badge-app { background: var(--primary); color: white; border-radius: 20px; padding: 2px 8px; font-size: 10px; }
 
-        .pn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
+        .pn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
 
         .pn-card {
             border: 1px solid var(--border); border-radius: 6px; background: white;
@@ -195,9 +189,15 @@
             background-color: white; margin: 3% auto; padding: 25px;
             border: none; width: 95%; max-width: 1000px; border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;
+            box-sizing: border-box;
         }
         .modal-header { font-weight: 800; font-size: 1.2em; margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         
+        /* Flex Layouts Modales para Responsividad */
+        .modal-form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; background: var(--light-gray); padding: 15px; border-radius: 6px; align-items: flex-end; }
+        .modal-form-group { flex: 1; min-width: 200px; }
+        .modal-form-group input, .modal-form-group select { width: 100% !important; box-sizing: border-box; }
+
         /* DISEÑO DE TABLA EXCEL */
         .table-headers {
             display: flex; gap: 8px; font-size: 10px; font-weight: bold; color: var(--comment);
@@ -233,18 +233,38 @@
         }
         #toast.show { visibility: visible; opacity: 1; }
 
+        /* REGLAS RESPONSIVAS PARA MÓVILES */
         @media (max-width: 800px) {
-            .table-headers { display: none; }
-            .component-row-main { flex-direction: column; gap: 8px; align-items: stretch; background: white; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
-            .col-desc, .col-pn, .col-pos, .col-ata, .col-app { width: 100% !important; flex: none !important; margin: 0 !important; }
-            .btn-remove-row { width: 100%; height: 38px; margin-top: 5px; }
-            .component-row-wrapper { padding: 10px; background: var(--light-gray); }
-            
+            body { padding: 10px; }
+            .container { padding: 15px; }
+
+            .top-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .top-bar-left { flex-direction: column; width: 100%; }
+            .top-bar-left button { width: 100%; }
+
+            .main-header-wrapper { flex-direction: column; justify-content: center; text-align: center; }
+            .logo-container { width: 100px; margin: 0 auto; }
+            .document-header { margin-top: 15px; font-size: 1.2rem; }
+            .header-spacer { display: none; }
+
             .plane-selector-card { flex-direction: column; align-items: stretch; }
+            .selector-info { min-width: 100%; }
+            .title-select { max-width: 100%; }
             .selector-actions { flex-direction: column; width: 100%; }
             .selector-actions button { width: 100%; margin: 0 !important; }
-            .header-spacer { display: none; }
-            .document-header { margin-top: 15px; }
+            
+            .pn-grid { grid-template-columns: 1fr; }
+
+            .table-headers { display: none; }
+            .component-row-main { flex-direction: column; gap: 8px; align-items: stretch; background: white; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
+            .col-desc, .col-pn, .col-pos, .col-ata, .col-app { width: 100% !important; flex: none !important; margin: 0 !important; box-sizing: border-box; }
+            .btn-remove-row { width: 100%; height: 38px; margin-top: 5px; }
+            .component-row-wrapper { padding: 10px; background: var(--light-gray); }
+
+            .modal-content { width: 95%; padding: 15px; margin: 5% auto; }
+            .modal-footer button { width: 100%; }
+            .override-controls { flex-direction: column; align-items: stretch; }
+            .override-controls button { width: 100%; }
         }
     </style>
 </head>
@@ -260,7 +280,6 @@
                 <button type="button" class="btn-outline leader-only" onclick="openEffManager()" style="background-color: white; color: var(--primary); border-color: var(--primary);">⚙️ GESTOR DE CATÁLOGOS</button>
                 <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="background-color: var(--danger); color:white; border:none;">CERRAR SESIÓN</button>
             </div>
-            <div id="live-clock" class="live-clock"></div>
         </div>
 
         <div class="main-header-wrapper">
@@ -320,10 +339,10 @@
                 <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto;">✖</button>
             </div>
             
-            <div style="margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 250px;">
+            <div class="modal-form-row">
+                <div class="modal-form-group">
                     <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">SELECCIONAR CATÁLOGO DE EFECTIVIDAD:</label>
-                    <select id="modal-eff-select" onchange="loadEffIntoModal()" style="width: 100%;">
+                    <select id="modal-eff-select" onchange="loadEffIntoModal()">
                         <option value="">-- ELIJA UN CATÁLOGO --</option>
                     </select>
                 </div>
@@ -366,14 +385,14 @@
                 <button onclick="closeModal('avion-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto;">✖</button>
             </div>
             
-            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; background: var(--light-gray); padding: 15px; border-radius: 6px; align-items: center;">
-                <div>
+            <div class="modal-form-row">
+                <div class="modal-form-group">
                     <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">MATRÍCULA:</label>
-                    <input type="text" id="modal-plane-reg" placeholder="EJ: CC-BEM" maxlength="6" oninput="formatMatricula(this)" style="width: 140px;">
+                    <input type="text" id="modal-plane-reg" placeholder="EJ: CC-BEM" maxlength="6" oninput="formatMatricula(this)">
                 </div>
-                <div>
+                <div class="modal-form-group">
                     <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">EFECTIVIDAD DEL AVIÓN (EJ: 019):</label>
-                    <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="width: 180px; border-color: var(--leader-color) !important; background-color: #f0f4ff !important;">
+                    <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="border-color: var(--leader-color) !important; background-color: #f0f4ff !important;">
                 </div>
                 <div style="flex:1; text-align:right; font-size:11px; color:var(--comment); min-width: 250px;">
                     El sistema asociará automáticamente las piezas que cumplan el código de aplicabilidad configurado en el Gestor.
@@ -463,9 +482,10 @@
                     svgElement.style.width = '100%'; svgElement.style.height = 'auto'; svgElement.style.maxHeight = '300px'; 
                 }
                 
-                // ACTUALIZACIÓN DE NOMBRES A: FWD, AFT, MCD_CENTRAL, MCD_LH, MCD_RH
-                ['FWD', 'AFT', 'MCD_CENTRAL', 'MCD_LH', 'MCD_RH'].forEach(zone => {
-                    const btn = document.getElementById(zone) || document.getElementById('btn-' + zone.toLowerCase().replace(/_/g, '-'));
+                // MAPEAMOS EL NOMBRE WEB (CON ESPACIOS) AL ID DE INKSCAPE (CON GUION BAJO)
+                ['FWD', 'AFT', 'MCD CENTRAL', 'MCD LH', 'MCD RH'].forEach(zone => {
+                    const inkscapeId = zone.replace(/ /g, '_');
+                    const btn = document.getElementById(inkscapeId) || document.getElementById('btn-' + zone.toLowerCase().replace(/ /g, '-'));
                     if (btn) {
                         btn.classList.add('svg-group');
                         btn.onclick = () => toggleZoneFilter(zone);
@@ -477,17 +497,6 @@
             }
         }
         loadPlaneSVG();
-
-        // --- CLOCK ---
-        function updateClock() {
-            const now = new Date();
-            const local = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const utc = now.toLocaleTimeString('es-ES', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const clockEl = document.getElementById('live-clock');
-            if (clockEl) clockEl.innerHTML = `<span style="color:var(--accent)">🌍 LOCAL: ${local}</span> <span style="color:var(--comment)">✈️ UTC: ${utc}</span>`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
 
         // --- AUTH ---
         function checkSession() {
@@ -742,7 +751,7 @@
 
         window.toggleZoneFilter = function(zone) {
             if (!currentLoadedReg) return;
-            const btn = document.getElementById(zone) || document.getElementById(`btn-${zone.toLowerCase().replace(/_/g, '-')}`);
+            const btn = document.getElementById(zone.replace(/ /g, '_')) || document.getElementById(`btn-${zone.toLowerCase().replace(/ /g, '-')}`);
             document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
             if (currentZoneFilter === zone) { currentZoneFilter = null; } 
             else { currentZoneFilter = zone; if(btn) btn.classList.add('active-zone'); }
@@ -1006,9 +1015,9 @@
             
             const isFwd = pos === 'FWD' ? 'selected' : '';
             const isAft = pos === 'AFT' ? 'selected' : '';
-            const isMdcCentral = pos === 'MCD_CENTRAL' ? 'selected' : '';
-            const isMcdLh = pos === 'MCD_LH' ? 'selected' : '';
-            const isMcdRh = pos === 'MCD_RH' ? 'selected' : '';
+            const isMdcCentral = pos === 'MCD CENTRAL' ? 'selected' : '';
+            const isMcdLh = pos === 'MCD LH' ? 'selected' : '';
+            const isMcdRh = pos === 'MCD RH' ? 'selected' : '';
             const isOther = (!isFwd && !isAft && !isMdcCentral && !isMcdLh && !isMcdRh && pos !== '') ? `selected value="${pos}"` : '';
 
             let overrideHtml = '';
@@ -1037,9 +1046,9 @@
                         <option value="">ZONA</option>
                         <option value="FWD" ${isFwd}>FWD</option>
                         <option value="AFT" ${isAft}>AFT</option>
-                        <option value="MCD_CENTRAL" ${isMdcCentral}>MCD_CENTRAL</option>
-                        <option value="MCD_LH" ${isMcdLh}>MCD_LH</option>
-                        <option value="MCD_RH" ${isMcdRh}>MCD_RH</option>
+                        <option value="MCD CENTRAL" ${isMdcCentral}>MCD CENTRAL</option>
+                        <option value="MCD LH" ${isMcdLh}>MCD LH</option>
+                        <option value="MCD RH" ${isMcdRh}>MCD RH</option>
                         ${isOther ? `<option ${isOther}>${pos}</option>` : ''}
                     </select>
                     
