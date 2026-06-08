@@ -51,6 +51,33 @@
             box-shadow: 0 0 0 2px rgba(27, 0, 136, 0.1);
         }
 
+        /* ESTILOS PARA MULTI-SELECT CUSTOM */
+        .custom-multiselect { position: relative; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
+        .multiselect-header {
+            padding: 0 10px; border: 1px solid var(--border); border-radius: 4px;
+            font-size: 10px; height: 28px; background: white; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold;
+            color: var(--primary); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase; user-select: none; transition: border-color 0.2s ease;
+        }
+        .multiselect-header:hover { border-color: var(--primary); }
+        .multiselect-options {
+            display: none; position: absolute; top: 100%; left: 0; right: 0;
+            background: white; border: 1px solid var(--primary); z-index: 100;
+            max-height: 180px; overflow-y: auto; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 2px;
+        }
+        .multiselect-options.show { display: block; }
+        .multiselect-options label {
+            display: flex; padding: 8px 10px; font-size: 10px; font-weight: bold; cursor: pointer;
+            align-items: center; gap: 8px; border-bottom: 1px solid var(--light-gray); margin: 0;
+            color: var(--primary); text-transform: uppercase;
+        }
+        .multiselect-options label:last-child { border-bottom: none; }
+        .multiselect-options label:hover { background: var(--light-gray); }
+        .multiselect-options input[type="checkbox"] { height: 14px; width: 14px !important; margin: 0; cursor: pointer; flex-shrink: 0; }
+
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
         /* Barra superior estilo HTML 1 */
@@ -350,6 +377,11 @@
             </div>
             
             <div id="zone-filter-alert"></div>
+            
+            <div id="plane-actions-bar" class="leader-only" style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button class="btn-leader" onclick="openAddCustomPartModal()">➕ AÑADIR PIEZA CUSTOM (SOLO ESTE AVIÓN)</button>
+            </div>
+            
             <div class="pn-grid" id="pn-grid-container"></div>
         </div>
 
@@ -446,6 +478,47 @@
         </div>
     </div>
 
+    <div id="single-part-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px; margin: 10% auto;">
+            <div class="modal-header">
+                <span id="sp-modal-title" style="color: var(--leader-color);">✏️ EDITAR COMPONENTE</span>
+                <button onclick="closeModal('single-part-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: 28px; box-shadow: none;">✖</button>
+            </div>
+            <div class="modal-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">DESCRIPCIÓN:</label>
+                <input type="text" id="sp-desc" list="descripciones-list" style="width: 100%;">
+            </div>
+            <div class="modal-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">P/N ACTUAL / FÍSICO:</label>
+                <input type="text" id="sp-pn" list="pn-list" style="width: 100%;">
+            </div>
+            <div class="modal-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">ZONA(S):</label>
+                <div class="custom-multiselect" style="width: 100%;">
+                    <div class="multiselect-header" id="sp-pos-header" onclick="toggleMulti(this)">ZONAS<span style="font-size:8px; float:right;"> ▼</span></div>
+                    <div class="multiselect-options" id="sp-pos-options">
+                        <label><input type="checkbox" value="FWD" onchange="updateMultiValue(this)"> FWD</label>
+                        <label><input type="checkbox" value="AFT" onchange="updateMultiValue(this)"> AFT</label>
+                        <label><input type="checkbox" value="MCD CENTRAL" onchange="updateMultiValue(this)"> MCD CENTRAL</label>
+                        <label><input type="checkbox" value="MCD LH" onchange="updateMultiValue(this)"> MCD LH</label>
+                        <label><input type="checkbox" value="MCD RH" onchange="updateMultiValue(this)"> MCD RH</label>
+                    </div>
+                    <input type="hidden" id="sp-pos">
+                </div>
+            </div>
+            <div class="modal-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">ATA:</label>
+                <input type="text" id="sp-ata" list="ata-list" style="width: 100%;">
+            </div>
+            <input type="hidden" id="sp-id">
+            <div class="modal-footer" style="margin-top: 20px;">
+                <button class="btn-danger-outline leader-only" id="btn-sp-revert" onclick="revertSinglePart()" style="margin-right: auto; display:none;">↺ REVERTIR AL ESTÁNDAR</button>
+                <button class="btn-outline" onclick="closeModal('single-part-modal')">CANCELAR</button>
+                <button class="btn-leader" onclick="saveSinglePart()">💾 GUARDAR</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast">✅ Acción realizada con éxito</div>
 
     <script type="module">
@@ -495,6 +568,33 @@
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
         }
 
+        // --- MULTI-SELECT LÓGICA ---
+        window.toggleMulti = function(headerEl) {
+            const optionsDiv = headerEl.nextElementSibling;
+            const isShowing = optionsDiv.classList.contains('show');
+            document.querySelectorAll('.multiselect-options').forEach(el => el.classList.remove('show'));
+            if (!isShowing) optionsDiv.classList.add('show');
+        };
+        
+        window.updateMultiValue = function(checkbox) {
+            const wrapper = checkbox.closest('.custom-multiselect');
+            const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+            const header = wrapper.querySelector('.multiselect-header');
+            const checked = Array.from(wrapper.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+            hiddenInput.value = checked.join(', ');
+            header.innerHTML = checked.length ? checked.join(', ') : 'ZONAS';
+            
+            const span = document.createElement('span');
+            span.innerHTML = ' ▼'; span.style.fontSize = '8px'; span.style.float = 'right';
+            header.appendChild(span);
+        };
+        
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.custom-multiselect')) {
+                document.querySelectorAll('.multiselect-options').forEach(el => el.classList.remove('show'));
+            }
+        });
+
         // --- SVG LOGIC ---
         async function loadPlaneSVG() {
             try {
@@ -508,7 +608,6 @@
                     svgElement.style.width = '100%'; svgElement.style.height = 'auto'; svgElement.style.maxHeight = '300px'; 
                 }
                 
-                // MAPEAMOS EL NOMBRE WEB (CON ESPACIOS) AL ID DE INKSCAPE (CON GUION BAJO)
                 ['FWD', 'AFT', 'MCD CENTRAL', 'MCD LH', 'MCD RH'].forEach(zone => {
                     const inkscapeId = zone.replace(/ /g, '_');
                     const btn = document.getElementById(inkscapeId) || document.getElementById('btn-' + zone.toLowerCase().replace(/ /g, '-'));
@@ -537,7 +636,7 @@
         function activateLeaderUI() {
             isTeamLeader = true; document.body.classList.add('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
-            btnToggle.innerText = "MODO TEAM LEADER"; btnToggle.style.backgroundColor = "var(--leader-color)"; btnToggle.style.color = "white";
+            btnToggle.innerText = "MODO EDITOR"; btnToggle.style.backgroundColor = "var(--leader-color)"; btnToggle.style.color = "white";
             
             const btnLogout = document.getElementById('btn-logout');
             if (btnLogout) btnLogout.style.display = 'inline-flex';
@@ -676,6 +775,7 @@
             return true; 
         }
 
+        // LÓGICA ACTUALIZADA PARA PRESERVAR EL P/N ORIGINAL EN LAS EXCEPCIONES
         function getMergedPlaneParts(reg) {
             const plane = flotaDB[reg];
             if (!plane) return [];
@@ -716,10 +816,11 @@
                 const basePart = baseParts[partId];
                 if (exceptions[partId]) {
                     if(!exceptions[partId]._deleted) {
-                        merged.push({ id: partId, ...basePart, ...exceptions[partId], status: 'exception', isBase: true });
+                        // Preservamos originalPn para saber si cambió el P/N respecto a efectividad
+                        merged.push({ id: partId, ...basePart, ...exceptions[partId], originalPn: basePart.pn, status: 'exception', isBase: true });
                     }
                 } else {
-                    merged.push({ id: partId, ...basePart, status: 'standard', isBase: true });
+                    merged.push({ id: partId, ...basePart, originalPn: basePart.pn, status: 'standard', isBase: true });
                 }
             });
             
@@ -796,6 +897,7 @@
             renderPlaneData();
         }
 
+        // RENDER DE TARJETAS MODIFICADO PARA INCLUIR DOBLE LÍNEA Y BOTÓN DE EDICIÓN LOCAL
         function renderPlaneData() {
             const plane = flotaDB[currentLoadedReg];
             const badgeEl = document.getElementById('plane-eff-badge');
@@ -852,14 +954,45 @@
 
                 const cardClass = part.status === 'exception' ? 'card-exception' : (part.status === 'custom' ? 'card-custom' : '');
                 
+                // --- MANEJO DEL DOBLE P/N (EFECTIVIDAD + FÍSICO) ---
+                let pnDisplayHtml = '';
+                if (part.originalPn && part.pn && part.originalPn !== part.pn) {
+                    pnDisplayHtml = `
+                        <div class="pn-main-row" style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--border);">
+                            <div>
+                                <span style="font-size: 8px; color: var(--comment); display: block; font-weight: bold;">P/N EFECTIVIDAD:</span>
+                                <div class="pn-value" style="font-size: 12px; color: var(--comment); text-decoration: line-through;">${part.originalPn}</div>
+                            </div>
+                            <button class="btn-copy" onclick="copyPN('${part.originalPn}')" style="height: 22px; font-size: 8px;">📋 COPIAR</button>
+                        </div>
+                        <div class="pn-main-row">
+                            <div>
+                                <span style="font-size: 9px; color: var(--accent); font-weight: bold; display: block;">P/N FÍSICO:</span>
+                                <div class="pn-value">${part.pn}</div>
+                            </div>
+                            <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
+                        </div>
+                    `;
+                } else {
+                    pnDisplayHtml = `
+                        <div class="pn-main-row">
+                            <div class="pn-value">${part.pn}</div>
+                            <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
+                        </div>
+                    `;
+                }
+                
                 container.innerHTML += `
                     <div class="pn-card ${cardClass}">
-                        <div class="pn-desc"><span>${part.desc}</span> ${badge}</div>
-                        <div class="pn-value-container">
-                            <div class="pn-main-row">
-                                <div class="pn-value">${part.pn}</div>
-                                <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
+                        <div class="pn-desc">
+                            <span>${part.desc}</span> 
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                ${badge}
+                                <button class="btn-action-small leader-only" style="height: 20px; font-size: 9px; padding: 0 6px;" onclick="editSinglePart('${part.id}')">✏️ EDITAR</button>
                             </div>
+                        </div>
+                        <div class="pn-value-container">
+                            ${pnDisplayHtml}
                             <div class="pn-extra-info">
                                 <div><span style="color:var(--comment); font-weight:normal;">ZONA:</span> ${part.pos || '-'}</div>
                                 <div><span style="color:var(--comment); font-weight:normal;">ATA:</span> ${part.ata || '-'}</div>
@@ -882,6 +1015,104 @@
             document.getElementById('zone-filter-alert').innerHTML = '';
             
             localStorage.removeItem('saved_plane_reg');
+        }
+
+        // LÓGICA DE EDICIÓN ESPECÍFICA (SINGLE EDIT)
+        window.editSinglePart = function(partId) {
+            if (!isTeamLeader || !currentLoadedReg) return;
+            const parts = getMergedPlaneParts(currentLoadedReg);
+            const part = parts.find(p => p.id === partId);
+            if (!part) return;
+
+            document.getElementById('sp-modal-title').innerText = '✏️ EDITAR COMPONENTE';
+            document.getElementById('sp-id').value = partId;
+            document.getElementById('sp-desc').value = part.desc || '';
+            document.getElementById('sp-pn').value = part.pn || '';
+            
+            // Setup Multiple Checkboxes for Zones
+            const posInput = document.getElementById('sp-pos');
+            posInput.value = part.pos || '';
+            const zones = (part.pos || '').split(',').map(z => z.trim());
+            const optionsDiv = document.getElementById('sp-pos-options');
+            
+            optionsDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = zones.includes(cb.value);
+            });
+            
+            const header = document.getElementById('sp-pos-header');
+            const headerText = zones.filter(Boolean).length ? zones.join(', ') : 'ZONAS';
+            header.innerHTML = headerText + '<span style="font-size:8px; float:right;"> ▼</span>';
+
+            document.getElementById('sp-ata').value = part.ata || '';
+            
+            // Revert Button Setup
+            const btnRevert = document.getElementById('btn-sp-revert');
+            if (part.status === 'exception') {
+                btnRevert.style.display = 'inline-flex';
+                btnRevert.innerText = '↺ REVERTIR AL ESTÁNDAR';
+            } else if (part.status === 'custom') {
+                btnRevert.style.display = 'inline-flex';
+                btnRevert.innerText = '🗑️ ELIMINAR PIEZA';
+            } else {
+                btnRevert.style.display = 'none';
+            }
+
+            document.getElementById('single-part-modal').style.display = 'block';
+        }
+
+        window.openAddCustomPartModal = function() {
+            if (!isTeamLeader || !currentLoadedReg) return;
+            document.getElementById('sp-modal-title').innerText = '➕ AÑADIR PIEZA CUSTOM';
+            document.getElementById('sp-id').value = generateId(); 
+            document.getElementById('sp-desc').value = '';
+            document.getElementById('sp-pn').value = '';
+            document.getElementById('sp-pos').value = '';
+            
+            const optionsDiv = document.getElementById('sp-pos-options');
+            optionsDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            const header = document.getElementById('sp-pos-header');
+            header.innerHTML = 'ZONAS<span style="font-size:8px; float:right;"> ▼</span>';
+
+            document.getElementById('sp-ata').value = '';
+
+            document.getElementById('btn-sp-revert').style.display = 'none'; 
+            document.getElementById('single-part-modal').style.display = 'block';
+        }
+
+        window.saveSinglePart = function() {
+            if (!isTeamLeader || !currentLoadedReg) return;
+            const partId = document.getElementById('sp-id').value;
+            const desc = document.getElementById('sp-desc').value.trim().toUpperCase();
+            const pn = document.getElementById('sp-pn').value.trim().toUpperCase();
+            const pos = document.getElementById('sp-pos').value.trim().toUpperCase();
+            const ata = document.getElementById('sp-ata').value.trim().toUpperCase();
+
+            if (!desc || !pn) return alert("Descripción y P/N Actual son obligatorios.");
+
+            const plane = flotaDB[currentLoadedReg];
+            let exceptions = plane.exceptions || {};
+            
+            // Creamos o actualizamos la excepción específica
+            exceptions[partId] = {
+                ...(exceptions[partId] || {}), // Preservar otras propiedades si las hay
+                desc, pn, pos, ata
+            };
+
+            set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/exceptions`), exceptions).then(() => {
+                closeModal('single-part-modal');
+                showToast("✅ Componente Guardado Correctamente");
+            });
+        }
+
+        window.revertSinglePart = function() {
+            if (!isTeamLeader || !currentLoadedReg) return;
+            const partId = document.getElementById('sp-id').value;
+            if(confirm("¿Seguro que desea eliminar esta excepción/pieza custom? Si aplica, se revertirá al estándar del catálogo.")) {
+                set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/exceptions/${partId}`), null).then(() => {
+                    closeModal('single-part-modal');
+                    showToast("✅ Pieza revertida / eliminada");
+                });
+            }
         }
 
         window.openEffManager = function() {
@@ -1047,12 +1278,9 @@
             row.dataset.id = id; row.dataset.isBase = isBase; row.dataset.status = status;
             if(catalogSource) row.dataset.catalogSource = catalogSource;
             
-            const isFwd = pos === 'FWD' ? 'selected' : '';
-            const isAft = pos === 'AFT' ? 'selected' : '';
-            const isMdcCentral = pos === 'MCD CENTRAL' ? 'selected' : '';
-            const isMcdLh = pos === 'MCD LH' ? 'selected' : '';
-            const isMcdRh = pos === 'MCD RH' ? 'selected' : '';
-            const isOther = (!isFwd && !isAft && !isMdcCentral && !isMcdLh && !isMcdRh && pos !== '') ? `selected value="${pos}"` : '';
+            const zones = (pos || '').split(',').map(z => z.trim());
+            const isChecked = (val) => zones.includes(val) ? 'checked' : '';
+            const headerText = zones.filter(Boolean).length ? zones.join(', ') : 'ZONAS';
 
             let overrideHtml = '';
             const isPlaneModal = containerId === 'plane-components-container';
@@ -1075,15 +1303,17 @@
                     <input type="text" class="part-desc col-desc" placeholder="DESC" list="descripciones-list" value="${desc || ''}">
                     <input type="text" class="part-pn col-pn" placeholder="P/N" list="pn-list" value="${pn || ''}">
                     
-                    <select class="part-pos col-pos">
-                        <option value="">ZONA</option>
-                        <option value="FWD" ${isFwd}>FWD</option>
-                        <option value="AFT" ${isAft}>AFT</option>
-                        <option value="MCD CENTRAL" ${isMdcCentral}>MCD CENTRAL</option>
-                        <option value="MCD LH" ${isMcdLh}>MCD LH</option>
-                        <option value="MCD RH" ${isMcdRh}>MCD RH</option>
-                        ${isOther ? `<option ${isOther}>${pos}</option>` : ''}
-                    </select>
+                    <div class="custom-multiselect col-pos">
+                        <div class="multiselect-header" onclick="toggleMulti(this)">${headerText}<span style="font-size:8px; float:right;"> ▼</span></div>
+                        <div class="multiselect-options">
+                            <label><input type="checkbox" value="FWD" onchange="updateMultiValue(this)" ${isChecked('FWD')}> FWD</label>
+                            <label><input type="checkbox" value="AFT" onchange="updateMultiValue(this)" ${isChecked('AFT')}> AFT</label>
+                            <label><input type="checkbox" value="MCD CENTRAL" onchange="updateMultiValue(this)" ${isChecked('MCD CENTRAL')}> MCD CENTRAL</label>
+                            <label><input type="checkbox" value="MCD LH" onchange="updateMultiValue(this)" ${isChecked('MCD LH')}> MCD LH</label>
+                            <label><input type="checkbox" value="MCD RH" onchange="updateMultiValue(this)" ${isChecked('MCD RH')}> MCD RH</label>
+                        </div>
+                        <input type="hidden" class="part-pos" value="${pos || ''}">
+                    </div>
                     
                     <input type="text" class="part-ata col-ata" placeholder="ATA" list="ata-list" value="${ata || ''}">
                     ${appInputHtml}
@@ -1095,7 +1325,7 @@
             container.appendChild(row);
             
             if (isPlaneModal && isBase && status === 'standard') {
-                const inputs = row.querySelectorAll('input:not(.part-app), select');
+                const inputs = row.querySelectorAll('input:not(.part-app)');
                 inputs.forEach(input => {
                     input.addEventListener('change', function() {
                         row.classList.add('row-exception');
@@ -1115,6 +1345,16 @@
                 row.querySelector('.part-desc').value = basePart.desc || '';
                 row.querySelector('.part-pn').value = basePart.pn || '';
                 row.querySelector('.part-pos').value = basePart.pos || '';
+                
+                // Actualizar interfaz visual del select múltiple
+                const posStr = basePart.pos || '';
+                const zones = posStr.split(',').map(z => z.trim());
+                row.querySelectorAll('.multiselect-options input[type="checkbox"]').forEach(cb => {
+                    cb.checked = zones.includes(cb.value);
+                });
+                const header = row.querySelector('.multiselect-header');
+                header.innerHTML = (zones.filter(Boolean).length ? zones.join(', ') : 'ZONAS') + '<span style="font-size:8px; float:right;"> ▼</span>';
+
                 row.querySelector('.part-ata').value = basePart.ata || '';
                 row.classList.remove('row-exception');
                 row.dataset.status = 'standard';
