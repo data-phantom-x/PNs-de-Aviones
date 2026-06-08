@@ -17,6 +17,7 @@
             --help: #dd6b20; 
             --comment: #64748b;
             --warning: #f59e0b;
+            --success: #10b981; /* Color extra para modo check */
         }
 
         body {
@@ -185,6 +186,13 @@
         }
         .btn-action-small:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
 
+        /* Estilos Modo Check */
+        .btn-check-mode { border: 1px solid var(--success); color: var(--success); background-color: transparent; }
+        .btn-check-mode.active { background-color: var(--success); color: white; }
+        body.check-mode-active .btn-verify-part { display: inline-flex !important; }
+        .btn-verify-part { display: none; background-color: var(--success); color: white; border-color: var(--success); }
+        .btn-verify-part:hover { background-color: #059669; border-color: #059669; }
+
         /* Badges estilo HTML 1 */
         .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: 800; margin-left: 6px; display: inline-block; }
         .badge-exception { background: #fffaf0; color: var(--warning); border-left: 4px solid var(--warning); }
@@ -333,6 +341,7 @@
         <div class="top-bar no-print">
             <div class="top-bar-left">
                 <button type="button" id="btn-mode-toggle" class="btn-accent" onclick="toggleMode()">MODO TÉCNICO</button>
+                <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode" onclick="toggleCheckMode()">☑️ MODO CHECK</button>
                 <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
                 <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="display:none;">CERRAR SESIÓN</button>
             </div>
@@ -548,6 +557,7 @@
         let currentZoneFilter = null; 
         let currentEditingCatalog = null;
         let isTeamLeader = false;
+        let isCheckMode = false;
         let isInitialLoad = true; 
 
         const correosAutorizados = [
@@ -567,6 +577,37 @@
             toast.className = "show";
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
         }
+
+        // --- FUNCIONES DE VERIFICACIÓN Y MODO CHECK ---
+        window.toggleCheckMode = function() {
+            isCheckMode = !isCheckMode;
+            const btn = document.getElementById('btn-check-mode');
+            if (isCheckMode) {
+                document.body.classList.add('check-mode-active');
+                btn.classList.add('active');
+            } else {
+                document.body.classList.remove('check-mode-active');
+                btn.classList.remove('active');
+            }
+        };
+
+        function get24hTimestamp() {
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yy = String(now.getFullYear()).slice(-2);
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            return `${dd}/${mm}/${yy} ${hh}:${min}`;
+        }
+
+        window.verifyPart = function(partId) {
+            if (!currentLoadedReg) return;
+            const timestamp = get24hTimestamp();
+            set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
+                showToast("✅ Tarjeta Verificada");
+            });
+        };
 
         // --- MULTI-SELECT LÓGICA ---
         window.toggleMulti = function(headerEl) {
@@ -920,6 +961,7 @@
 
             let parts = getMergedPlaneParts(currentLoadedReg);
             let warningHtml = '';
+            const verifications = plane.verifications || {};
             
             if (parts._invalidEffectivity) {
                 warningHtml = `
@@ -982,13 +1024,19 @@
                     `;
                 }
                 
+                let verifiedHtml = '';
+                if (verifications[part.id]) {
+                    verifiedHtml = `<div style="width: 100%; text-align: right; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); color: var(--success); font-weight: 900; font-size: 9px;">✅ REVISADO: ${verifications[part.id]}</div>`;
+                }
+
                 container.innerHTML += `
                     <div class="pn-card ${cardClass}">
                         <div class="pn-desc">
                             <span>${part.desc}</span> 
                             <div style="display: flex; gap: 5px; align-items: center;">
                                 ${badge}
-                                <button class="btn-action-small leader-only" style="height: 20px; font-size: 9px; padding: 0 6px;" onclick="editSinglePart('${part.id}')">✏️ EDITAR</button>
+                                <button class="btn-action-small btn-verify-part" onclick="verifyPart('${part.id}')">✔️ CONFIRMAR</button>
+                                <button class="btn-action-small leader-only" style="height: 24px; font-size: 9px; padding: 0 6px;" onclick="editSinglePart('${part.id}')">✏️ EDITAR</button>
                             </div>
                         </div>
                         <div class="pn-value-container">
@@ -996,6 +1044,7 @@
                             <div class="pn-extra-info">
                                 <div><span style="color:var(--comment); font-weight:normal;">ZONA:</span> ${part.pos || '-'}</div>
                                 <div><span style="color:var(--comment); font-weight:normal;">ATA:</span> ${part.ata || '-'}</div>
+                                ${verifiedHtml}
                             </div>
                         </div>
                     </div>
@@ -1099,8 +1148,11 @@
             };
 
             set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/exceptions`), exceptions).then(() => {
-                closeModal('single-part-modal');
-                showToast("✅ Componente Guardado Correctamente");
+                const timestamp = get24hTimestamp();
+                set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
+                    closeModal('single-part-modal');
+                    showToast("✅ Componente Guardado y Verificado");
+                });
             });
         }
 
