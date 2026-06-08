@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultor de Part Numbers - LATAM</title>
+    <title>Cortinas y MCD - LATAM</title>
     <style>
         :root {
             /* Colores Corporativos LATAM */
@@ -135,7 +135,6 @@
             opacity: 1 !important;
         }
 
-        /* DISEÑO REFINADO DE BOTONES (Absorbido de HTML 1) */
         button { 
             background-color: var(--primary); color: white; border: none; cursor: pointer; 
             font-weight: 700; transition: all 0.2s ease; padding: 0 10px; border-radius: 4px;
@@ -167,7 +166,6 @@
 
         .pn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
 
-        /* Tarjetas más compactas */
         .pn-card {
             border: 1px solid var(--border); border-radius: 6px; background: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column;
@@ -206,7 +204,6 @@
             grid-column: 1 / -1;
         }
 
-        /* Modales estilo HTML 1 */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(4px); }
         .modal-content {
             background-color: white; margin: 6% auto; padding: 20px;
@@ -224,7 +221,6 @@
         .modal-form-group { flex: 1; min-width: 200px; }
         .modal-form-group input, .modal-form-group select { width: 100% !important; margin-bottom: 0 !important; }
 
-        /* DISEÑO DE TABLA EXCEL (Adaptado a alturas 28px) */
         .table-headers {
             display: flex; gap: 8px; font-size: 10px; font-weight: bold; color: var(--comment);
             margin-bottom: 5px; padding: 0 40px 0 12px;
@@ -310,7 +306,7 @@
         <div class="top-bar no-print">
             <div class="top-bar-left">
                 <button type="button" id="btn-mode-toggle" class="btn-accent" onclick="toggleMode()">MODO TÉCNICO</button>
-                <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE CATÁLOGOS</button>
+                <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
                 <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="display:none;">CERRAR SESIÓN</button>
             </div>
         </div>
@@ -326,12 +322,12 @@
                     </g>
                 </svg>
             </div>
-            <h1 class="document-header">CONSULTOR DE PART NUMBERS</h1>
+            <h1 class="document-header">CORTINAS Y MCD</h1>
         </div>
 
         <div class="plane-selector-card">
             <div class="selector-info">
-                <label>⚙️ 1. SELECCIONE O ESCRIBA LA MATRÍCULA</label>
+                <label>⚙️ 1. SELECCIONE EL AVIÓN</label>
                 <div class="selector-row">
                     <input type="text" id="plane-select" oninput="loadSelectedPlane()" class="title-select" list="planes-datalist" placeholder="-- ESCRIBA O ELIJA MATRÍCULA --" autocomplete="off">
                     <span id="plane-eff-badge" class="badge-eff" style="display: none;"></span>
@@ -365,7 +361,7 @@
     <div id="eff-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span style="color: var(--leader-color);">⚙️ GESTOR DE EFECTIVIDADES</span>
+                <span style="color: var(--leader-color);">⚙️ GESTOR DE EFECTIVIDAD</span>
                 <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: 28px; box-shadow: none;">✖</button>
             </div>
             
@@ -397,7 +393,7 @@
 
                 <div id="eff-components-container"></div>
 
-                <button class="btn-outline" onclick="addComponentRow('eff-components-container', '', true, 'standard', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR NUEVA PIEZA</button>
+                <button class="btn-outline" onclick="addComponentRow('eff-components-container', '', true, 'standard', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR NUEVO P/N</button>
                 
                 <div class="modal-footer">
                     <button class="btn-danger-outline" onclick="deleteEfectividad()" style="margin-right: auto;">🗑️ ELIMINAR CATÁLOGO</button>
@@ -425,7 +421,7 @@
                     <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="border-color: var(--leader-color); background-color: #f0f4ff;">
                 </div>
                 <div style="flex:1; text-align:right; font-size:10px; color:var(--comment); min-width: 250px;">
-                    El sistema asociará automáticamente las piezas que cumplan el código de aplicabilidad configurado en el Gestor.
+                    El sistema asociará automáticamente las partes que cumplan el código de aplicabilidad configurado en el Gestor.
                 </div>
             </div>
 
@@ -441,7 +437,7 @@
 
             <div id="plane-components-container"></div>
 
-            <button class="btn-outline" onclick="addComponentRow('plane-components-container', '', false, 'custom', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed; color: #4338ca; border-color: #c7d2fe;">+ AÑADIR PIEZA CUSTOM (SOLO ESTE AVIÓN)</button>
+            <button class="btn-outline" onclick="addComponentRow('plane-components-container', '', false, 'custom', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed; color: #4338ca; border-color: #c7d2fe;">+ AÑADIR P/N CUSTOM (SOLO ESTE AVIÓN)</button>
             
             <div class="modal-footer">
                 <button class="btn-outline" onclick="closeModal('avion-modal')">CANCELAR</button>
@@ -482,7 +478,7 @@
         let isInitialLoad = true; 
 
         const correosAutorizados = [
-            "ndfuentesa@gmail.com", "nelson.fuentes@latam.com", "hector.vargas@latam.com",
+            "admin1201", "ndfuentesa@gmail.com", "nelson.fuentes@latam.com", "hector.vargas@latam.com",
             "richard.shenk@latam.com", "pablo.monti@latam.com", "marco.santelices@latam.com",
             "pamela.perezs@latam.com", "mauricio.munozv@latam.com", "claudio.saldias@latam.com",
             "guido.contrerasG@latam.com"
@@ -602,10 +598,6 @@
                 }
             }
         });
-
-        // =====================================================================
-        // --- MOTOR ESTRICTO E INFALIBLE DE APLICABILIDAD ---
-        // =====================================================================
 
         function isEffectivityStrictlyValid(appCode) {
             if (!appCode || appCode.trim() === '') return false;
@@ -740,7 +732,6 @@
             return merged;
         }
 
-        // --- INTERFACE UPDATES ---
         function updateSelector() {
             const selectModalEff = document.getElementById('modal-eff-select');
             const planeDatalist = document.getElementById('planes-datalist');
@@ -816,7 +807,7 @@
             if (delBtn) delBtn.style.display = 'inline-flex';
 
             if(plane && plane.appCode) {
-                badgeEl.innerText = `APP: ${plane.appCode}`;
+                badgeEl.innerText = `APPLICABILITY CODE: ${plane.appCode}`;
                 badgeEl.style.display = 'inline-flex';
             } else {
                 badgeEl.style.display = 'none';
@@ -893,7 +884,6 @@
             localStorage.removeItem('saved_plane_reg');
         }
 
-        // --- GESTOR DE CATÁLOGOS ---
         window.openEffManager = function() {
             if (!isTeamLeader) return;
             document.getElementById('eff-components-area').style.display = 'none';
@@ -1023,7 +1013,7 @@
 
             if (appCode !== '') {
                 if (!isEffectivityStrictlyValid(appCode)) {
-                    alert(`⚠️ AVISO: La efectividad "${appCode}" NO es reconocida formalmente en el catálogo de efectividades.\nEl avión quedará en blanco y no heredará piezas del catálogo.`);
+                    alert(`⚠️ AVISO: La efectividad "${appCode}" NO es reconocida en el catálogo de efectividades.\nEl avión quedará en blanco y no heredará P/N del catálogo.`);
                     showToast("Efectividad Bloqueada");
                 } else {
                     Object.values(efectividadesDB).forEach(catalog => {
@@ -1048,7 +1038,6 @@
             }
         }
 
-        // --- COMPONENT ROWS GENERATOR ---
         window.addComponentRow = function(containerId, id, isBase, status, desc, pn, pos, ata, app, catalogSource) {
             const container = document.getElementById(containerId);
             const row = document.createElement('div');
@@ -1116,7 +1105,6 @@
             }
         }
 
-        // --- REVERT & FORCE ---
         window.revertRowToStandard = function(btn) {
             const row = btn.closest('.component-row-wrapper');
             const catalogCode = row.dataset.catalogSource;
@@ -1164,7 +1152,6 @@
             closeModal('avion-modal');
         }
 
-        // --- SAVE & DELETE ---
         window.savePlaneData = function() {
             if (!isTeamLeader) return;
             const reg = document.getElementById('modal-plane-reg').value.trim().toUpperCase();
@@ -1255,7 +1242,7 @@
                 appCodeInput.value = '';
                 addComponentRow('plane-components-container', generateId(), false, 'custom', '', '', '', '', '', null);
             }
-            document.getElementById('modal-title').innerText = isEdit ? `✏️ EDITAR EXCEPCIONES: ${currentLoadedReg}` : '✈️ AGREGAR AVIÓN';
+            document.getElementById('modal-title').innerText = isEdit ? `✏️ EDITAR ${currentLoadedReg}` : '✈️ AGREGAR AVIÓN';
             document.getElementById('avion-modal').style.display = 'block';
         }
 
