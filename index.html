@@ -379,7 +379,7 @@
             <div id="zone-filter-alert"></div>
             
             <div id="plane-actions-bar" class="leader-only" style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
-                <button class="btn-leader" onclick="openAddCustomPartModal()">➕ AÑADIR PIEZA CUSTOM (SOLO ESTE AVIÓN)</button>
+                <button class="btn-leader" onclick="openAddCustomPartModal()">➕ AÑADIR COMPONENTE (SOLO ESTE AVIÓN)</button>
             </div>
             
             <div class="pn-grid" id="pn-grid-container"></div>
@@ -1062,7 +1062,7 @@
 
         window.openAddCustomPartModal = function() {
             if (!isTeamLeader || !currentLoadedReg) return;
-            document.getElementById('sp-modal-title').innerText = '➕ AÑADIR PIEZA CUSTOM';
+            document.getElementById('sp-modal-title').innerText = '➕ AÑADIR COMPONENTE';
             document.getElementById('sp-id').value = generateId(); 
             document.getElementById('sp-desc').value = '';
             document.getElementById('sp-pn').value = '';
