@@ -14,6 +14,7 @@
             --border: #d1d9e0;
             --leader-color: #0066cc;
             --danger: #e53e3e;
+            --help: #dd6b20; 
             --comment: #64748b;
             --warning: #f59e0b;
         }
@@ -27,35 +28,36 @@
             text-transform: uppercase;
         }
 
-        /* NORMALIZACIÓN MAESTRA DE INPUTS Y SELECTS */
+        /* ESTÉTICA ABSORBIDA DEL HTML 1: Inputs y Selects limpios, compactos y sin !important */
         input, select, textarea {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-            text-transform: uppercase !important;
-            font-size: 13px !important;
-            color: var(--primary) !important;
-            font-weight: 700 !important;
-            padding: 10px 15px !important;
-            border: 2px solid var(--border) !important;
-            border-radius: 6px !important;
-            outline: none !important;
-            box-sizing: border-box !important;
-            background-color: white !important;
-            transition: all 0.2s ease !important;
-            height: auto !important;
-            margin: 0 !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 10px;
+            outline: none;
+            box-sizing: border-box;
+            height: 28px;
+            color: var(--primary);
+            font-weight: bold;
+            transition: all 0.2s ease;
+            background-color: white;
+            margin: 0;
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: var(--primary) !important;
-            box-shadow: 0 0 0 3px rgba(27, 0, 136, 0.1) !important;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(27, 0, 136, 0.1);
         }
 
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
+        /* Barra superior estilo HTML 1 */
         .top-bar {
-            display: flex; justify-content: space-between; margin-bottom: 25px;
-            background-color: var(--light-gray); padding: 12px 15px;
-            border-radius: 6px; align-items: center; border: 1px solid var(--border);
+            display: flex; justify-content: space-between; margin-bottom: 15px;
+            background-color: var(--light-gray); padding: 10px 15px;
+            border-radius: 6px; align-items: center; border: none;
             flex-wrap: wrap; gap: 15px;
         }
 
@@ -63,44 +65,56 @@
 
         body:not(.team-leader-mode) .leader-only { display: none !important; }
 
+        /* Título de documento mejorado y centrado matemáticamente (HTML 1) */
         .main-header-wrapper {
-            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
-            margin-bottom: 25px; border-bottom: 3px solid var(--primary); padding-bottom: 15px;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; border-bottom: 3px solid var(--primary); padding-bottom: 12px;
+            min-height: 40px; flex-wrap: wrap; gap: 20px;
         }
         
-        .logo-container { width: 140px; }
+        .logo-container {
+            position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+            width: 100px;
+        }
         .logo-container svg { width: 100%; height: auto; }
         
         .document-header { 
-            font-size: 1.5em; font-weight: 800; color: var(--primary); margin: 0; 
-            text-align: center; letter-spacing: 1px; flex: 1;
+            font-size: 1.2em; font-weight: 800; color: var(--primary); margin: 0; 
+            text-align: center; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; width: 100%;
+            padding: 0 110px; box-sizing: border-box; letter-spacing: 1px;
         }
 
-        .header-spacer { width: 140px; } /* Elemento invisible para balancear */
-
-        /* NUEVO ÁREA DE SELECCIÓN DE MATRÍCULA */
+        /* ÁREA DE SELECCIÓN DE MATRÍCULA (Ajustada al estilo Header Controls de HTML 1) */
         .plane-selector-card {
-            background: white; border: 1px solid var(--border); border-radius: 8px;
-            padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
-            justify-content: space-between; margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            background-color: #f0f7ff; border: 1px solid #93c5fd;
+            border-left: 6px solid var(--leader-color); padding: 16px;
+            border-radius: 6px; margin-bottom: 25px; transition: opacity 0.3s;
+            display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
+            justify-content: space-between;
         }
         .selector-info { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 280px; }
-        .selector-info label { font-size: 12px; font-weight: 800; color: var(--comment); }
+        .selector-info label { font-size: 10px; font-weight: 800; color: var(--leader-color); display: flex; align-items: center; gap: 8px;}
         .selector-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        
+        /* Ajuste elegante para el select principal */
         .title-select { 
-            font-size: 16px !important; font-weight: 900 !important; color: var(--primary) !important;
-            border: 2px solid var(--primary) !important; padding: 10px 15px !important; border-radius: 6px !important;
-            background: #f8fafc !important; cursor: text; flex: 1; max-width: 400px;
+            font-size: 12px !important; font-weight: 900 !important; color: var(--primary) !important;
+            border: 2px solid var(--primary) !important; padding: 0 12px !important; border-radius: 4px !important;
+            background: #f8fafc !important; cursor: text; flex: 1; max-width: 400px; height: 32px !important;
         }
+        
         .badge-eff {
-            background: var(--light-gray); padding: 8px 12px; border-radius: 6px;
-            font-size: 14px; font-weight: 800; color: var(--leader-color); border: 1px solid #d1d9e0;
+            background: var(--light-gray); padding: 6px 12px; border-radius: 4px;
+            font-size: 11px; font-weight: 800; color: var(--leader-color); border: 1px solid var(--border);
+            height: 32px; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;
         }
-        .selector-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .selector-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
         .plane-svg-container {
-            width: 100%; background-color: white; border: 1px solid var(--border);
+            width: 100%; background-color: white; border: 1px dashed var(--border);
             border-radius: 6px; padding: 20px 10px; margin-bottom: 25px;
             box-sizing: border-box; position: relative;
         }
@@ -121,137 +135,152 @@
             opacity: 1 !important;
         }
 
-        /* DISEÑO REFINADO DE BOTONES */
+        /* DISEÑO REFINADO DE BOTONES (Absorbido de HTML 1) */
         button { 
             background-color: var(--primary); color: white; border: none; cursor: pointer; 
-            font-weight: 700; transition: all 0.2s ease; padding: 0 16px; border-radius: 6px;
-            display: inline-flex; align-items: center; justify-content: center; font-size: 11px;
-            height: 34px; box-sizing: border-box; text-transform: uppercase; font-family: inherit;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            font-weight: 700; transition: all 0.2s ease; padding: 0 10px; border-radius: 4px;
+            display: inline-flex; align-items: center; justify-content: center; font-size: 10px;
+            height: 28px; box-sizing: border-box; text-transform: uppercase; font-family: inherit;
+            line-height: 1; margin: 0; box-shadow: none;
         }
-        button:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        button:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        button:hover:not(:disabled) { opacity: 0.9; }
+        button:disabled { cursor: not-allowed; opacity: 0.5; }
         
         .btn-accent { background-color: var(--accent); }
-        .btn-leader { background-color: var(--leader-color); }
-        .btn-outline { background-color: transparent; border: 1px solid var(--comment); color: var(--comment); box-shadow: none; }
-        .btn-outline:hover { background-color: var(--comment); color: white; border-color: var(--comment); }
-        .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); box-shadow: none; }
-        .btn-danger-outline:hover { background: var(--danger); color: white; }
-        .btn-action-small { background-color: var(--light-gray); color: var(--primary); border: 1px solid var(--border); height: 26px; font-size: 10px; padding: 0 8px; box-shadow: none; }
-        .btn-action-small:hover { background-color: var(--primary); color: white; border-color: var(--primary); transform: none; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-leader { background-color: var(--leader-color); color: #fff; }
+        .btn-outline { background-color: transparent; border: 1px solid var(--comment); color: var(--comment); }
+        .btn-outline:hover:not(:disabled) { background-color: var(--comment); color: white; border-color: var(--comment); }
+        .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+        .btn-danger-outline:hover:not(:disabled) { background: var(--danger); color: white; }
+        
+        .btn-action-small { 
+            background-color: var(--light-gray); color: var(--primary); border: 1px solid var(--border); 
+            height: 24px; font-size: 9px; padding: 0 8px; border-radius: 4px;
+        }
+        .btn-action-small:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-        .badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-left: 8px; display: inline-block; }
-        .badge-exception { background: #fef7e0; color: var(--warning); border: 1px solid #feefc3; }
-        .badge-custom { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
-        .badge-app { background: var(--primary); color: white; border-radius: 20px; padding: 2px 8px; font-size: 10px; }
+        /* Badges estilo HTML 1 */
+        .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: 800; margin-left: 6px; display: inline-block; }
+        .badge-exception { background: #fffaf0; color: var(--warning); border-left: 4px solid var(--warning); }
+        .badge-custom { background: #e0e7ff; color: #4338ca; border-left: 4px solid #4338ca; }
+        .badge-app { background: var(--primary); color: white; border-radius: 20px; padding: 2px 8px; font-size: 0.8em; }
 
         .pn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
 
+        /* Tarjetas más compactas */
         .pn-card {
             border: 1px solid var(--border); border-radius: 6px; background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column;
             overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
         }
-        .pn-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); border-color: var(--primary); }
-        .pn-card.card-exception { border: 2px solid var(--warning); }
-        .pn-card.card-custom { border: 2px solid #4338ca; }
+        .pn-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); border-color: var(--primary); }
+        .pn-card.card-exception { border-left: 4px solid var(--warning); }
+        .pn-card.card-custom { border-left: 4px solid #4338ca; }
 
         .pn-desc {
-            background-color: var(--primary); color: white; padding: 10px 15px;
-            font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;
+            background-color: var(--primary); color: white; padding: 8px 12px;
+            font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;
         }
         .pn-card.card-exception .pn-desc { background-color: var(--warning); color: #fff; }
         .pn-card.card-custom .pn-desc { background-color: #4338ca; color: #fff; }
 
-        .pn-value-container { padding: 15px; display: flex; flex-direction: column; gap: 10px; background: #fafbfc; flex: 1; }
+        .pn-value-container { padding: 12px; display: flex; flex-direction: column; gap: 8px; background: #fafbfc; flex: 1; }
         .pn-main-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .pn-value { font-size: 18px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
+        .pn-value { font-size: 16px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
 
         .pn-extra-info {
             display: flex; justify-content: space-between; background: var(--light-gray);
-            padding: 8px; border-radius: 4px; font-size: 11px; color: var(--primary); font-weight: bold;
+            padding: 6px 8px; border-radius: 4px; font-size: 10px; color: var(--primary); font-weight: bold;
             border: 1px solid var(--border); flex-wrap: wrap; gap: 5px; margin-top: auto;
         }
 
         .btn-copy {
-            background-color: var(--light-gray); color: var(--primary); padding: 0 12px; height: 28px;
-            font-size: 10px; border: 1px solid var(--border); border-radius: 4px; box-shadow: none;
+            background-color: var(--light-gray); color: var(--primary); padding: 0 10px; height: 24px;
+            font-size: 9px; border: 1px solid var(--border); border-radius: 4px; font-weight: 700;
         }
         .btn-copy:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
 
         .no-results {
-            text-align: center; padding: 40px; color: var(--comment); font-style: italic;
-            border: 2px dashed var(--border); border-radius: 6px; background: white;
+            text-align: center; padding: 30px; color: var(--comment); font-style: italic; font-size: 11px;
+            border: 1px dashed var(--border); border-radius: 6px; background: white;
             grid-column: 1 / -1;
         }
 
-        /* Modales */
+        /* Modales estilo HTML 1 */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(4px); }
         .modal-content {
-            background-color: white; margin: 3% auto; padding: 25px;
+            background-color: white; margin: 6% auto; padding: 20px;
             border: none; width: 95%; max-width: 1000px; border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto;
             box-sizing: border-box;
         }
-        .modal-header { font-weight: 800; font-size: 1.2em; margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header { 
+            font-weight: 800; font-size: 1.1em; margin-bottom: 15px; color: var(--primary); 
+            border-bottom: 2px solid var(--accent); padding-bottom: 8px; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
         
-        /* Flex Layouts Modales para Responsividad */
-        .modal-form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; background: var(--light-gray); padding: 15px; border-radius: 6px; align-items: flex-end; }
+        .modal-form-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; background: var(--light-gray); padding: 12px; border-radius: 6px; align-items: flex-end; }
         .modal-form-group { flex: 1; min-width: 200px; }
-        .modal-form-group input, .modal-form-group select { width: 100% !important; box-sizing: border-box; }
+        .modal-form-group input, .modal-form-group select { width: 100% !important; margin-bottom: 0 !important; }
 
-        /* DISEÑO DE TABLA EXCEL */
+        /* DISEÑO DE TABLA EXCEL (Adaptado a alturas 28px) */
         .table-headers {
             display: flex; gap: 8px; font-size: 10px; font-weight: bold; color: var(--comment);
             margin-bottom: 5px; padding: 0 40px 0 12px;
         }
         .component-row-wrapper { 
             display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; 
-            background: var(--light-gray); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);
-            position: relative;
+            background: transparent; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--light-gray);
+            transition: background-color 0.2s;
         }
-        .row-exception { border: 2px solid var(--warning) !important; background: #fffbeb !important; }
+        .component-row-wrapper:nth-child(even) { background-color: #fafbfc; }
+        
+        .row-exception { border-left: 4px solid var(--warning) !important; background: #fffbeb !important; border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         
         .component-row-main { display: flex; gap: 8px; width: 100%; align-items: center; }
         
-        /* Columnas Distribuidas */
         .col-desc { flex: 3; }
         .col-pn { flex: 2; }
         .col-pos { flex: 2; }
         .col-ata { flex: 1.5; }
         .col-app { flex: 1.5; }
         
-        .btn-remove-row { background: transparent; color: var(--danger); font-size: 14px; padding: 0 8px; height: 34px; border: 1px solid var(--danger); border-radius: 4px; flex: 0 0 auto; box-shadow: none;}
-        .btn-remove-row:hover { background: var(--danger); color: white; transform: none; }
+        .btn-remove-row { 
+            background: transparent; color: var(--danger); font-size: 14px; padding: 0; 
+            height: 28px; width: 28px; border: 1px solid var(--danger); border-radius: 4px; 
+            flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-weight: bold;
+        }
+        .btn-remove-row:hover { background: var(--danger); color: white; transform: scale(1.05); }
         
         .override-controls { display: flex; gap: 10px; margin-top: 5px; padding-top: 5px; border-top: 1px dashed var(--border); justify-content: flex-end; align-items: center;}
-        .modal-footer { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); justify-content: flex-end; flex-wrap: wrap; }
+        
+        .modal-footer { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); justify-content: flex-end; flex-wrap: wrap; }
         
         #toast {
             visibility: hidden; min-width: 250px; background-color: var(--primary); color: #fff;
-            text-align: center; border-radius: 4px; padding: 12px; position: fixed; z-index: 1001;
-            bottom: 30px; left: 50%; transform: translateX(-50%); font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-align: center; border-radius: 4px; padding: 10px; position: fixed; z-index: 1001;
+            bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             opacity: 0; transition: opacity 0.3s, visibility 0.3s; border-left: 4px solid var(--accent);
         }
         #toast.show { visibility: visible; opacity: 1; }
 
         /* REGLAS RESPONSIVAS PARA MÓVILES */
         @media (max-width: 800px) {
-            body { padding: 10px; }
-            .container { padding: 15px; }
+            body { padding: 8px; }
+            .container { padding: 12px; }
 
-            .top-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
             .top-bar-left { flex-direction: column; width: 100%; }
             .top-bar-left button { width: 100%; }
 
-            .main-header-wrapper { flex-direction: column; justify-content: center; text-align: center; }
-            .logo-container { width: 100px; margin: 0 auto; }
-            .document-header { margin-top: 15px; font-size: 1.2rem; }
-            .header-spacer { display: none; }
+            .main-header-wrapper { flex-direction: column; text-align: center; gap: 12px; padding-bottom: 15px; }
+            .logo-container { position: relative; transform: none; top: auto; left: auto; }
+            .document-header { padding: 0; }
 
-            .plane-selector-card { flex-direction: column; align-items: stretch; }
+            .plane-selector-card { flex-direction: column; align-items: stretch; text-align: center; gap: 10px; }
             .selector-info { min-width: 100%; }
+            .selector-info label { justify-content: center; }
             .title-select { max-width: 100%; }
             .selector-actions { flex-direction: column; width: 100%; }
             .selector-actions button { width: 100%; margin: 0 !important; }
@@ -261,10 +290,10 @@
             .table-headers { display: none; }
             .component-row-main { flex-direction: column; gap: 8px; align-items: stretch; background: white; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
             .col-desc, .col-pn, .col-pos, .col-ata, .col-app { width: 100% !important; flex: none !important; margin: 0 !important; box-sizing: border-box; }
-            .btn-remove-row { width: 100%; height: 34px; margin-top: 5px; }
-            .component-row-wrapper { padding: 10px; background: var(--light-gray); }
+            .btn-remove-row { width: 100%; height: 28px; margin-top: 5px; }
+            .component-row-wrapper { padding: 10px; background: var(--light-gray); border-radius: 6px; }
 
-            .modal-content { width: 95%; padding: 15px; margin: 5% auto; }
+            .modal-content { width: 92%; padding: 16px; margin: 10% auto; }
             .modal-footer button { width: 100%; }
             .override-controls { flex-direction: column; align-items: stretch; }
             .override-controls button { width: 100%; }
@@ -280,9 +309,9 @@
     <div class="container">
         <div class="top-bar no-print">
             <div class="top-bar-left">
-                <button type="button" id="btn-mode-toggle" onclick="toggleMode()">MODO TÉCNICO</button>
-                <button type="button" class="btn-outline leader-only" onclick="openEffManager()" style="background-color: white; color: var(--primary); border-color: var(--primary);">⚙️ GESTOR DE CATÁLOGOS</button>
-                <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="background-color: var(--danger); color:white; border:none;">CERRAR SESIÓN</button>
+                <button type="button" id="btn-mode-toggle" class="btn-accent" onclick="toggleMode()">MODO TÉCNICO</button>
+                <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE CATÁLOGOS</button>
+                <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="display:none;">CERRAR SESIÓN</button>
             </div>
         </div>
 
@@ -298,12 +327,11 @@
                 </svg>
             </div>
             <h1 class="document-header">CONSULTOR DE PART NUMBERS</h1>
-            <div class="header-spacer"></div>
         </div>
 
         <div class="plane-selector-card">
             <div class="selector-info">
-                <label>1. SELECCIONE O ESCRIBA LA MATRÍCULA</label>
+                <label>⚙️ 1. SELECCIONE O ESCRIBA LA MATRÍCULA</label>
                 <div class="selector-row">
                     <input type="text" id="plane-select" oninput="loadSelectedPlane()" class="title-select" list="planes-datalist" placeholder="-- ESCRIBA O ELIJA MATRÍCULA --" autocomplete="off">
                     <span id="plane-eff-badge" class="badge-eff" style="display: none;"></span>
@@ -319,9 +347,9 @@
         <div id="main-plane-area" style="display: none;">
             
             <div class="plane-svg-container">
-                <div style="text-align: center; font-size: 11px; font-weight: bold; color: var(--comment); margin-bottom: 5px;">2. SELECCIONE UNA ZONA DEL AVIÓN (OPCIONAL)</div>
+                <div style="text-align: center; font-size: 10px; font-weight: bold; color: var(--comment); margin-bottom: 5px;">2. SELECCIONE UNA ZONA DEL AVIÓN (OPCIONAL)</div>
                 <div id="plane-svg-wrapper" style="width: 100%; display: flex; justify-content: center; align-items: center; min-height: 150px; flex-direction: column;">
-                    <span style="color: var(--primary); font-weight: bold;">Cargando DWG A320... ✈️</span>
+                    <span style="color: var(--primary); font-weight: bold; font-size: 10px;">Cargando DWG A320... ✈️</span>
                 </div>
             </div>
             
@@ -338,12 +366,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <span style="color: var(--leader-color);">⚙️ GESTOR DE EFECTIVIDADES</span>
-                <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto; box-shadow: none;">✖</button>
+                <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: 28px; box-shadow: none;">✖</button>
             </div>
             
             <div class="modal-form-row">
                 <div class="modal-form-group">
-                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">SELECCIONAR CATÁLOGO DE EFECTIVIDAD:</label>
+                    <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">SELECCIONAR CATÁLOGO DE EFECTIVIDAD:</label>
                     <select id="modal-eff-select" onchange="loadEffIntoModal()">
                         <option value="">-- ELIJA UN CATÁLOGO --</option>
                     </select>
@@ -353,7 +381,7 @@
             </div>
 
             <div id="eff-components-area" style="display: none;">
-                <p style="font-size: 11px; color: var(--comment); margin-top: 0; display:flex; justify-content:space-between; flex-wrap: wrap; gap: 10px;">
+                <p style="font-size: 10px; color: var(--comment); margin-top: 0; display:flex; justify-content:space-between; flex-wrap: wrap; gap: 10px; padding-bottom: 10px;">
                     <span><b>APLICABILIDAD:</b> En blanco aplica a todos. Filtros permitidos ej: <code>015-018, 019-050</code>.</span>
                     <span id="display-catalog-name" style="font-weight:bold; color:var(--primary);"></span>
                 </p>
@@ -364,7 +392,7 @@
                     <div class="col-pos">ZONA</div>
                     <div class="col-ata">ATA</div>
                     <div class="col-app">APLICABILIDAD</div>
-                    <div style="width: 30px;"></div>
+                    <div style="width: 28px;"></div>
                 </div>
 
                 <div id="eff-components-container"></div>
@@ -384,31 +412,31 @@
         <div class="modal-content">
             <div class="modal-header">
                 <span id="modal-title" style="color: var(--leader-color);">✈️ AGREGAR / EDITAR AVIÓN</span>
-                <button onclick="closeModal('avion-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; height: auto; box-shadow: none;">✖</button>
+                <button onclick="closeModal('avion-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: 28px; box-shadow: none;">✖</button>
             </div>
             
             <div class="modal-form-row">
                 <div class="modal-form-group">
-                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">MATRÍCULA:</label>
+                    <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">MATRÍCULA:</label>
                     <input type="text" id="modal-plane-reg" placeholder="EJ: CC-BEM" maxlength="6" oninput="formatMatricula(this)">
                 </div>
                 <div class="modal-form-group">
-                    <label style="font-size: 11px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">EFECTIVIDAD DEL AVIÓN (EJ: 019):</label>
-                    <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="border-color: var(--leader-color) !important; background-color: #f0f4ff !important;">
+                    <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">EFECTIVIDAD DEL AVIÓN (EJ: 019):</label>
+                    <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="border-color: var(--leader-color); background-color: #f0f4ff;">
                 </div>
-                <div style="flex:1; text-align:right; font-size:11px; color:var(--comment); min-width: 250px;">
+                <div style="flex:1; text-align:right; font-size:10px; color:var(--comment); min-width: 250px;">
                     El sistema asociará automáticamente las piezas que cumplan el código de aplicabilidad configurado en el Gestor.
                 </div>
             </div>
 
-            <div style="font-size: 11px; font-weight: bold; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">CONFIGURACIÓN RESULTANTE (HERENCIA + EXCEPCIONES):</div>
+            <div style="font-size: 10px; font-weight: bold; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">CONFIGURACIÓN RESULTANTE (HERENCIA + EXCEPCIONES):</div>
             
             <div class="table-headers" id="plane-headers">
                 <div class="col-desc">DESCRIPCIÓN</div>
                 <div class="col-pn">P/N</div>
                 <div class="col-pos">ZONA</div>
                 <div class="col-ata">ATA</div>
-                <div style="width: 30px;"></div>
+                <div style="width: 28px;"></div>
             </div>
 
             <div id="plane-components-container"></div>
@@ -514,12 +542,18 @@
             isTeamLeader = true; document.body.classList.add('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
             btnToggle.innerText = "MODO TEAM LEADER"; btnToggle.style.backgroundColor = "var(--leader-color)"; btnToggle.style.color = "white";
+            
+            const btnLogout = document.getElementById('btn-logout');
+            if (btnLogout) btnLogout.style.display = 'inline-flex';
         }
 
         function deactivateLeaderUI() {
             isTeamLeader = false; document.body.classList.remove('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
             btnToggle.innerText = "MODO TÉCNICO"; btnToggle.style.backgroundColor = "var(--primary)"; btnToggle.style.color = "white";
+            
+            const btnLogout = document.getElementById('btn-logout');
+            if (btnLogout) btnLogout.style.display = 'none';
         }
 
         function toggleMode() {
@@ -563,7 +597,7 @@
             } else {
                 if (currentLoadedReg && flotaDB[currentLoadedReg]) renderPlaneData();
                 else if (currentLoadedReg && !flotaDB[currentLoadedReg]) {
-                    document.getElementById('plane-select').value = ""; // Limpia si fue borrado de DB
+                    document.getElementById('plane-select').value = ""; 
                     resetView();
                 }
             }
@@ -776,15 +810,14 @@
             const badgeEl = document.getElementById('plane-eff-badge');
             const alertZoneEl = document.getElementById('zone-filter-alert');
             
-            // Actualizar visibilidad de botones de líder
             const editBtn = document.getElementById('btn-edit-plane');
             const delBtn = document.getElementById('btn-delete-plane');
             if (editBtn) editBtn.style.display = 'inline-flex';
             if (delBtn) delBtn.style.display = 'inline-flex';
 
             if(plane && plane.appCode) {
-                badgeEl.innerText = `Applicability Code: ${plane.appCode}`;
-                badgeEl.style.display = 'inline-block';
+                badgeEl.innerText = `APP: ${plane.appCode}`;
+                badgeEl.style.display = 'inline-flex';
             } else {
                 badgeEl.style.display = 'none';
             }
@@ -805,9 +838,9 @@
             }
 
             if (currentZoneFilter) {
-                alertZoneEl.innerHTML = `<div style="background: var(--light-gray); padding: 10px 15px; border-radius: 4px; font-weight: bold; color: var(--accent); border: 1px solid var(--border); margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                alertZoneEl.innerHTML = `<div style="background: var(--light-gray); padding: 8px 12px; border-radius: 4px; font-weight: bold; color: var(--accent); border: 1px solid var(--border); margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size: 10px;">
                     <span>🔍 FILTRO DE ZONA ACTIVO: ${currentZoneFilter}</span>
-                    <button onclick="toggleZoneFilter('${currentZoneFilter}')" style="height: 26px; padding: 0 10px; font-size: 10px; background: white; color: var(--primary); border: 1px solid var(--primary);">✖ QUITAR FILTRO</button>
+                    <button onclick="toggleZoneFilter('${currentZoneFilter}')" style="height: 24px; padding: 0 8px; font-size: 9px; background: white; color: var(--primary); border: 1px solid var(--primary);">✖ QUITAR FILTRO</button>
                 </div>`;
                 parts = parts.filter(p => (p.pos || "").toUpperCase().includes(currentZoneFilter) || (p.desc || "").toUpperCase().includes(currentZoneFilter));
             } else {
@@ -849,7 +882,6 @@
         function resetView() {
             currentLoadedReg = null; currentZoneFilter = null;
             document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
-            // document.getElementById('plane-select').value = ""; NO SE LIMPIA PERMITIENDO TIPEAR
             document.getElementById('main-plane-area').style.display = 'none';
             document.getElementById('welcome-area').style.display = 'block';
             
@@ -1041,12 +1073,12 @@
             if (isPlaneModal && status === 'exception') {
                 overrideHtml = `
                     <div class="override-controls">
-                        <span style="font-size:10px; color:var(--warning); margin-right:auto; font-weight:bold;">⚠️ EXCEPCIÓN LOCAL</span>
+                        <span style="font-size:9px; color:var(--warning); margin-right:auto; font-weight:bold;">⚠️ EXCEPCIÓN LOCAL</span>
                         <button class="btn-action-small" onclick="revertRowToStandard(this)">↺ REVERTIR AL ESTÁNDAR</button>
-                        <button class="btn-action-small" style="background: var(--primary); color:white;" onclick="forceUpdateStandard(this)">⬆️ FORZAR A FLOTA</button>
+                        <button class="btn-action-small" style="background: var(--primary); color:white; border-color: var(--primary);" onclick="forceUpdateStandard(this)">⬆️ FORZAR A FLOTA</button>
                     </div>`;
             } else if (isPlaneModal && status === 'custom') {
-                 overrideHtml = `<div class="override-controls"><span style="font-size:10px; color:#4338ca; font-weight:bold;">➕ PIEZA CUSTOM (No existe en catálogo)</span></div>`;
+                 overrideHtml = `<div class="override-controls"><span style="font-size:9px; color:#4338ca; font-weight:bold;">➕ PIEZA CUSTOM (No existe en catálogo)</span></div>`;
             }
 
             row.innerHTML = `
