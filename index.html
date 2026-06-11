@@ -419,7 +419,7 @@
                 <div class="table-headers" id="eff-headers">
                     <div class="col-desc">DESCRIPCIÓN</div>
                     <div class="col-pn">P/N</div>
-                    <div class="col-pos">ZONA</div>
+                    <div class="col-pos">UBICACIÓN</div>
                     <div class="col-ata">ATA</div>
                     <div class="col-app">APLICABILIDAD</div>
                     <div style="width: 28px;"></div>
@@ -464,7 +464,7 @@
             <div class="table-headers" id="plane-headers">
                 <div class="col-desc">DESCRIPCIÓN</div>
                 <div class="col-pn">P/N</div>
-                <div class="col-pos">ZONA</div>
+                <div class="col-pos">UBICACIÓN</div>
                 <div class="col-ata">ATA</div>
                 <div style="width: 28px;"></div>
             </div>
@@ -690,7 +690,7 @@
             else {
                 if (localStorage.getItem('tl_email') && correosAutorizados.includes(localStorage.getItem('tl_email'))) { activateLeaderUI(); } 
                 else {
-                    const email = prompt("🔒 ACCESO TEAM LEADER\nIngrese correo corporativo:");
+                    const email = prompt("🔒 ACCESO MODO EDITOR\nIngrese correo corporativo:");
                     if (!email) return; 
                     const emailLower = email.trim().toLowerCase();
                     if (correosAutorizados.includes(emailLower)) {
@@ -1035,7 +1035,7 @@
                         <div class="pn-value-container">
                             ${pnDisplayHtml}
                             <div class="pn-extra-info">
-                                <div><span style="color:var(--comment); font-weight:normal;">ZONA:</span> ${part.pos || '-'}</div>
+                                <div><span style="color:var(--comment); font-weight:normal;">UBICACIÓN:</span> ${part.pos || '-'}</div>
                                 <div><span style="color:var(--comment); font-weight:normal;">ATA:</span> ${part.ata || '-'}</div>
                                 ${verifiedHtml}
                             </div>
