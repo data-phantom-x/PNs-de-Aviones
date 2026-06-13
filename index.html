@@ -89,7 +89,7 @@
             flex-wrap: wrap; gap: 15px;
         }
 
-        .top-bar-left { display: flex; gap: 10px; flex-wrap: wrap; width: 100%; }
+        .top-bar-left { display: flex; gap: 10px; flex-wrap: wrap; width: 100%; align-items: center; }
 
         body:not(.team-leader-mode) .leader-only { display: none !important; }
 
@@ -187,8 +187,8 @@
         .btn-action-small:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
 
         /* Estilos Modo Check */
-        .btn-check-mode { border: 1px solid var(--success); color: var(--success); background-color: transparent; }
-        .btn-check-mode.active { background-color: var(--success); color: white; }
+        .btn-check-mode { border: 1px solid var(--success) !important; color: var(--success) !important; background-color: transparent; }
+        .btn-check-mode.active { background-color: var(--success) !important; color: white !important; }
         body.check-mode-active .btn-verify-part { display: inline-flex !important; }
         .btn-verify-part { display: none; background-color: var(--success); color: white; border-color: var(--success); }
         .btn-verify-part:hover { background-color: #059669; border-color: #059669; }
@@ -303,7 +303,7 @@
             .container { padding: 12px; }
 
             .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
-            .top-bar-left { flex-direction: column; width: 100%; }
+            .top-bar-left { flex-direction: column; width: 100%; align-items: stretch;}
             .top-bar-left button { width: 100%; }
 
             .main-header-wrapper { flex-direction: column; text-align: center; gap: 12px; padding-bottom: 15px; }
@@ -343,7 +343,8 @@
         <div class="top-bar no-print">
             <div class="top-bar-left">
                 <button type="button" id="btn-mode-toggle" class="btn-accent" onclick="toggleMode()">MODO TÉCNICO</button>
-                <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode" onclick="toggleCheckMode()">☑️ MODO CHECK</button>
+                <span id="logged-user" class="leader-only" style="font-size: 10px; font-weight: bold; color: var(--primary); border: 1px solid var(--primary); padding: 0 10px; border-radius: 4px; background: #e0f2fe; display: none; align-items: center; height: 28px; box-sizing: border-box; margin: 0;"></span>
+                <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode leader-only" onclick="toggleCheckMode()" style="display:none;">☑️ MODO CHECK</button>
                 <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
                 <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="display:none;">CERRAR SESIÓN</button>
             </div>
@@ -585,10 +586,10 @@
             const btn = document.getElementById('btn-check-mode');
             if (isCheckMode) {
                 document.body.classList.add('check-mode-active');
-                btn.classList.add('active');
+                if (btn) btn.classList.add('active');
             } else {
                 document.body.classList.remove('check-mode-active');
-                btn.classList.remove('active');
+                if (btn) btn.classList.remove('active');
             }
         };
 
@@ -604,7 +605,9 @@
 
         window.verifyPart = function(partId) {
             if (!currentLoadedReg) return;
-            const timestamp = get24hTimestamp();
+            const userEmail = localStorage.getItem('tl_email') || 'USUARIO';
+            const userAlias = userEmail.split('@')[0].toUpperCase();
+            const timestamp = `${get24hTimestamp()} | 👤 ${userAlias}`;
             set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
                 showToast("✅ Tarjeta Verificada");
             });
@@ -682,6 +685,17 @@
             
             const btnLogout = document.getElementById('btn-logout');
             if (btnLogout) btnLogout.style.display = 'inline-flex';
+
+            const btnCheckMode = document.getElementById('btn-check-mode');
+            if (btnCheckMode) btnCheckMode.style.display = 'inline-flex';
+
+            const userEmail = localStorage.getItem('tl_email') || '';
+            const userAlias = userEmail.split('@')[0].toUpperCase();
+            const loggedUserSpan = document.getElementById('logged-user');
+            if (loggedUserSpan) {
+                loggedUserSpan.innerText = `👤 ${userAlias}`;
+                loggedUserSpan.style.display = 'inline-flex';
+            }
         }
 
         function deactivateLeaderUI() {
@@ -691,6 +705,15 @@
             
             const btnLogout = document.getElementById('btn-logout');
             if (btnLogout) btnLogout.style.display = 'none';
+
+            const btnCheckMode = document.getElementById('btn-check-mode');
+            if (btnCheckMode) btnCheckMode.style.display = 'none';
+
+            const loggedUserSpan = document.getElementById('logged-user');
+            if (loggedUserSpan) loggedUserSpan.style.display = 'none';
+
+            // Apagar modo check al salir por seguridad visual
+            if (isCheckMode) toggleCheckMode();
         }
 
         function toggleMode() {
@@ -817,7 +840,6 @@
             return true; 
         }
 
-        // LÓGICA ACTUALIZADA PARA PRESERVAR EL P/N ORIGINAL EN LAS EXCEPCIONES
         function getMergedPlaneParts(reg) {
             const plane = flotaDB[reg];
             if (!plane) return [];
@@ -858,7 +880,6 @@
                 const basePart = baseParts[partId];
                 if (exceptions[partId]) {
                     if(!exceptions[partId]._deleted) {
-                        // Preservamos originalPn para saber si cambió el P/N respecto a efectividad
                         merged.push({ id: partId, ...basePart, ...exceptions[partId], originalPn: basePart.pn, status: 'exception', isBase: true });
                     }
                 } else {
@@ -939,7 +960,6 @@
             renderPlaneData();
         }
 
-        // RENDER DE TARJETAS MODIFICADO PARA INCLUIR DOBLE LÍNEA Y BOTÓN DE EDICIÓN LOCAL
         function renderPlaneData() {
             const plane = flotaDB[currentLoadedReg];
             const badgeEl = document.getElementById('plane-eff-badge');
@@ -973,7 +993,7 @@
                 `;
             }
 
-            if (currentZoneFilter) {
+            if (currentZoneFilter && Array.isArray(parts)) {
                 alertZoneEl.innerHTML = `<div style="background: var(--light-gray); padding: 8px 12px; border-radius: 4px; font-weight: bold; color: var(--accent); border: 1px solid var(--border); margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size: 10px;">
                     <span>🔍 FILTRO DE ZONA ACTIVO: ${currentZoneFilter}</span>
                     <button onclick="toggleZoneFilter('${currentZoneFilter}')" style="height: 24px; padding: 0 8px; font-size: 9px; background: white; color: var(--primary); border: 1px solid var(--primary);">✖ QUITAR FILTRO</button>
@@ -981,6 +1001,11 @@
                 parts = parts.filter(p => (p.pos || "").toUpperCase().includes(currentZoneFilter) || (p.desc || "").toUpperCase().includes(currentZoneFilter));
             } else {
                 alertZoneEl.innerHTML = '';
+            }
+
+            // Ordenamiento Alfabético
+            if (Array.isArray(parts) && !parts._invalidEffectivity) {
+                parts.sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
             }
 
             if (parts.length === 0) {
@@ -997,7 +1022,6 @@
 
                 const cardClass = part.status === 'exception' ? 'card-exception' : (part.status === 'custom' ? 'card-custom' : '');
                 
-                // --- MANEJO DEL DOBLE P/N (EFECTIVIDAD + FÍSICO) ---
                 let pnDisplayHtml = '';
                 if (part.originalPn && part.pn && part.originalPn !== part.pn) {
                     pnDisplayHtml = `
@@ -1074,7 +1098,6 @@
             localStorage.removeItem('saved_plane_reg');
         }
 
-        // LÓGICA DE EDICIÓN ESPECÍFICA (SINGLE EDIT)
         window.editSinglePart = function(partId) {
             if (!isTeamLeader || !currentLoadedReg) return;
             const parts = getMergedPlaneParts(currentLoadedReg);
@@ -1086,7 +1109,6 @@
             document.getElementById('sp-desc').value = part.desc || '';
             document.getElementById('sp-pn').value = part.pn || '';
             
-            // Setup Multiple Checkboxes for Zones
             const posInput = document.getElementById('sp-pos');
             posInput.value = part.pos || '';
             const zones = (part.pos || '').split(',').map(z => z.trim());
@@ -1103,7 +1125,6 @@
             document.getElementById('sp-ata').value = part.ata || '';
             document.getElementById('sp-ipc').value = part.ipc || '';
             
-            // Revert Button Setup
             const btnRevert = document.getElementById('btn-sp-revert');
             if (part.status === 'exception') {
                 btnRevert.style.display = 'inline-flex';
@@ -1152,14 +1173,15 @@
             const plane = flotaDB[currentLoadedReg];
             let exceptions = plane.exceptions || {};
             
-            // Creamos o actualizamos la excepción específica
             exceptions[partId] = {
-                ...(exceptions[partId] || {}), // Preservar otras propiedades si las hay
+                ...(exceptions[partId] || {}),
                 desc, pn, pos, ata, ipc
             };
 
             set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/exceptions`), exceptions).then(() => {
-                const timestamp = get24hTimestamp();
+                const userEmail = localStorage.getItem('tl_email') || 'USUARIO';
+                const userAlias = userEmail.split('@')[0].toUpperCase();
+                const timestamp = `${get24hTimestamp()} | 👤 ${userAlias}`;
                 set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
                     closeModal('single-part-modal');
                     showToast("✅ Componente Guardado y Verificado");
@@ -1236,9 +1258,13 @@
             
             const eff = efectividadesDB[code];
             if (eff && eff.parts) {
-                Object.keys(eff.parts).forEach(id => {
-                    const p = eff.parts[id];
-                    addComponentRow('eff-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, code);
+                // Ordenamiento Alfabético
+                const sortedParts = Object.keys(eff.parts)
+                    .map(id => ({ id, ...eff.parts[id] }))
+                    .sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
+                    
+                sortedParts.forEach(p => {
+                    addComponentRow('eff-components-container', p.id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, code);
                 });
             }
             document.getElementById('eff-components-area').style.display = 'block';
@@ -1314,10 +1340,14 @@
                 } else {
                     Object.values(efectividadesDB).forEach(catalog => {
                         const parts = catalog.parts || {};
-                        Object.keys(parts).forEach(id => {
-                            const p = parts[id];
+                        // Ordenamiento Alfabético Interno
+                        const sortedBaseParts = Object.keys(parts)
+                            .map(id => ({ id, ...parts[id] }))
+                            .sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
+
+                        sortedBaseParts.forEach(p => {
                             if(isAppMatch(appCode, p.app, catalog.catalogCode)) {
-                                addComponentRow('plane-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, catalog.catalogCode);
+                                addComponentRow('plane-components-container', p.id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, catalog.catalogCode);
                                 count++;
                             }
                         });
@@ -1412,7 +1442,6 @@
                 row.querySelector('.part-pn').value = basePart.pn || '';
                 row.querySelector('.part-pos').value = basePart.pos || '';
                 
-                // Actualizar interfaz visual del select múltiple
                 const posStr = basePart.pos || '';
                 const zones = posStr.split(',').map(z => z.trim());
                 row.querySelectorAll('.multiselect-options input[type="checkbox"]').forEach(cb => {
@@ -1543,6 +1572,10 @@
                 }
                 
                 const mergedParts = getMergedPlaneParts(currentLoadedReg);
+                
+                // Ordenamiento Alfabético
+                mergedParts.sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
+                
                 mergedParts.forEach(p => {
                     addComponentRow('plane-components-container', p.id, p.isBase, p.status, p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, p._catalogSource);
                 });
