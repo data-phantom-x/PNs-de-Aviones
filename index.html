@@ -147,6 +147,23 @@
             box-sizing: border-box; position: relative;
         }
 
+        .svg-toggles { 
+            display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; 
+            border-bottom: 1px solid var(--light-gray); padding-bottom: 15px; 
+        }
+        
+        .svg-toggle-btn { 
+            width: 140px; font-size: 11px; height: 32px; border-radius: 4px; 
+            border: 1px solid var(--primary); color: var(--primary); font-weight: 800; 
+            background: white; transition: all 0.3s; cursor: pointer; text-transform: uppercase;
+        }
+        
+        .svg-toggle-btn:hover { background: var(--light-gray); }
+        .svg-toggle-btn.active { 
+            background: var(--primary) !important; color: white !important; 
+            border-color: var(--primary) !important; box-shadow: 0 4px 6px rgba(27,0,136,0.2); 
+        }
+
         .svg-group { cursor: pointer; transition: all 0.2s ease; }
         
         .svg-clickable { 
@@ -375,9 +392,13 @@
         <div id="main-plane-area" style="display: none;">
             
             <div class="plane-svg-container">
+                <div class="svg-toggles">
+                    <button type="button" class="svg-toggle-btn active" id="btn-cabina" onclick="switchSVG('CABINA')">✈️ CABINA</button>
+                    <button type="button" class="svg-toggle-btn" id="btn-cockpit" onclick="switchSVG('COCKPIT')">💺 COCKPIT</button>
+                </div>
                 <div style="text-align: center; font-size: 10px; font-weight: bold; color: var(--comment); margin-bottom: 5px;">2. SELECCIONE UNA ZONA DEL AVIÓN (OPCIONAL)</div>
                 <div id="plane-svg-wrapper" style="width: 100%; display: flex; justify-content: center; align-items: center; min-height: 150px; flex-direction: column;">
-                    <span style="color: var(--primary); font-weight: bold; font-size: 10px;">Cargando DWG A320... ✈️</span>
+                    <span style="color: var(--primary); font-weight: bold; font-size: 10px;">Cargando DWG... ✈️</span>
                 </div>
             </div>
             
@@ -509,6 +530,10 @@
                         <label><input type="checkbox" value="MCD CENTRAL" onchange="updateMultiValue(this)"> MCD CENTRAL</label>
                         <label><input type="checkbox" value="MCD LH" onchange="updateMultiValue(this)"> MCD LH</label>
                         <label><input type="checkbox" value="MCD RH" onchange="updateMultiValue(this)"> MCD RH</label>
+                        <label><input type="checkbox" value="CAPTAIN SEAT" onchange="updateMultiValue(this)"> CAPTAIN SEAT</label>
+                        <label><input type="checkbox" value="F/O SEAT" onchange="updateMultiValue(this)"> F/O SEAT</label>
+                        <label><input type="checkbox" value="3RD OCCUPANT SEAT" onchange="updateMultiValue(this)"> 3RD OCCUPANT SEAT</label>
+                        <label><input type="checkbox" value="4TH OCCUPANT SEAT" onchange="updateMultiValue(this)"> 4TH OCCUPANT SEAT</label>
                     </div>
                     <input type="hidden" id="sp-pos">
                 </div>
@@ -569,7 +594,26 @@
             "guido.contrerasG@latam.com"
         ];
         const SESSION_EXPIRATION_MS = 12 * 60 * 60 * 1000;
-        const GITHUB_SVG_URL = "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320.svg"; 
+        
+        // --- URLs DE ESQUEMAS SVG ---
+        const SVG_URLS = {
+            'CABINA': "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320.svg",
+            'COCKPIT': "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320%20COCKPIT.svg"
+        };
+        let currentSVGView = 'CABINA';
+
+        // --- MAPEO ROBUSTO DE ZONAS E IDs INKSCAPE ---
+        const ZONES_MAP = [
+            { name: 'FWD', id: 'FWD' },
+            { name: 'AFT', id: 'AFT' },
+            { name: 'MCD CENTRAL', id: 'MCD_CENTRAL' },
+            { name: 'MCD LH', id: 'MCD_LH' },
+            { name: 'MCD RH', id: 'MCD_RH' },
+            { name: 'CAPTAIN SEAT', id: 'CAPTAIN' },
+            { name: 'F/O SEAT', id: 'FIRST_OFFICER' },
+            { name: '3RD OCCUPANT SEAT', id: '3RD_OCCUPANT' },
+            { name: '4TH OCCUPANT SEAT', id: '4TH_OCCUPANT' }
+        ];
 
         const generateId = () => 'p_' + Math.random().toString(36).substr(2, 9);
         
@@ -640,33 +684,71 @@
             }
         });
 
-        // --- SVG LOGIC ---
+        // --- LÓGICA SVG DINÁMICA ---
+        window.switchSVG = function(view) {
+            if (currentSVGView === view) return;
+            currentSVGView = view;
+            
+            document.getElementById('btn-cabina').classList.toggle('active', view === 'CABINA');
+            document.getElementById('btn-cockpit').classList.toggle('active', view === 'COCKPIT');
+            
+            loadPlaneSVG();
+        };
+
         async function loadPlaneSVG() {
             try {
-                const response = await fetch(GITHUB_SVG_URL);
+                const wrapper = document.getElementById('plane-svg-wrapper');
+                wrapper.innerHTML = `<span style="color: var(--primary); font-weight: bold; font-size: 10px;">Cargando DWG ${currentSVGView}... ✈️</span>`;
+                
+                const response = await fetch(SVG_URLS[currentSVGView]);
                 if (!response.ok) throw new Error("SVG Network error");
                 const svgText = await response.text();
-                const wrapper = document.getElementById('plane-svg-wrapper');
+                
                 wrapper.innerHTML = svgText;
                 const svgElement = wrapper.querySelector('svg');
                 if(svgElement) {
                     svgElement.style.width = '100%'; svgElement.style.height = 'auto'; svgElement.style.maxHeight = '300px'; 
                 }
                 
-                ['FWD', 'AFT', 'MCD CENTRAL', 'MCD LH', 'MCD RH'].forEach(zone => {
-                    const inkscapeId = zone.replace(/ /g, '_');
-                    const btn = document.getElementById(inkscapeId) || document.getElementById('btn-' + zone.toLowerCase().replace(/ /g, '-'));
+                ZONES_MAP.forEach(z => {
+                    const btn = document.getElementById(z.id) || document.getElementById(`btn-${z.name.toLowerCase().replace(/ /g, '-')}`);
                     if (btn) {
                         btn.classList.add('svg-group');
-                        btn.onclick = () => toggleZoneFilter(zone);
+                        btn.onclick = () => toggleZoneFilter(z.name);
                         btn.querySelectorAll('path, rect, polygon, circle, g').forEach(p => p.classList.add('svg-clickable'));
                     }
                 });
+
+                if (currentZoneFilter) {
+                    const activeZoneObj = ZONES_MAP.find(z => z.name === currentZoneFilter);
+                    if (activeZoneObj) {
+                        const btn = document.getElementById(activeZoneObj.id);
+                        if (btn) btn.classList.add('active-zone');
+                    }
+                }
             } catch (error) {
-                document.getElementById('plane-svg-wrapper').innerHTML = `<div style="color: var(--danger); font-weight: bold; padding: 20px;">Error al cargar esquema A320.</div>`;
+                document.getElementById('plane-svg-wrapper').innerHTML = `<div style="color: var(--danger); font-weight: bold; padding: 20px;">Error al cargar esquema ${currentSVGView}.</div>`;
             }
         }
         loadPlaneSVG();
+
+        window.toggleZoneFilter = function(zone) {
+            if (!currentLoadedReg) return;
+            
+            document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
+            
+            if (currentZoneFilter === zone) { 
+                currentZoneFilter = null; 
+            } else { 
+                currentZoneFilter = zone; 
+                const activeZoneObj = ZONES_MAP.find(z => z.name === zone);
+                if (activeZoneObj) {
+                    const btn = document.getElementById(activeZoneObj.id) || document.getElementById(`btn-${activeZoneObj.name.toLowerCase().replace(/ /g, '-')}`);
+                    if (btn) btn.classList.add('active-zone');
+                }
+            }
+            renderPlaneData();
+        }
 
         // --- AUTH ---
         function checkSession() {
@@ -712,7 +794,6 @@
             const loggedUserSpan = document.getElementById('logged-user');
             if (loggedUserSpan) loggedUserSpan.style.display = 'none';
 
-            // Apagar modo check al salir por seguridad visual
             if (isCheckMode) toggleCheckMode();
         }
 
@@ -951,15 +1032,6 @@
             renderPlaneData();
         }
 
-        window.toggleZoneFilter = function(zone) {
-            if (!currentLoadedReg) return;
-            const btn = document.getElementById(zone.replace(/ /g, '_')) || document.getElementById(`btn-${zone.toLowerCase().replace(/ /g, '-')}`);
-            document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
-            if (currentZoneFilter === zone) { currentZoneFilter = null; } 
-            else { currentZoneFilter = zone; if(btn) btn.classList.add('active-zone'); }
-            renderPlaneData();
-        }
-
         function renderPlaneData() {
             const plane = flotaDB[currentLoadedReg];
             const badgeEl = document.getElementById('plane-eff-badge');
@@ -1003,7 +1075,6 @@
                 alertZoneEl.innerHTML = '';
             }
 
-            // Ordenamiento Alfabético
             if (Array.isArray(parts) && !parts._invalidEffectivity) {
                 parts.sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
             }
@@ -1258,7 +1329,6 @@
             
             const eff = efectividadesDB[code];
             if (eff && eff.parts) {
-                // Ordenamiento Alfabético
                 const sortedParts = Object.keys(eff.parts)
                     .map(id => ({ id, ...eff.parts[id] }))
                     .sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
@@ -1340,7 +1410,6 @@
                 } else {
                     Object.values(efectividadesDB).forEach(catalog => {
                         const parts = catalog.parts || {};
-                        // Ordenamiento Alfabético Interno
                         const sortedBaseParts = Object.keys(parts)
                             .map(id => ({ id, ...parts[id] }))
                             .sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
@@ -1406,6 +1475,10 @@
                             <label><input type="checkbox" value="MCD CENTRAL" onchange="updateMultiValue(this)" ${isChecked('MCD CENTRAL')}> MCD CENTRAL</label>
                             <label><input type="checkbox" value="MCD LH" onchange="updateMultiValue(this)" ${isChecked('MCD LH')}> MCD LH</label>
                             <label><input type="checkbox" value="MCD RH" onchange="updateMultiValue(this)" ${isChecked('MCD RH')}> MCD RH</label>
+                            <label><input type="checkbox" value="CAPTAIN SEAT" onchange="updateMultiValue(this)" ${isChecked('CAPTAIN SEAT')}> CAPTAIN SEAT</label>
+                            <label><input type="checkbox" value="F/O SEAT" onchange="updateMultiValue(this)" ${isChecked('F/O SEAT')}> F/O SEAT</label>
+                            <label><input type="checkbox" value="3RD OCCUPANT SEAT" onchange="updateMultiValue(this)" ${isChecked('3RD OCCUPANT SEAT')}> 3RD OCCUPANT SEAT</label>
+                            <label><input type="checkbox" value="4TH OCCUPANT SEAT" onchange="updateMultiValue(this)" ${isChecked('4TH OCCUPANT SEAT')}> 4TH OCCUPANT SEAT</label>
                         </div>
                         <input type="hidden" class="part-pos" value="${pos || ''}">
                     </div>
@@ -1573,7 +1646,6 @@
                 
                 const mergedParts = getMergedPlaneParts(currentLoadedReg);
                 
-                // Ordenamiento Alfabético
                 mergedParts.sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
                 
                 mergedParts.forEach(p => {
