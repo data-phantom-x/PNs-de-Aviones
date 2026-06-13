@@ -271,10 +271,11 @@
         
         .component-row-main { display: flex; gap: 8px; width: 100%; align-items: center; }
         
-        .col-desc { flex: 3; }
+        .col-desc { flex: 2.5; }
         .col-pn { flex: 2; }
         .col-pos { flex: 2; }
-        .col-ata { flex: 1.5; }
+        .col-ata { flex: 1; }
+        .col-ipc { flex: 1.5; }
         .col-app { flex: 1.5; }
         
         .btn-remove-row { 
@@ -320,7 +321,7 @@
 
             .table-headers { display: none; }
             .component-row-main { flex-direction: column; gap: 8px; align-items: stretch; background: white; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
-            .col-desc, .col-pn, .col-pos, .col-ata, .col-app { width: 100% !important; flex: none !important; margin: 0 !important; box-sizing: border-box; }
+            .col-desc, .col-pn, .col-pos, .col-ata, .col-ipc, .col-app { width: 100% !important; flex: none !important; margin: 0 !important; box-sizing: border-box; }
             .btn-remove-row { width: 100%; height: 28px; margin-top: 5px; }
             .component-row-wrapper { padding: 10px; background: var(--light-gray); border-radius: 6px; }
 
@@ -335,6 +336,7 @@
     <datalist id="descripciones-list"></datalist>
     <datalist id="pn-list"></datalist>
     <datalist id="ata-list"></datalist>
+    <datalist id="ipc-list"></datalist>
     <datalist id="planes-datalist"></datalist>
 
     <div class="container">
@@ -420,14 +422,15 @@
                     <div class="col-desc">DESCRIPCIÓN</div>
                     <div class="col-pn">P/N</div>
                     <div class="col-pos">UBICACIÓN</div>
-                    <div class="col-ata">ATA</div>
+                    <div class="col-ata">CMM</div>
+                    <div class="col-ipc">IPC</div>
                     <div class="col-app">APLICABILIDAD</div>
                     <div style="width: 28px;"></div>
                 </div>
 
                 <div id="eff-components-container"></div>
 
-                <button class="btn-outline" onclick="addComponentRow('eff-components-container', '', true, 'standard', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR NUEVO P/N</button>
+                <button class="btn-outline" onclick="addComponentRow('eff-components-container', '', true, 'standard', '', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed;">+ AÑADIR NUEVO P/N</button>
                 
                 <div class="modal-footer">
                     <button class="btn-danger-outline" onclick="deleteEfectividad()" style="margin-right: auto;">🗑️ ELIMINAR CATÁLOGO</button>
@@ -465,13 +468,14 @@
                 <div class="col-desc">DESCRIPCIÓN</div>
                 <div class="col-pn">P/N</div>
                 <div class="col-pos">UBICACIÓN</div>
-                <div class="col-ata">ATA</div>
+                <div class="col-ata">CMM</div>
+                <div class="col-ipc">IPC</div>
                 <div style="width: 28px;"></div>
             </div>
 
             <div id="plane-components-container"></div>
 
-            <button class="btn-outline" onclick="addComponentRow('plane-components-container', '', false, 'custom', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed; color: #4338ca; border-color: #c7d2fe;">+ AÑADIR P/N CUSTOM (SOLO ESTE AVIÓN)</button>
+            <button class="btn-outline" onclick="addComponentRow('plane-components-container', '', false, 'custom', '', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed; color: #4338ca; border-color: #c7d2fe;">+ AÑADIR P/N CUSTOM (SOLO ESTE AVIÓN)</button>
             
             <div class="modal-footer">
                 <button class="btn-outline" onclick="closeModal('avion-modal')">CANCELAR</button>
@@ -509,8 +513,12 @@
                 </div>
             </div>
             <div class="modal-form-group" style="margin-bottom: 12px;">
-                <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">ATA:</label>
+                <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">CMM:</label>
                 <input type="text" id="sp-ata" list="ata-list" style="width: 100%;">
+            </div>
+            <div class="modal-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">IPC:</label>
+                <input type="text" id="sp-ipc" list="ipc-list" style="width: 100%;">
             </div>
             <input type="hidden" id="sp-id">
             <div class="modal-footer" style="margin-top: 20px;">
@@ -886,8 +894,8 @@
             });
             if (currentModalEff && efectividadesDB[currentModalEff]) selectModalEff.value = currentModalEff;
 
-            const descSet = new Set(); const pnSet = new Set(); const ataSet = new Set();
-            const scanPart = p => { if(p.desc) descSet.add(p.desc); if(p.pn) pnSet.add(p.pn); if(p.ata) ataSet.add(p.ata); };
+            const descSet = new Set(); const pnSet = new Set(); const ataSet = new Set(); const ipcSet = new Set();
+            const scanPart = p => { if(p.desc) descSet.add(p.desc); if(p.pn) pnSet.add(p.pn); if(p.ata) ataSet.add(p.ata); if(p.ipc) ipcSet.add(p.ipc); };
             
             Object.values(efectividadesDB).forEach(e => Object.values(e.parts || {}).forEach(scanPart));
             Object.values(flotaDB).forEach(a => {
@@ -899,7 +907,7 @@
                 const dl = document.getElementById(id); dl.innerHTML = '';
                 Array.from(set).sort().forEach(v => { const o = document.createElement('option'); o.value = v; dl.appendChild(o); });
             };
-            fillDatalist('descripciones-list', descSet); fillDatalist('pn-list', pnSet); fillDatalist('ata-list', ataSet);
+            fillDatalist('descripciones-list', descSet); fillDatalist('pn-list', pnSet); fillDatalist('ata-list', ataSet); fillDatalist('ipc-list', ipcSet);
         }
 
         window.loadSelectedPlane = function() {
@@ -1022,6 +1030,12 @@
                     verifiedHtml = `<div style="width: 100%; text-align: right; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); color: var(--success); font-weight: 900; font-size: 9px;">✅ REVISADO: ${verifications[part.id]}</div>`;
                 }
 
+                let ipcLinkHtml = '';
+                if (part.ipc) {
+                    const urlIpc = 'en' + part.ipc.replace(/-/g, '').toLowerCase();
+                    ipcLinkHtml = `<div><span style="color:var(--comment); font-weight:normal;">IPC:</span> <a href="https://toolbox.appslatam.com/a320/ToolboxRemote.html#/AIPC/da/AIPC/bid/31774841/data/${urlIpc}" target="_blank" style="color: var(--leader-color); text-decoration: underline; font-weight: 800;">${part.ipc}</a></div>`;
+                }
+
                 container.innerHTML += `
                     <div class="pn-card ${cardClass}">
                         <div class="pn-desc">
@@ -1036,7 +1050,8 @@
                             ${pnDisplayHtml}
                             <div class="pn-extra-info">
                                 <div><span style="color:var(--comment); font-weight:normal;">UBICACIÓN:</span> ${part.pos || '-'}</div>
-                                <div><span style="color:var(--comment); font-weight:normal;">ATA:</span> ${part.ata || '-'}</div>
+                                <div><span style="color:var(--comment); font-weight:normal;">CMM:</span> ${part.ata || '-'}</div>
+                                ${ipcLinkHtml}
                                 ${verifiedHtml}
                             </div>
                         </div>
@@ -1086,6 +1101,7 @@
             header.innerHTML = headerText + '<span style="font-size:8px; float:right;"> ▼</span>';
 
             document.getElementById('sp-ata').value = part.ata || '';
+            document.getElementById('sp-ipc').value = part.ipc || '';
             
             // Revert Button Setup
             const btnRevert = document.getElementById('btn-sp-revert');
@@ -1116,6 +1132,7 @@
             header.innerHTML = 'ZONAS<span style="font-size:8px; float:right;"> ▼</span>';
 
             document.getElementById('sp-ata').value = '';
+            document.getElementById('sp-ipc').value = '';
 
             document.getElementById('btn-sp-revert').style.display = 'none'; 
             document.getElementById('single-part-modal').style.display = 'block';
@@ -1128,6 +1145,7 @@
             const pn = document.getElementById('sp-pn').value.trim().toUpperCase();
             const pos = document.getElementById('sp-pos').value.trim().toUpperCase();
             const ata = document.getElementById('sp-ata').value.trim().toUpperCase();
+            const ipc = document.getElementById('sp-ipc').value.trim().toUpperCase();
 
             if (!desc || !pn) return alert("Descripción y P/N Actual son obligatorios.");
 
@@ -1137,7 +1155,7 @@
             // Creamos o actualizamos la excepción específica
             exceptions[partId] = {
                 ...(exceptions[partId] || {}), // Preservar otras propiedades si las hay
-                desc, pn, pos, ata
+                desc, pn, pos, ata, ipc
             };
 
             set(ref(db, `mantenimiento/pns_aviones/${currentLoadedReg}/exceptions`), exceptions).then(() => {
@@ -1220,7 +1238,7 @@
             if (eff && eff.parts) {
                 Object.keys(eff.parts).forEach(id => {
                     const p = eff.parts[id];
-                    addComponentRow('eff-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.app, code);
+                    addComponentRow('eff-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, code);
                 });
             }
             document.getElementById('eff-components-area').style.display = 'block';
@@ -1241,6 +1259,7 @@
                         desc, pn, 
                         pos: row.querySelector('.part-pos').value.trim().toUpperCase(),
                         ata: row.querySelector('.part-ata').value.trim().toUpperCase(),
+                        ipc: row.querySelector('.part-ipc').value.trim().toUpperCase(),
                         app: row.querySelector('.part-app').value.trim().toUpperCase()
                     };
                 }
@@ -1280,7 +1299,8 @@
                     const pn = row.querySelector('.part-pn').value.trim().toUpperCase();
                     const pos = row.querySelector('.part-pos').value.trim().toUpperCase();
                     const ata = row.querySelector('.part-ata').value.trim().toUpperCase();
-                    if (desc || pn) currentCustoms.push({ id: row.dataset.id, desc, pn, pos, ata });
+                    const ipc = row.querySelector('.part-ipc').value.trim().toUpperCase();
+                    if (desc || pn) currentCustoms.push({ id: row.dataset.id, desc, pn, pos, ata, ipc });
                 }
             });
 
@@ -1297,7 +1317,7 @@
                         Object.keys(parts).forEach(id => {
                             const p = parts[id];
                             if(isAppMatch(appCode, p.app, catalog.catalogCode)) {
-                                addComponentRow('plane-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.app, catalog.catalogCode);
+                                addComponentRow('plane-components-container', id, true, 'standard', p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, catalog.catalogCode);
                                 count++;
                             }
                         });
@@ -1306,7 +1326,7 @@
             }
 
             currentCustoms.forEach(c => {
-                 addComponentRow('plane-components-container', c.id, false, 'custom', c.desc, c.pn, c.pos, c.ata, '', null);
+                 addComponentRow('plane-components-container', c.id, false, 'custom', c.desc, c.pn, c.pos, c.ata, c.ipc, '', null);
             });
 
             if (count > 0) {
@@ -1314,7 +1334,7 @@
             }
         }
 
-        window.addComponentRow = function(containerId, id, isBase, status, desc, pn, pos, ata, app, catalogSource) {
+        window.addComponentRow = function(containerId, id, isBase, status, desc, pn, pos, ata, ipc, app, catalogSource) {
             const container = document.getElementById(containerId);
             const row = document.createElement('div');
             if(!id) id = generateId();
@@ -1360,7 +1380,8 @@
                         <input type="hidden" class="part-pos" value="${pos || ''}">
                     </div>
                     
-                    <input type="text" class="part-ata col-ata" placeholder="ATA" list="ata-list" value="${ata || ''}">
+                    <input type="text" class="part-ata col-ata" placeholder="CMM" list="ata-list" value="${ata || ''}">
+                    <input type="text" class="part-ipc col-ipc" placeholder="IPC" list="ipc-list" value="${ipc || ''}">
                     ${appInputHtml}
                     
                     <button class="btn-remove-row" onclick="this.parentElement.parentElement.remove()" title="Eliminar">✖</button>
@@ -1401,6 +1422,7 @@
                 header.innerHTML = (zones.filter(Boolean).length ? zones.join(', ') : 'ZONAS') + '<span style="font-size:8px; float:right;"> ▼</span>';
 
                 row.querySelector('.part-ata').value = basePart.ata || '';
+                row.querySelector('.part-ipc').value = basePart.ipc || '';
                 row.classList.remove('row-exception');
                 row.dataset.status = 'standard';
                 const controls = row.querySelector('.override-controls');
@@ -1424,6 +1446,7 @@
                 pn: row.querySelector('.part-pn').value.trim().toUpperCase(),
                 pos: row.querySelector('.part-pos').value.trim().toUpperCase(),
                 ata: row.querySelector('.part-ata').value.trim().toUpperCase(),
+                ipc: row.querySelector('.part-ipc') ? row.querySelector('.part-ipc').value.trim().toUpperCase() : (efectividadesDB[catalogCode].parts[id]?.ipc || ''),
                 app: appEl ? appEl.value.trim().toUpperCase() : baseApp
             };
 
@@ -1471,15 +1494,16 @@
                 const pn = row.querySelector('.part-pn').value.trim().toUpperCase();
                 const pos = row.querySelector('.part-pos').value.trim().toUpperCase();
                 const ata = row.querySelector('.part-ata').value.trim().toUpperCase();
+                const ipc = row.querySelector('.part-ipc').value.trim().toUpperCase();
                 
                 if (!desc || !pn) return;
-                const currentData = { desc, pn, pos, ata };
+                const currentData = { desc, pn, pos, ata, ipc };
                 rowsInDom.add(id);
 
                 if (isBase) {
                     if (expectedBaseParts[id]) {
                         const base = expectedBaseParts[id];
-                        if (base.desc !== desc || base.pn !== pn || base.pos !== pos || base.ata !== ata) {
+                        if (base.desc !== desc || base.pn !== pn || base.pos !== pos || base.ata !== ata || (base.ipc || '') !== ipc) {
                             exceptions[id] = currentData;
                         }
                     }
@@ -1520,12 +1544,12 @@
                 
                 const mergedParts = getMergedPlaneParts(currentLoadedReg);
                 mergedParts.forEach(p => {
-                    addComponentRow('plane-components-container', p.id, p.isBase, p.status, p.desc, p.pn, p.pos, p.ata, p.app, p._catalogSource);
+                    addComponentRow('plane-components-container', p.id, p.isBase, p.status, p.desc, p.pn, p.pos, p.ata, p.ipc, p.app, p._catalogSource);
                 });
             } else {
                 regInput.value = ''; regInput.disabled = false;
                 appCodeInput.value = '';
-                addComponentRow('plane-components-container', generateId(), false, 'custom', '', '', '', '', '', null);
+                addComponentRow('plane-components-container', generateId(), false, 'custom', '', '', '', '', '', '', null);
             }
             document.getElementById('modal-title').innerText = isEdit ? `✏️ EDITAR ${currentLoadedReg}` : '✈️ AGREGAR AVIÓN';
             document.getElementById('avion-modal').style.display = 'block';
