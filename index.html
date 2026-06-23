@@ -387,11 +387,13 @@
     <div class="container">
         <div class="top-bar no-print">
             <div class="top-bar-left">
-                <button type="button" id="btn-mode-toggle" class="btn-accent" onclick="toggleMode()">MODO TÉCNICO</button>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <button type="button" id="btn-mode-toggle" class="btn-accent" onclick="toggleMode()">MODO TÉCNICO</button>
+                    <button type="button" id="btn-logout" class="btn-danger-outline" onclick="logoutLeader()" style="display:none;">✖</button>
+                </div>
                 <span id="logged-user" class="leader-only" style="font-size: 10px; font-weight: bold; color: var(--primary); border: 1px solid var(--primary); padding: 0 10px; border-radius: 4px; background: #e0f2fe; display: none; align-items: center; height: 28px; box-sizing: border-box; margin: 0;"></span>
                 <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode leader-only" onclick="toggleCheckMode()" style="display:none;">☑️ MODO CHECK</button>
                 <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
-                <button type="button" id="btn-logout" class="btn-danger-outline leader-only" onclick="logoutLeader()" style="display:none;">CERRAR SESIÓN</button>
             </div>
         </div>
 
@@ -797,7 +799,14 @@
         function activateLeaderUI() {
             isTeamLeader = true; document.body.classList.add('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
-            btnToggle.innerText = "MODO EDITOR"; btnToggle.style.backgroundColor = "var(--leader-color)"; btnToggle.style.color = "white";
+            
+            const userEmail = localStorage.getItem('tl_email') || '';
+            const userAlias = userEmail.split('@')[0].toUpperCase();
+            
+            btnToggle.innerText = `👤 ${userAlias}`;
+            btnToggle.style.background = "#e0f2fe";
+            btnToggle.style.color = "var(--primary)";
+            btnToggle.style.border = "1px solid var(--primary)";
             
             const btnLogout = document.getElementById('btn-logout');
             if (btnLogout) btnLogout.style.display = 'inline-flex';
@@ -805,19 +814,19 @@
             const btnCheckMode = document.getElementById('btn-check-mode');
             if (btnCheckMode) btnCheckMode.style.display = 'inline-flex';
 
-            const userEmail = localStorage.getItem('tl_email') || '';
-            const userAlias = userEmail.split('@')[0].toUpperCase();
             const loggedUserSpan = document.getElementById('logged-user');
             if (loggedUserSpan) {
-                loggedUserSpan.innerText = `👤 ${userAlias}`;
-                loggedUserSpan.style.display = 'inline-flex';
+                loggedUserSpan.style.display = 'none';
             }
         }
 
         function deactivateLeaderUI() {
             isTeamLeader = false; document.body.classList.remove('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
-            btnToggle.innerText = "MODO TÉCNICO"; btnToggle.style.backgroundColor = "var(--primary)"; btnToggle.style.color = "white";
+            btnToggle.innerText = "MODO TÉCNICO";
+            btnToggle.style.background = "";
+            btnToggle.style.color = "";
+            btnToggle.style.border = "";
             
             const btnLogout = document.getElementById('btn-logout');
             if (btnLogout) btnLogout.style.display = 'none';
