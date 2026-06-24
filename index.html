@@ -203,6 +203,14 @@
         button:disabled { cursor: not-allowed; opacity: 0.5; }
         
         .btn-accent { background: var(--gradient-primary); }
+        .btn-top {
+            width: 140px; height: 28px; font-size: 10px; padding: 0; font-weight: bold;
+            border-radius: 4px; border: none; cursor: pointer; transition: opacity 0.2s;
+        }
+        .btn-top:hover { opacity: 0.9; }
+        .btn-accent.btn-top, .btn-mode-leader { border: 1px solid transparent; }
+        .btn-accent.btn-top:hover, .btn-mode-leader.btn-top:hover { background: transparent; color: var(--primary); border-color: var(--primary); opacity: 1; }
+        .btn-mode-leader { background: var(--gradient-primary); color: #fff; }
         .btn-leader { background: var(--gradient-primary); color: #fff; }
         .btn-outline { background-color: transparent; border: 1px solid var(--comment); color: var(--comment); }
         .btn-outline:hover:not(:disabled) { background-color: var(--comment); color: white; }
@@ -388,7 +396,7 @@
         <div class="top-bar no-print">
             <div class="top-bar-left">
                 <div style="display:flex; gap:5px; align-items:center;">
-                    <button type="button" id="btn-mode-toggle" class="btn-accent" onclick="toggleMode()">MODO TÉCNICO</button>
+                    <button type="button" id="btn-mode-toggle" class="btn-accent btn-top" onclick="toggleMode()">MODO TÉCNICO</button>
                     <button type="button" id="btn-logout" class="btn-danger-outline" onclick="logoutLeader()" style="display:none;">✖</button>
                 </div>
                 <span id="logged-user" class="leader-only" style="font-size: 10px; font-weight: bold; color: var(--primary); border: 1px solid var(--primary); padding: 0 10px; border-radius: 4px; background: #e0f2fe; display: none; align-items: center; height: 28px; box-sizing: border-box; margin: 0;"></span>
@@ -804,9 +812,10 @@
             const userAlias = userEmail.split('@')[0].toUpperCase();
             
             btnToggle.innerText = `👤 ${userAlias}`;
-            btnToggle.style.background = "#e0f2fe";
-            btnToggle.style.color = "var(--primary)";
-            btnToggle.style.border = "1px solid var(--primary)";
+            btnToggle.style.background = "";
+            btnToggle.style.color = "";
+            btnToggle.style.border = "";
+            btnToggle.classList.add('btn-mode-leader');
             
             const btnLogout = document.getElementById('btn-logout');
             if (btnLogout) btnLogout.style.display = 'inline-flex';
@@ -827,6 +836,7 @@
             btnToggle.style.background = "";
             btnToggle.style.color = "";
             btnToggle.style.border = "";
+            btnToggle.classList.remove('btn-mode-leader');
             
             const btnLogout = document.getElementById('btn-logout');
             if (btnLogout) btnLogout.style.display = 'none';
