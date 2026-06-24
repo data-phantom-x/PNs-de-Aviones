@@ -93,12 +93,12 @@
 
         /* Barra superior general */
         .top-bar {
-            display: flex; justify-content: space-between; margin-bottom: 15px;
+            display: flex; justify-content: space-between; margin-bottom: 0;
             background-color: var(--light-gray); padding: 10px 15px;
             border-radius: 16px 0 16px 0; align-items: center; flex-wrap: wrap; gap: 15px;
         }
 
-        .top-bar-left { display: flex; gap: 10px; flex-wrap: wrap; width: 100%; align-items: center; }
+        .top-bar-left { display: flex; gap: 5px; flex-wrap: wrap; width: 100%; align-items: center; }
 
         body:not(.team-leader-mode) .leader-only { display: none !important; }
 
@@ -106,7 +106,7 @@
         .main-header-wrapper {
             position: relative;
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 20px; padding-bottom: 12px;
+            margin-bottom: 10px; padding: 10px 0;
             min-height: 40px;
             background: linear-gradient(90deg, var(--primary), var(--accent), var(--cyan)) no-repeat bottom / 100% 3px;
             flex-wrap: wrap; gap: 20px;
@@ -129,11 +129,13 @@
         .plane-selector-card {
             background-color: var(--light-gray); border: 1px solid var(--border);
             border-left: 6px solid var(--leader-color); padding: 16px;
-            border-radius: 16px 0 16px 0; margin-bottom: 25px; transition: opacity 0.3s;
+            border-radius: 16px 0 16px 0; margin-bottom: 10px; transition: opacity 0.3s;
             display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
             justify-content: space-between;
         }
-        .selector-info { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 280px; }
+        .selector-info { display: flex; flex-direction: row; align-items: center; gap: 8px; flex: 1; min-width: 280px; flex-wrap: wrap; }
+.selector-info label { white-space: nowrap; }
+.selector-row { flex: 1; min-width: 200px; }
         .selector-info label { font-size: 10px; font-weight: 800; color: var(--leader-color); display: flex; align-items: center; gap: 8px;}
         .selector-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         
@@ -153,13 +155,13 @@
 
         .plane-svg-container {
             width: 100%; background-color: white; border: 1px dashed var(--border);
-            border-radius: 20px 0 20px 0; padding: 20px 10px; margin-bottom: 25px;
+            border-radius: 20px 0 20px 0; padding: 10px; margin-bottom: 10px;
             box-sizing: border-box; position: relative;
         }
 
         .svg-toggles { 
-            display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; 
-            border-bottom: 1px solid var(--light-gray); padding-bottom: 15px; 
+            display: flex; gap: 15px; justify-content: center; margin-bottom: 10px; 
+            border-bottom: 1px solid var(--light-gray); padding: 0 0 10px 0; 
         }
         
         .svg-toggle-btn { 
@@ -172,7 +174,7 @@
         
         .svg-toggle-btn:hover { background: var(--light-gray); }
         .svg-toggle-btn.active { 
-            background: var(--primary) !important; color: white !important; 
+            background: var(--gradient-primary) !important; color: white !important; 
             border-color: var(--primary) !important; box-shadow: 0 4px 6px rgba(42,0,135,0.2); 
         }
 
@@ -214,8 +216,9 @@
         .btn-leader { background: var(--gradient-primary); color: #fff; }
         .btn-outline { background-color: transparent; border: 1px solid var(--comment); color: var(--comment); }
         .btn-outline:hover:not(:disabled) { background-color: var(--comment); color: white; }
-        .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-        .btn-danger-outline:hover:not(:disabled) { background: var(--danger); color: white; }
+.btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+.btn-danger-outline:hover:not(:disabled) { background: var(--danger); color: white; }
+#btn-logout { width: 28px; min-width: 28px; padding: 0; font-size: 14px; flex: none; }
         
         .btn-action-small { 
             background-color: var(--light-gray); color: var(--primary); border: 1px solid var(--border); 
@@ -342,6 +345,8 @@
             .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
             .top-bar-left { flex-direction: column; width: 100%; align-items: stretch;}
             .top-bar-left button { width: 100%; }
+            .top-bar-left > div { flex-direction: row; width: 100%; }
+            .top-bar-left > div button { width: auto; flex: 1; min-width: 0; }
 
             .main-header-wrapper { flex-direction: column; text-align: center; gap: 12px; padding-bottom: 15px; }
             .logo-container { position: relative; transform: none; top: auto; left: auto; }
@@ -351,8 +356,8 @@
             .selector-info { min-width: 100%; }
             .selector-info label { justify-content: center; }
             .title-select { max-width: 100%; }
-            .selector-actions { flex-direction: column; width: 100%; }
-            .selector-actions button { width: 100%; margin: 0 !important; }
+            .selector-actions { flex-direction: row; width: 100%; }
+            .selector-actions button { flex: 1; min-width: 0; margin: 0 !important; }
             
             .pn-grid { grid-template-columns: 1fr; }
 
@@ -400,8 +405,10 @@
                     <button type="button" id="btn-logout" class="btn-danger-outline" onclick="logoutLeader()" style="display:none;">✖</button>
                 </div>
                 <span id="logged-user" class="leader-only" style="font-size: 10px; font-weight: bold; color: var(--primary); border: 1px solid var(--primary); padding: 0 10px; border-radius: 4px; background: #e0f2fe; display: none; align-items: center; height: 28px; box-sizing: border-box; margin: 0;"></span>
-                <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode leader-only" onclick="toggleCheckMode()" style="display:none;">☑️ MODO CHECK</button>
-                <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode leader-only" onclick="toggleCheckMode()" style="display:none;">☑️ MODO CHECK</button>
+                    <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
+                </div>
             </div>
         </div>
 
@@ -442,7 +449,7 @@
             
             <div id="zone-filter-alert"></div>
             
-            <div id="plane-actions-bar" class="leader-only" style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <div id="plane-actions-bar" class="leader-only" style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
                 <button class="btn-leader" onclick="openAddCustomPartModal()">➕ AÑADIR COMPONENTE (SOLO ESTE AVIÓN)</button>
             </div>
             
