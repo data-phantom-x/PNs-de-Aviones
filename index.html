@@ -605,6 +605,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyADC1Wwcypek8g1gwOTcgqKskpqiTo0-oM",
@@ -612,12 +613,15 @@
             databaseURL: "https://programacion-diaria-3dddb-default-rtdb.firebaseio.com",
             projectId: "programacion-diaria-3dddb",
             storageBucket: "programacion-diaria-3dddb.firebasestorage.app",
-            messagingSenderId: "449926089536",
-            appId: "1:449926089536:web:052ba8ea546f4d39b708a5"
+            messagingSenderId: "449926536089",
+            appId: "1:449926536089:web:052ba8ea546f4d39b708a5"
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getDatabase(app);
+
+        await signInAnonymously(auth);
         
         const flotaRef = ref(db, 'mantenimiento/pns_aviones');
         const effRef = ref(db, 'mantenimiento/efectividades');
