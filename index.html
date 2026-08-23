@@ -1072,7 +1072,7 @@
             const btnLogout = document.getElementById('btn-logout');
             if (!loginObligatorio) {
                 overlay.style.display = 'none';
-                if (btnLogout) btnLogout.onclick = null;
+                if (btnLogout) btnLogout.onclick = handleLogoutClick;
                 updateLoginToggleUI();
                 return;
             }
@@ -1094,10 +1094,14 @@
                 localStorage.setItem('tl_email', u);
                 localStorage.setItem('tl_login_time', Date.now().toString());
                 activateLeaderUI();
-                if (btnLogout) btnLogout.onclick = logoutFull;
+                if (btnLogout) btnLogout.onclick = handleLogoutClick;
             } else {
                 if (isTeamLeader) logoutLeader();
                 updateAdminUI();
+                if (btnLogout) { // los usuarios simples también necesitan poder salir
+                    btnLogout.style.display = 'inline-flex';
+                    btnLogout.onclick = handleLogoutClick;
+                }
             }
         }
         window.doLoginObligatorio = function() {
@@ -1115,6 +1119,10 @@
         window.logoutFull = function() {
             ['tl_email', 'tl_login_time', 'login_email', 'login_time'].forEach(k => localStorage.removeItem(k));
             location.reload();
+        }
+        window.handleLogoutClick = function() {
+            if (loginObligatorio && sessionUser()) { logoutFull(); return; }
+            logoutLeader();
         }
         window.toggleLoginObligatorio = function() {
             const me = localStorage.getItem('tl_email') || '';
