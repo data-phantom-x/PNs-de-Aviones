@@ -124,7 +124,7 @@
             padding: 0 110px; box-sizing: border-box; letter-spacing: 1px;
         }
 
-        /* Panel de selección de avión (como header-controls de PD) */
+        /* Panel de selección de avión */
         .plane-selector-card {
             background-color: var(--light-gray); border: 1px solid var(--border);
             border-left: 6px solid var(--leader-color); padding: 16px;
@@ -133,10 +133,8 @@
             justify-content: space-between;
         }
         .selector-info { display: flex; flex-direction: row; align-items: center; gap: 8px; flex: 1; min-width: 280px; flex-wrap: wrap; }
-.selector-info label { white-space: nowrap; }
-.selector-row { flex: 1; min-width: 200px; }
-        .selector-info label { font-size: 10px; font-weight: 800; color: var(--leader-color); display: flex; align-items: center; gap: 8px;}
-        .selector-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .selector-info label { font-size: 10px; font-weight: 800; color: var(--leader-color); display: flex; align-items: center; gap: 8px; white-space: nowrap;}
+        .selector-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: 1; min-width: 200px; }
         
         .title-select { 
             font-size: 12px !important; font-weight: 900 !important; color: var(--primary) !important;
@@ -215,9 +213,9 @@
         .btn-leader { background: var(--gradient-primary); color: #fff; }
         .btn-outline { background-color: transparent; border: 1px solid var(--comment); color: var(--comment); }
         .btn-outline:hover:not(:disabled) { background-color: var(--comment); color: white; }
-.btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-.btn-danger-outline:hover:not(:disabled) { background: var(--danger); color: white; }
-#btn-logout { width: 28px; min-width: 28px; padding: 0; font-size: 14px; flex: none; }
+        .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+        .btn-danger-outline:hover:not(:disabled) { background: var(--danger); color: white; }
+        #btn-logout { width: 28px; min-width: 28px; padding: 0; font-size: 14px; flex: none; }
         
         .btn-action-small { 
             background-color: var(--light-gray); color: var(--primary); border: 1px solid var(--border); 
@@ -328,7 +326,6 @@
         
         .modal-footer { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); justify-content: flex-end; flex-wrap: wrap; }
 
-        /* Prompt de nombre: idéntico al de Programación Diaria */
         #prompt-modal input { width: 100%; margin-bottom: 12px; box-sizing: border-box; }
         #prompt-modal .modal-footer { margin-top: 5px; justify-content: stretch; }
         #prompt-modal .btn-modal-action { flex: 1; padding: 0; height: 30px; font-size: 10px; border-radius: 4px; }
@@ -341,7 +338,6 @@
         }
         #toast.show { visibility: visible; opacity: 1; }
 
-        /* Responsive */
         @media (max-width: 800px) {
             body { padding: 8px; }
             .container { padding: 12px; }
@@ -377,7 +373,6 @@
             .override-controls button { width: 100%; }
         }
 
-        /* Print */
         @media print {
             @page { size: letter; margin: 1.2cm; } 
             body .no-print { display: none !important; }
@@ -394,7 +389,6 @@
         }
     </style>
     <style>
-        /* Pantalla de inicio de sesión obligatorio */
         .login-screen { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(135deg, #2A0087, #1A0055, #2A0087); display: flex; align-items: center; justify-content: center; padding: 20px; }
         .login-card { background: white; border-radius: 16px 0 16px 0; box-shadow: 0 20px 60px rgba(0,0,0,0.35); padding: 32px 28px; width: 100%; max-width: 360px; text-align: center; display: flex; flex-direction: column; gap: 10px; }
         .login-card img { height: 52px; width: auto; margin: 0 auto; }
@@ -409,7 +403,6 @@
         .login-btn-danger { background: var(--danger); }
         .login-error { color: var(--danger); font-size: 10px; font-weight: 700; min-height: 14px; }
 
-        /* Pantalla de carga profesional */
         #boot-splash { position: fixed; inset: 0; z-index: 10000; background: linear-gradient(135deg, #1A0055, #2A0087, #1A0055); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; transition: opacity .35s ease; }
         #boot-splash.hide { opacity: 0; pointer-events: none; }
         #boot-splash img { height: 56px; width: auto; filter: drop-shadow(0 4px 12px rgba(0,0,0,.35)); }
@@ -718,10 +711,9 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // Pase temporal anónimo: se restaura solo si se pierde (tras cerrar sesión o expirar)
         let ensuringAuth = false;
         async function ensureAuth() {
-            try { await auth.authStateReady(); } catch (e) {} // ESPERA la sesión guardada (Google) antes de decidir
+            try { await auth.authStateReady(); } catch (e) {}
             if (auth.currentUser || ensuringAuth) return;
             ensuringAuth = true;
             try {
@@ -752,15 +744,12 @@
         let adminList = [];
         let superAdmins = [];
 
-        // SUPER ADMINS (gestionados directamente en Firebase, no en el código)
         const superAdminsRef = ref(db, 'mantenimiento/super_admin');
 
         function isSuperAdmin(name) {
             return superAdmins.includes(name);
         }
 
-        // REGISTRO ÚNICO DE USUARIOS: acceso, roles y nombre real viven aquí.
-        // ej en Firebase: hector_vargas: { u: "hector.vargas", nombre: "...", usuario: true, tl: false, admin: false }
         let usuariosDB = {};
         function userRec(user) {
             if (!usuariosDB[user]) usuariosDB[user] = { nombre: '', usuario: false, tl: false, admin: false };
@@ -789,10 +778,6 @@
         }
         const tlUsersRef = ref(db, 'mantenimiento/crt/usuarios');
 
-        // Los listeners de roles se RE-SUSCRIBEN cada vez que cambia la identidad:
-        // un listener cancelado por "permission denied" (estando anónimo) no se
-        // reactiva solo al mejorar la sesión, y sin esto la base de usuarios
-        // quedaría vacía para siempre tras el login con Google.
         let rolesUnsubs = [];
         let lastRolesUid = '__none__';
         function subscribeRoles() {
@@ -811,33 +796,33 @@
             rolesUnsubs.push(onValue(tlUsersRef, (snapshot) => {
                 const raw = snapshot.val();
                 usuariosLoaded = true;
-            usuariosDB = {};
-            const ingest = (name, e) => {
-                if (!name || isSuperAdmin(name)) return;
-                if (typeof e === 'string') e = {};
-                usuariosDB[name] = {
-                    nombre: e.nombre || '',
-                    usuario: !!(e.usuario || e.acceso), // acceso = campo del formato anterior
-                    tl: !!e.tl,
-                    admin: !!e.admin,
-                    uid: e.uid || '',
-                    email: e.email || ''
+                usuariosDB = {};
+                const ingest = (name, e) => {
+                    if (!name || isSuperAdmin(name)) return;
+                    if (typeof e === 'string') e = {};
+                    usuariosDB[name] = {
+                        nombre: e.nombre || '',
+                        usuario: !!(e.usuario || e.acceso),
+                        tl: !!e.tl,
+                        admin: !!e.admin,
+                        uid: e.uid || '',
+                        email: e.email || ''
+                    };
                 };
-            };
-            if (Array.isArray(raw)) { // formato antiguo: lista de strings o de registros
-                raw.filter(Boolean).forEach(e => ingest(typeof e === 'string' ? e : e.u, e));
-            } else if (raw && typeof raw === 'object') {
-                Object.keys(raw).forEach(k => {
-                    const e = raw[k];
-                    if (!e) return;
-                    ingest((typeof e === 'string') ? k.replace(/%2E/g, '.') : (e.u || k.replace(/%2E/g, '.')), e);
-                });
-            }
-            syncRoleArrays();
-            checkSession();
-            updateAdminUI();
-            refreshAdminListIfOpen();
-            evaluateGate();
+                if (Array.isArray(raw)) {
+                    raw.filter(Boolean).forEach(e => ingest(typeof e === 'string' ? e : e.u, e));
+                } else if (raw && typeof raw === 'object') {
+                    Object.keys(raw).forEach(k => {
+                        const e = raw[k];
+                        if (!e) return;
+                        ingest((typeof e === 'string') ? k.replace(/%2E/g, '.') : (e.u || k.replace(/%2E/g, '.')), e);
+                    });
+                }
+                syncRoleArrays();
+                checkSession();
+                updateAdminUI();
+                refreshAdminListIfOpen();
+                evaluateGate();
             }, (e) => console.warn('usuarios:', e.code)));
         }
         subscribeRoles();
@@ -902,7 +887,7 @@
 
         function readErr(err) {
             console.error('FIREBASE READ ERROR', err);
-            if ((err.code || '').includes('permission') && !auth.currentUser) ensureAuth(); // sesión caída: reintenta
+            if ((err.code || '').includes('permission') && !auth.currentUser) ensureAuth();
             toastThrottled('⚠️ SIN ACCESO DE LECTURA (' + err.code + ')');
         }
 
@@ -1141,8 +1126,6 @@
         }
         function logoutLeader() { localStorage.removeItem('tl_email'); localStorage.removeItem('tl_login_time'); deactivateLeaderUI(); }
 
-        // ─── CONTROL CENTRAL DE MODOS Y ARRANQUE ───
-        // null = aún cargando (pantalla de carga); false = modo libre; true = solo Google
         let loginObligatorio = null;
         let usuariosLoaded = false;
         let dataAttached = false;
@@ -1157,7 +1140,7 @@
         }, (e) => console.warn('login_obligatorio:', e.code));
 
         onAuthStateChanged(auth, (user) => {
-            subscribeRoles(); // nueva identidad → re-suscribir roles con permisos reales
+            subscribeRoles();
             if (!user) ensureAuth();
             evaluateGate();
         });
@@ -1170,7 +1153,6 @@
             return null;
         }
         function sessionUser() {
-            // En modo obligatorio la identidad SOLO viene de Google (a prueba de suplantación)
             const g = googleUser();
             return (g && g.email) ? extractUsername(g.email) : null;
         }
@@ -1184,7 +1166,6 @@
             return isSuperAdmin(u) || correosAutorizados.includes(u) || adminList.includes(u);
         }
 
-        // ── Gestor de listeners de datos: conectados solo cuando hay acceso real ──
         function attachData() {
             if (dataAttached) return;
             dataAttached = true;
@@ -1197,7 +1178,7 @@
                 onValue(flotaRef, (snapshot) => {
                     flotaDB = snapshot.val() || {};
                     updateSelector();
-                    hideSplash(); // primeros datos recibidos: fin de la pantalla de carga
+                    hideSplash();
 
                     if (isInitialLoad) {
                         isInitialLoad = false;
@@ -1243,29 +1224,26 @@
                 setTimeout(() => { sp.style.display = 'none'; }, 400);
             }
         }
-        setTimeout(hideSplash, 9000); // red de seguridad: jamás una carga eterna
+        setTimeout(hideSplash, 9000);
 
         function evaluateGate() {
             const overlay = document.getElementById('login-obligatorio');
             if (!overlay) return;
-            if (loginObligatorio === null) return; // pantalla de carga hasta conocer el modo
+            if (loginObligatorio === null) return;
             const btnLogout = document.getElementById('btn-logout');
 
             if (loginObligatorio === false) {
-                // ═══ MODO LIBRE: acceso a la antigua, sin Google ═══
                 overlay.style.display = 'none';
                 if (!auth.currentUser) ensureAuth();
                 attachData();
                 if (btnLogout) btnLogout.onclick = handleLogoutClick;
                 checkSession();
                 updateLoginToggleUI();
-                return; // la pantalla de carga se retira sola al llegar los primeros datos
+                return;
             }
 
-            // ═══ MODO INICIO DE SESIÓN OBLIGATORIO: solo cuenta Google verificada ═══
             const u = sessionUser();
             if (u && !usuariosLoaded) {
-                // roles aún cargando: espera breve y reintenta (sin parpadeos ni bloqueos falsos)
                 if (!gateRolesTimer) gateRolesTimer = setTimeout(() => { gateRolesTimer = null; evaluateGate(); }, 2500);
                 return;
             }
@@ -1286,10 +1264,9 @@
                     btnLogout.style.display = 'inline-flex';
                     btnLogout.onclick = handleLogoutClick;
                 }
-                return; // la pantalla de carga se retira sola al llegar los primeros datos
+                return;
             }
 
-            // Sin sesión válida → pantalla de acceso con Google
             detachData();
             deactivateLeaderUI();
             const denied = !!u;
@@ -1302,13 +1279,6 @@
             hideSplash();
         }
 
-        function googleUser() {
-            try {
-                const cu = auth.currentUser;
-                if (cu && Array.isArray(cu.providerData) && cu.providerData.some(p => p.providerId === 'google.com')) return cu;
-            } catch (e) {}
-            return null;
-        }
         window.doGoogleLogin = async function() {
             const err = document.getElementById('login-error-msg');
             err.innerText = 'ABRIENDO GOOGLE...';
@@ -1320,14 +1290,14 @@
                 const email = ((result.user && result.user.email) || '').toLowerCase();
                 const username = extractUsername(email);
                 if (!username) throw new Error('SIN CORREO EN LA CUENTA GOOGLE');
-                await linkUid(result.user, username); // registra el uid si tiene acceso; la puerta decide tras recargar
+                await linkUid(result.user, username);
                 location.reload();
             } catch (e) {
                 err.innerText = 'NO SE PUDO INICIAR SESIÓN (' + (e.code || e.message) + '). INTENTA DE NUEVO.';
             }
         }
         async function linkUid(fu, username) {
-            await dbSet(ref(db, 'mantenimiento/uids/' + fu.uid), username.replace(/\./g, '_'), 'REGISTRAR UID: PIDE QUE TE DEN USUARIO EN PANEL ADMIN'); // índice para reglas de seguridad
+            await dbSet(ref(db, 'mantenimiento/uids/' + fu.uid), username.replace(/\./g, '_'), 'REGISTRAR UID');
             const rec = usuariosDB[username];
             if (!rec) return;
             let dirty = false;
@@ -1337,12 +1307,12 @@
         }
         let loggingOut = false;
         window.logoutFull = async function() {
-            if (loggingOut) return; // ignora clics repetidos mientras se cierra
+            if (loggingOut) return;
             loggingOut = true;
             ['tl_email', 'tl_login_time', 'login_email', 'login_time'].forEach(k => localStorage.removeItem(k));
-            try { await signOut(auth); } catch (e) {} // ESPERA a que la sesión se cierre de verdad antes de recargar
+            try { await signOut(auth); } catch (e) {}
             deactivateLeaderUI();
-            location.reload(); // arranque limpio: pantalla de login + listeners nuevos
+            location.reload();
         }
         window.handleLogoutClick = function() {
             if (sessionUser() && loginObligatorio !== false) { logoutFull(); return; }
@@ -1356,7 +1326,7 @@
             showConfirm(nuevo
                 ? '¿ACTIVAR INICIO DE SESIÓN OBLIGATORIO PARA TODOS? Nadie podrá ver la app sin iniciar sesión.'
                 : '¿DESACTIVAR EL INICIO DE SESIÓN OBLIGATORIO? Volverá al acceso libre como siempre.', () => {
-                loginObligatorio = nuevo; // cambio optimista: la UI reacciona al instante
+                loginObligatorio = nuevo;
                 updateLoginToggleUI();
                 evaluateGate();
                 dbSet(ref(db, 'mantenimiento/crt/login_obligatorio'), nuevo)
@@ -1377,7 +1347,6 @@
             }
         }
 
-        // ─── PANEL ADMIN (SOLO PARA ADMINISTRADORES) ───
         function isAdminUser() {
             const email = localStorage.getItem('tl_email') || '';
             return isTeamLeader && (isSuperAdmin(email) || adminList.includes(email));
@@ -1434,9 +1403,9 @@
                         ${isAdm ? '<span style="font-size:9px; font-weight:700; color:white; background:var(--danger); padding:1px 5px; border-radius:3px;">ADMIN</span>' : ''}
                         ${sinAcceso ? '<span style="font-size:9px; font-weight:700; color:white; background:var(--comment); padding:1px 5px; border-radius:3px;">SIN ACCESO</span>' : ''}
                     </span>
-                <button class="btn-action-small" onclick="adminToggleUsuario('${user}')" title="Quitar/Dar acceso de usuario (quitarlo también quita TL y ADMIN)" style="${esUsuario ? 'background:var(--leader-color); color:white;' : ''}">👤</button>
-                <button class="btn-action-small" onclick="adminToggleTl('${user}')" title="Quitar/Hacer Team Leader" style="${isTl ? 'background:var(--leader-color); color:white;' : ''}">TL</button>
-                <button class="btn-action-small" onclick="adminToggleAdmin('${user}')" title="Quitar/Hacer Admin" style="${isAdm ? 'background:var(--danger); color:white;' : ''}">ADMIN</button>
+                    <button class="btn-action-small" onclick="adminToggleUsuario('${user}')" title="Quitar/Dar acceso de usuario" style="${esUsuario ? 'background:var(--leader-color); color:white;' : ''}">👤</button>
+                    <button class="btn-action-small" onclick="adminToggleTl('${user}')" title="Quitar/Hacer Team Leader" style="${isTl ? 'background:var(--leader-color); color:white;' : ''}">TL</button>
+                    <button class="btn-action-small" onclick="adminToggleAdmin('${user}')" title="Quitar/Hacer Admin" style="${isAdm ? 'background:var(--danger); color:white;' : ''}">ADMIN</button>
                     <button class="btn-action-small" onclick="adminEditNombre('${user}')" title="Editar nombre real">✎</button>
                     <button class="btn-action-small" onclick="adminRemoveUser('${user}')" title="Eliminar usuario definitivamente">✖</button>
                 </div>`;
@@ -1455,7 +1424,7 @@
             const asUser = document.getElementById('admin-is-user').checked;
             const asTl = document.getElementById('admin-is-tl').checked;
             const asAdmin = document.getElementById('admin-is-admin').checked;
-            if (!asUser && !asTl && !asAdmin) return alert("SELECCIONE AL MENOS UN ROL (👤, TL O ADMIN).");
+            if (!asUser && !asTl && !asAdmin) return alert("SELECCIONE AL MENOS UN ROL.");
             const prev = usuariosDB[name] || {};
             const yaEsUsuario = !!prev.usuario;
             const alreadyTl = !!prev.tl;
@@ -1464,7 +1433,6 @@
             userRec(name);
             const nombreReal = document.getElementById('admin-realname').value.trim();
             if (nombreReal && !usuariosDB[name].nombre) usuariosDB[name].nombre = nombreReal;
-            // TL/ADMIN implican usuario
             if (asUser || asTl || asAdmin) usuariosDB[name].usuario = true;
             if (asTl) usuariosDB[name].tl = true;
             if (asAdmin) usuariosDB[name].admin = true;
@@ -1532,7 +1500,7 @@
             const rec = userRec(user);
             const isTl = !!rec.tl;
             rec.tl = !isTl;
-            if (!isTl) rec.usuario = true; // TL implica usuario
+            if (!isTl) rec.usuario = true;
             syncRoleArrays();
             refreshAdminList();
             showToast(isTl ? `⚠️ TL QUITADO A ${user.toUpperCase()}` : "✅ TL OTORGADO: " + user.toUpperCase());
@@ -1545,7 +1513,7 @@
             const rec = userRec(user);
             const isAdm = !!rec.admin;
             rec.admin = !isAdm;
-            if (!isAdm) rec.usuario = true; // ADMIN implica usuario
+            if (!isAdm) rec.usuario = true;
             syncRoleArrays();
             refreshAdminList();
             showToast(isAdm ? `⚠️ ADMIN QUITADO A ${user.toUpperCase()}` : "✅ ADMIN OTORGADO: " + user.toUpperCase());
@@ -1563,9 +1531,6 @@
                 saveUsuarios();
             });
         }
-
-        // Los listeners de flota y efectividades se conectan vía attachData()
-        // (solo cuando hay acceso real; ver CONTROL CENTRAL DE MODOS).
 
         function isEffectivityStrictlyValid(appCode) {
             if (!appCode || appCode.trim() === '') return false;
@@ -2417,7 +2382,6 @@
                 }
                 
                 const mergedParts = getMergedPlaneParts(currentLoadedReg);
-                
                 mergedParts.sort((a, b) => (a.desc || "").localeCompare(b.desc || ""));
                 
                 mergedParts.forEach(p => {
