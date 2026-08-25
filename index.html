@@ -1126,10 +1126,16 @@
                     const email = prompt("🔒 ACCESO MODO LÍDER (LIBRE)\nIngrese su usuario o correo:", savedEmail || '');
                     if (!email) return;
                     const username = extractUsername(email);
-                    localStorage.setItem('crt_email', username);
-                    localStorage.setItem('crt_login_time', Date.now().toString());
-                    activateLeaderUI();
-                    showToast("✅ MODO LÍDER HABILITADO");
+                    
+                    // 🔥 FIX DE SEGURIDAD: Validar contra la base de datos antes de entrar 🔥
+                    if (isAuthorizedUser(username)) {
+                        localStorage.setItem('crt_email', username);
+                        localStorage.setItem('crt_login_time', Date.now().toString());
+                        activateLeaderUI();
+                        showToast("✅ MODO LÍDER HABILITADO");
+                    } else {
+                        alert(`ACCESO DENEGADO.\nEl usuario '${username}' no está autorizado en CRT.`);
+                    }
                 } else if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && isAuthorizedUser(savedEmail)) { 
                     activateLeaderUI(); 
                 } else {
@@ -1381,8 +1387,9 @@
             }
         }
 
-        function isAdminUser() {
-            return isTeamLeader;
+       function isAdminUser() {
+            const currentUser = sessionUser() || localStorage.getItem('crt_email') || '';
+            return isTeamLeader && (isSuperAdmin(currentUser) || adminList.includes(currentUser));
         }
 
         function updateAdminUI() {
