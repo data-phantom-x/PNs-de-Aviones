@@ -1328,8 +1328,12 @@
             location.reload();
         }
         window.handleLogoutClick = function() {
-            if (sessionUser() && loginObligatorio !== false) { logoutFull(); return; }
-            logoutLeader();
+            if (loginObligatorio !== false && sessionUser()) {
+                logoutFull();
+            } else {
+                logoutLeader();
+                if (loginObligatorio !== false) evaluateGate();
+            }
         }
         window.toggleLoginObligatorio = function() {
             const me = sessionUser() || localStorage.getItem('tl_email') || '';
