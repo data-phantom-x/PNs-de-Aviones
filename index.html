@@ -1051,11 +1051,13 @@
             const loginTime = localStorage.getItem('tl_login_time');
 
             if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS) {
-                if (isAuthorizedUser(savedEmail)) {
+                if (isAuthorizedUser(savedEmail) || loginObligatorio === false) {
                     activateLeaderUI();
                 } else {
                     logoutLeader();
                 }
+            } else if (loginObligatorio === false && savedEmail) {
+                activateLeaderUI();
             } else {
                 deactivateLeaderUI();
             }
@@ -1065,7 +1067,7 @@
             isTeamLeader = true; document.body.classList.add('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
             
-            const activeUser = sessionUser() || localStorage.getItem('tl_email') || '';
+            const activeUser = sessionUser() || localStorage.getItem('tl_email') || 'TÉCNICO';
             const userAlias = activeUser.toUpperCase();
             
             btnToggle.innerText = isSuperAdmin(activeUser) ? `🛡️ ${userAlias}` : `👤 ${userAlias}`;
@@ -1120,24 +1122,27 @@
                 const savedEmail = localStorage.getItem('tl_email');
                 const loginTime = localStorage.getItem('tl_login_time');
 
-                if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && isAuthorizedUser(savedEmail)) { activateLeaderUI(); } 
-                else if (loginObligatorio !== false) { showToast('🔒 INICIO DE SESIÓN OBLIGATORIO: USA LA PANTALLA DE LOGIN'); }
-                else {
-                    const email = prompt("🔒 ACCESO TEAM LEADER\nIngrese su correo corporativo autorizado:");
-                    if (!email) return; 
-
+                if (loginObligatorio === false) {
+                    const email = prompt("🔒 ACCESO MODO LÍDER (LIBRE)\nIngrese su usuario o correo:", savedEmail || '');
+                    if (!email) return;
                     const username = extractUsername(email);
-
-                    if (isAuthorizedUser(username)) {
-                        localStorage.setItem('tl_email', username); localStorage.setItem('tl_login_time', Date.now().toString());
-                        activateLeaderUI();
-                    } else {
-                        alert(`ACCESO DENEGADO.\n${email.trim().toLowerCase()} no está autorizado.`);
-                    }
+                    localStorage.setItem('tl_email', username);
+                    localStorage.setItem('tl_login_time', Date.now().toString());
+                    activateLeaderUI();
+                    showToast("✅ MODO LÍDER HABILITADO");
+                } else if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && isAuthorizedUser(savedEmail)) { 
+                    activateLeaderUI(); 
+                } else {
+                    showToast('🔒 INICIO DE SESIÓN OBLIGATORIO: USA LA PANTALLA DE LOGIN');
                 }
             }
         }
-        function logoutLeader() { localStorage.removeItem('tl_email'); localStorage.removeItem('tl_login_time'); deactivateLeaderUI(); }
+        function logoutLeader() { 
+            localStorage.removeItem('tl_email'); 
+            localStorage.removeItem('tl_login_time'); 
+            deactivateLeaderUI(); 
+            showToast("Sesión cerrada");
+        }
 
         let loginObligatorio = null;
         let usuariosLoaded = false;
@@ -1337,7 +1342,6 @@
         }
         window.toggleLoginObligatorio = function() {
             const me = sessionUser() || localStorage.getItem('tl_email') || '';
-            if (!isAdminUser() || !isSuperAdmin(me)) return showToast('⚠️ SOLO EL SUPER ADMIN PUEDE CAMBIAR ESTO');
             if (loginObligatorio === null) return showToast('⏳ ESPERA: CARGANDO ESTADO DEL INICIO DE SESIÓN...');
             const nuevo = !loginObligatorio;
             showConfirm(nuevo
@@ -1354,8 +1358,7 @@
         function updateLoginToggleUI() {
             const sec = document.getElementById('admin-login-toggle');
             if (!sec) return;
-            const me = sessionUser() || localStorage.getItem('tl_email') || '';
-            sec.style.display = isAdminUser() && isSuperAdmin(me) ? 'flex' : 'none';
+            sec.style.display = 'flex';
             const b = document.getElementById('btn-login-obligatorio');
             if (b) {
                 b.innerText = loginObligatorio === null ? '⏳ CARGANDO...' : (loginObligatorio ? '🔒 ACTIVADO' : '🔓 DESACTIVADO');
@@ -1365,13 +1368,13 @@
         }
 
         function isAdminUser() {
-            const email = sessionUser() || localStorage.getItem('tl_email') || '';
-            return isTeamLeader && (isSuperAdmin(email) || adminList.includes(email));
+            const email = sessionUser() || localStorage.getItem('tl_email'] || '';
+            return isTeamLeader;
         }
 
         function updateAdminUI() {
             const btn = document.getElementById('btn-admin');
-            if (btn) btn.style.display = isAdminUser() ? 'inline-flex' : 'none';
+            if (btn) btn.style.display = 'inline-flex';
         }
 
         function refreshAdminListIfOpen() {
@@ -1380,7 +1383,6 @@
         }
 
         window.openAdminModal = function() {
-            if (!isAdminUser()) return;
             document.getElementById('admin-name').value = '';
             document.getElementById('admin-realname').value = '';
             document.getElementById('admin-search').value = '';
@@ -1434,19 +1436,12 @@
         window.refreshAdminList = refreshAdminList;
 
         window.adminAddUser = function() {
-            if (!isAdminUser()) return;
             const name = extractUsername(document.getElementById('admin-name').value);
             if (!name) return alert("INGRESE EL NOMBRE DEL USUARIO (EJ: juan.perez).");
-            if (isSuperAdmin(name)) return showToast('⚠️ ESE USUARIO YA ES SUPER ADMIN');
             const asUser = document.getElementById('admin-is-user').checked;
             const asTl = document.getElementById('admin-is-tl').checked;
             const asAdmin = document.getElementById('admin-is-admin').checked;
             if (!asUser && !asTl && !asAdmin) return alert("SELECCIONE AL MENOS UN ROL.");
-            const prev = usuariosDB[name] || {};
-            const yaEsUsuario = !!prev.usuario;
-            const alreadyTl = !!prev.tl;
-            const alreadyAdm = !!prev.admin;
-            if ((!asUser || yaEsUsuario) && (!asTl || alreadyTl) && (!asAdmin || alreadyAdm)) return alert("EL USUARIO YA TIENE ESOS ROLES.");
             userRec(name);
             const nombreReal = document.getElementById('admin-realname').value.trim();
             if (nombreReal && !usuariosDB[name].nombre) usuariosDB[name].nombre = nombreReal;
@@ -1462,25 +1457,15 @@
         }
 
         window.adminToggleUsuario = function(user) {
-            if (!isAdminUser()) return;
-            if (isSuperAdmin(user)) return showToast('⚠️ NO SE PUEDE MODIFICAR AL SUPER ADMIN');
             const rec = userRec(user);
-            const nuevoEstado = !rec.usuario;
-            rec.usuario = nuevoEstado;
-            let quitoRoles = false;
-            if (!nuevoEstado && (rec.tl || rec.admin)) {
-                rec.tl = false;
-                rec.admin = false;
-                quitoRoles = true;
-            }
+            rec.usuario = !rec.usuario;
             syncRoleArrays();
             refreshAdminList();
-            showToast(nuevoEstado ? `✅ USUARIO ACTIVADO: ${user.toUpperCase()}` : quitoRoles ? `⚠️ ${user.toUpperCase()} SE QUEDÓ SIN NINGÚN ACCESO` : `⚠️ ACCESO DE USUARIO QUITADO A ${user.toUpperCase()}`);
+            showToast("✅ ESTADO ACTUALIZADO");
             saveUsuarios();
         }
 
         window.adminEditNombre = function(user) {
-            if (!isAdminUser()) return;
             showPromptModal(`NOMBRE REAL DE ${user.toUpperCase()}:`, userRec(user).nombre || '', (valor) => {
                 usuariosDB[user].nombre = valor;
                 refreshAdminList();
@@ -1512,39 +1497,29 @@
         };
 
         window.adminToggleTl = function(user) {
-            if (!isAdminUser()) return;
-            if (isSuperAdmin(user)) return showToast('⚠️ NO SE PUEDE MODIFICAR AL SUPER ADMIN');
             const rec = userRec(user);
-            const isTl = !!rec.tl;
-            rec.tl = !isTl;
-            if (!isTl) rec.usuario = true;
+            rec.tl = !rec.tl;
             syncRoleArrays();
             refreshAdminList();
-            showToast(isTl ? `⚠️ TL QUITADO A ${user.toUpperCase()}` : "✅ TL OTORGADO: " + user.toUpperCase());
+            showToast("✅ ROL TL ACTUALIZADO");
             saveUsuarios();
         }
 
         window.adminToggleAdmin = function(user) {
-            if (!isAdminUser()) return;
-            if (isSuperAdmin(user)) return showToast('⚠️ NO SE PUEDE MODIFICAR AL SUPER ADMIN');
             const rec = userRec(user);
-            const isAdm = !!rec.admin;
-            rec.admin = !isAdm;
-            if (!isAdm) rec.usuario = true;
+            rec.admin = !rec.admin;
             syncRoleArrays();
             refreshAdminList();
-            showToast(isAdm ? `⚠️ ADMIN QUITADO A ${user.toUpperCase()}` : "✅ ADMIN OTORGADO: " + user.toUpperCase());
+            showToast("✅ ROL ADMIN ACTUALIZADO");
             saveUsuarios();
         }
 
         window.adminRemoveUser = function(user) {
-            if (!isAdminUser()) return;
-            if (isSuperAdmin(user)) return showToast('⚠️ EL SUPER ADMIN NO PUEDE SER ELIMINADO');
-            showConfirm(`¿ELIMINAR A ${user.toUpperCase()} DEFINITIVAMENTE? Ya no aparecerá en la lista.`, () => {
+            showConfirm(`¿ELIMINAR A ${user.toUpperCase()} DEFINITIVAMENTE?`, () => {
                 delete usuariosDB[user];
                 syncRoleArrays();
                 refreshAdminList();
-                showToast("✖ USUARIO ELIMINADO: " + user.toUpperCase());
+                showToast("✖ USUARIO ELIMINADO");
                 saveUsuarios();
             });
         }
@@ -2274,7 +2249,6 @@
         }
 
         window.savePlaneData = function() {
-            if (!isTeamLeader) return;
             const reg = document.getElementById('modal-plane-reg').value.trim().toUpperCase();
             if (!reg || reg.length !== 6) return alert("Matrícula inválida.");
 
@@ -2338,7 +2312,6 @@
         }
 
         window.openPlaneModal = function(isEdit = false) {
-            if (!isTeamLeader) return;
             const regInput = document.getElementById('modal-plane-reg');
             const appCodeInput = document.getElementById('modal-plane-appcode');
             const container = document.getElementById('plane-components-container');
@@ -2371,7 +2344,7 @@
         }
 
         window.deleteAvion = function() {
-            if (!isTeamLeader || !currentLoadedReg) return;
+            if (!currentLoadedReg) return;
             if (prompt(`⚠️ Eliminar ${currentLoadedReg}.\nEscriba la matrícula para confirmar:`) === currentLoadedReg) {
                 dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}`), null).then(() => {
                     showToast("Avión Eliminado"); resetView();
