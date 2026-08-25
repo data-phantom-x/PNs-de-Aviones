@@ -930,7 +930,7 @@
 
         window.verifyPart = function(partId) {
             if (!currentLoadedReg) return;
-            const userEmail = localStorage.getItem('tl_email') || 'USUARIO';
+            const userEmail = localStorage.getItem('crt_email') || 'USUARIO';
             const userAlias = userEmail.toUpperCase();
             const timestamp = `${get24hTimestamp()} | 👤 ${userAlias}`;
             dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
@@ -1047,19 +1047,19 @@
                 activateLeaderUI();
                 return;
             }
-            const savedEmail = localStorage.getItem('tl_email');
-            const loginTime = localStorage.getItem('tl_login_time');
+            const savedEmail = localStorage.getItem('crt_email');
+            const loginTime = localStorage.getItem('crt_login_time');
 
             if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS) {
+                if (!usuariosLoaded) return; 
+
                 if (isAuthorizedUser(savedEmail) || loginObligatorio === false) {
                     activateLeaderUI();
                 } else {
                     logoutLeader();
                 }
-            } else if (loginObligatorio === false && savedEmail) {
-                activateLeaderUI();
             } else {
-                deactivateLeaderUI();
+                logoutLeader();
             }
         }
 
@@ -1067,7 +1067,7 @@
             isTeamLeader = true; document.body.classList.add('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
             
-            const activeUser = sessionUser() || localStorage.getItem('tl_email') || 'TÉCNICO';
+            const activeUser = sessionUser() || localStorage.getItem('crt_email') || 'TÉCNICO';
             const userAlias = activeUser.toUpperCase();
             
             btnToggle.innerText = isSuperAdmin(activeUser) ? `🛡️ ${userAlias}` : `👤 ${userAlias}`;
@@ -1119,15 +1119,15 @@
                     activateLeaderUI();
                     return;
                 }
-                const savedEmail = localStorage.getItem('tl_email');
-                const loginTime = localStorage.getItem('tl_login_time');
+                const savedEmail = localStorage.getItem('crt_email');
+                const loginTime = localStorage.getItem('crt_login_time');
 
                 if (loginObligatorio === false) {
                     const email = prompt("🔒 ACCESO MODO LÍDER (LIBRE)\nIngrese su usuario o correo:", savedEmail || '');
                     if (!email) return;
                     const username = extractUsername(email);
-                    localStorage.setItem('tl_email', username);
-                    localStorage.setItem('tl_login_time', Date.now().toString());
+                    localStorage.setItem('crt_email', username);
+                    localStorage.setItem('crt_login_time', Date.now().toString());
                     activateLeaderUI();
                     showToast("✅ MODO LÍDER HABILITADO");
                 } else if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && isAuthorizedUser(savedEmail)) { 
@@ -1138,8 +1138,8 @@
             }
         }
         function logoutLeader() { 
-            localStorage.removeItem('tl_email'); 
-            localStorage.removeItem('tl_login_time'); 
+            localStorage.removeItem('crt_email'); 
+            localStorage.removeItem('crt_login_time'); 
             deactivateLeaderUI(); 
             showToast("Sesión cerrada");
         }
@@ -1284,8 +1284,8 @@
                 overlay.style.display = 'none';
                 attachData();
                 if (hasLeaderRole(u)) {
-                    localStorage.setItem('tl_email', u);
-                    localStorage.setItem('tl_login_time', Date.now().toString());
+                    localStorage.setItem('crt_email', u);
+                    localStorage.setItem('crt_login_time', Date.now().toString());
                     activateLeaderUI();
                 } else if (isTeamLeader) {
                     logoutLeader();
@@ -1341,7 +1341,7 @@
         window.logoutFull = async function() {
             if (loggingOut) return;
             loggingOut = true;
-            ['tl_email', 'tl_login_time', 'login_email', 'login_time'].forEach(k => localStorage.removeItem(k));
+            ['crt_email', 'crt_login_time', 'login_email', 'login_time'].forEach(k => localStorage.removeItem(k));
             try { await signOut(auth); } catch (e) {}
             deactivateLeaderUI();
             location.reload();
@@ -1355,7 +1355,7 @@
             }
         }
         window.toggleLoginObligatorio = function() {
-            const me = sessionUser() || localStorage.getItem('tl_email') || '';
+            const me = sessionUser() || localStorage.getItem('crt_email') || '';
             if (loginObligatorio === null) return showToast('⏳ ESPERA: CARGANDO ESTADO DEL INICIO DE SESIÓN...');
             const nuevo = !loginObligatorio;
             showConfirm(nuevo
@@ -1949,7 +1949,7 @@
             };
 
             dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}/exceptions`), exceptions).then(() => {
-                const userEmail = localStorage.getItem('tl_email') || 'USUARIO';
+                const userEmail = localStorage.getItem('crt_email') || 'USUARIO';
                 const userAlias = userEmail.split('@')[0].toUpperCase();
                 const timestamp = `${get24hTimestamp()} | 👤 ${userAlias}`;
                 dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
