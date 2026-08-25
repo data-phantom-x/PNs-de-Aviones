@@ -417,7 +417,7 @@
         <img src="https://raw.githubusercontent.com/data-phantom-x/PNs-de-Aviones/refs/heads/main/Latam-airlines-logo-light.svg" alt="LATAM Airlines">
         <div class="boot-title">CABIN REPORT TAPESTRIES</div>
         <div class="boot-spinner"></div>
-        <div class="boot-sub">CONECTANDO CON EL SERVIDOR...</div>
+        <div class="boot-sub" id="boot-sub-text">CONECTANDO CON EL SERVIDOR...</div>
     </div>
 
     <datalist id="descripciones-list"></datalist>
@@ -1148,14 +1148,17 @@
         let usuariosLoaded = false;
         let dataAttached = false;
         let splashHidden = false;
-        let gateRolesTimer = null;
         const staticUnsubs = [];
 
         onValue(ref(db, 'mantenimiento/crt/login_obligatorio'), (snapshot) => {
             loginObligatorio = !!snapshot.val();
             evaluateGate();
             refreshAdminListIfOpen();
-        }, (e) => console.warn('login_obligatorio:', e.code));
+        }, (e) => {
+            console.warn('login_obligatorio read error:', e.code);
+            loginObligatorio = false; // Fallback para abrir la app si la regla de estado falla
+            evaluateGate();
+        });
 
         onAuthStateChanged(auth, (user) => {
             subscribeRoles();
@@ -1242,12 +1245,22 @@
                 setTimeout(() => { sp.style.display = 'none'; }, 400);
             }
         }
-        setTimeout(hideSplash, 9000);
+        // Timeout de seguridad estricto para que JAMÁS se quede pegado el splash
+        setTimeout(hideSplash, 3500);
 
         function evaluateGate() {
             const overlay = document.getElementById('login-obligatorio');
             if (!overlay) return;
-            if (loginObligatorio === null) return;
+            if (loginObligatorio === null) {
+                // Si Firebase demora más de 1.5s en responder el estado del login, forzamos apertura para evitar bloqueo
+                setTimeout(() => {
+                    if (loginObligatorio === null) {
+                        loginObligatorio = false;
+                        evaluateGate();
+                    }
+                }, 1500);
+                return;
+            }
             const btnLogout = document.getElementById('btn-logout');
 
             if (loginObligatorio === false) {
@@ -1257,15 +1270,15 @@
                 if (btnLogout) btnLogout.onclick = handleLogoutClick;
                 checkSession();
                 updateLoginToggleUI();
+                hideSplash();
                 return;
             }
 
             const u = sessionUser();
             if (u && !usuariosLoaded) {
-                if (!gateRolesTimer) gateRolesTimer = setTimeout(() => { gateRolesTimer = null; evaluateGate(); }, 2500);
+                setTimeout(() => evaluateGate(), 1000);
                 return;
             }
-            if (gateRolesTimer) { clearTimeout(gateRolesTimer); gateRolesTimer = null; }
 
             if (u && canLogin(u)) {
                 overlay.style.display = 'none';
@@ -1282,6 +1295,7 @@
                     btnLogout.style.display = 'inline-flex';
                     btnLogout.onclick = handleLogoutClick;
                 }
+                hideSplash();
                 return;
             }
 
@@ -1368,7 +1382,6 @@
         }
 
         function isAdminUser() {
-            const email = sessionUser() || localStorage.getItem('tl_email'] || '';
             return isTeamLeader;
         }
 
