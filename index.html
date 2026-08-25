@@ -695,7 +695,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
-        import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+        import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyADC1Wwcypek8g1gwOTcgqKskpqiTo0-oM",
@@ -710,6 +710,8 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
+
+        setPersistence(auth, browserLocalPersistence).catch((e) => console.warn('Persistence error:', e));
 
         let ensuringAuth = false;
         async function ensureAuth() {
@@ -1040,6 +1042,11 @@
         }
 
         function checkSession() {
+            const u = sessionUser();
+            if (u && isAuthorizedUser(u)) {
+                activateLeaderUI();
+                return;
+            }
             const savedEmail = localStorage.getItem('tl_email');
             const loginTime = localStorage.getItem('tl_login_time');
 
@@ -1058,9 +1065,10 @@
             isTeamLeader = true; document.body.classList.add('team-leader-mode');
             const btnToggle = document.getElementById('btn-mode-toggle');
             
-            const userAlias = (localStorage.getItem('tl_email') || '').toUpperCase();
+            const activeUser = sessionUser() || localStorage.getItem('tl_email') || '';
+            const userAlias = activeUser.toUpperCase();
             
-            btnToggle.innerText = isSuperAdmin(localStorage.getItem('tl_email')) ? `🛡️ ${userAlias}` : `👤 ${userAlias}`;
+            btnToggle.innerText = isSuperAdmin(activeUser) ? `🛡️ ${userAlias}` : `👤 ${userAlias}`;
             btnToggle.style.background = "";
             btnToggle.style.color = "";
             btnToggle.style.border = "";
@@ -1104,6 +1112,11 @@
         function toggleMode() {
             if (isTeamLeader) { deactivateLeaderUI(); } 
             else {
+                const u = sessionUser();
+                if (u && isAuthorizedUser(u)) {
+                    activateLeaderUI();
+                    return;
+                }
                 const savedEmail = localStorage.getItem('tl_email');
                 const loginTime = localStorage.getItem('tl_login_time');
 
@@ -1319,7 +1332,7 @@
             logoutLeader();
         }
         window.toggleLoginObligatorio = function() {
-            const me = localStorage.getItem('tl_email') || '';
+            const me = sessionUser() || localStorage.getItem('tl_email') || '';
             if (!isAdminUser() || !isSuperAdmin(me)) return showToast('⚠️ SOLO EL SUPER ADMIN PUEDE CAMBIAR ESTO');
             if (loginObligatorio === null) return showToast('⏳ ESPERA: CARGANDO ESTADO DEL INICIO DE SESIÓN...');
             const nuevo = !loginObligatorio;
@@ -1337,7 +1350,7 @@
         function updateLoginToggleUI() {
             const sec = document.getElementById('admin-login-toggle');
             if (!sec) return;
-            const me = localStorage.getItem('tl_email') || '';
+            const me = sessionUser() || localStorage.getItem('tl_email') || '';
             sec.style.display = isAdminUser() && isSuperAdmin(me) ? 'flex' : 'none';
             const b = document.getElementById('btn-login-obligatorio');
             if (b) {
@@ -1348,7 +1361,7 @@
         }
 
         function isAdminUser() {
-            const email = localStorage.getItem('tl_email') || '';
+            const email = sessionUser() || localStorage.getItem('tl_email') || '';
             return isTeamLeader && (isSuperAdmin(email) || adminList.includes(email));
         }
 
@@ -1701,21 +1714,8 @@
         }
 
         window.onPlaneInput = function(input) {
-            const start = input.selectionStart;
-            const before = input.value;
-
-            let raw = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            let formatted = raw;
-            if (raw.length > 2) {
-                formatted = raw.substring(0, 2) + '-' + raw.substring(2, 5);
-            }
-
-            if (formatted !== before) {
-                input.value = formatted;
-                const diff = formatted.length - before.length;
-                input.setSelectionRange(start + diff, start + diff);
-            }
-
+            let raw = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+            input.value = raw;
             loadSelectedPlane();
         };
 
@@ -1724,42 +1724,12 @@
             let reg = inputEl.value.trim().toUpperCase();
             
             if (!reg || !flotaDB[reg]) {
-                if (reg) {
-                    const cleaned = reg.replace(/-/g, '');
-                    
-                    if (cleaned.length === 5) {
-                        const reformatted = cleaned.substring(0, 2) + '-' + cleaned.substring(2);
-                        if (flotaDB[reformatted]) {
-                            reg = reformatted;
-                        }
-                    }
-                    
-                    if (!flotaDB[reg] && cleaned.length >= 3) {
-                        const allKeys = Object.keys(flotaDB);
-                        const matches = allKeys.filter(k => k.replace(/-/g, '').includes(cleaned));
-                        
-                        if (matches.length === 1) {
-                            reg = matches[0];
-                        } else if (matches.length > 1) {
-                            const startsWith = matches.filter(k => k.replace(/-/g, '').startsWith(cleaned));
-                            if (startsWith.length === 1) {
-                                reg = startsWith[0];
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (!reg || !flotaDB[reg]) {
                 if (currentLoadedReg) {
-                    const cleaned = (reg || '').replace(/-/g, '');
-                    if (cleaned.length >= 5) resetView();
+                    resetView();
                 }
                 return;
             }
             
-            if (inputEl.value !== reg) inputEl.value = reg;
-
             currentLoadedReg = reg; currentZoneFilter = null; 
             document.querySelectorAll('.svg-group').forEach(g => g.classList.remove('active-zone'));
             localStorage.setItem('saved_plane_reg', reg);
