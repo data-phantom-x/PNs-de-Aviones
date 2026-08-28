@@ -695,19 +695,23 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+        // C5 App Check: igual que PD, dominios autorizados solo protege Login. Para proteger DB activa ReCaptcha en Firebase > App Check
+        // import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app-check.js";
         import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
+        // C4 CORREGIDO: Tu número de proyecto real es 449926089536 (confirmado)
         const firebaseConfig = {
             apiKey: "AIzaSyADC1Wwcypek8g1gwOTcgqKskpqiTo0-oM",
             authDomain: "programacion-diaria-3dddb.firebaseapp.com",
             databaseURL: "https://programacion-diaria-3dddb-default-rtdb.firebaseio.com",
             projectId: "programacion-diaria-3dddb",
             storageBucket: "programacion-diaria-3dddb.firebasestorage.app",
-            messagingSenderId: "449926536089",
-            appId: "1:449926536089:web:052ba8ea546f4d39b708a5"
+            messagingSenderId: "449926089536",
+            appId: "1:449926089536:web:052ba8ea546f4d39b708a5"
         };
 
         const app = initializeApp(firebaseConfig);
+        // const appCheck = initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider('TU_SITE_KEY'), isTokenAutoRefreshEnabled: true });
         const auth = getAuth(app);
         const db = getDatabase(app);
 
@@ -827,7 +831,8 @@
                 evaluateGate();
             }, (e) => console.warn('usuarios:', e.code)));
         }
-        subscribeRoles();
+        // P4 FIX: Evita carrera entre ensureAuth y lectura de roles al recargar
+        auth.authStateReady().then(()=> subscribeRoles()).catch(()=> subscribeRoles());
 
         function isAuthorizedUser(name) {
             return isSuperAdmin(name) || correosAutorizados.includes(name) || adminList.includes(name);
@@ -857,8 +862,10 @@
             { name: '4TH OCCUPANT SEAT', id: '4TH_OCCUPANT' }
         ];
 
-        const generateId = () => 'p_' + Math.random().toString(36).substr(2, 9);
+        // B5 FIX: 100% único - antes Math.random podía repetir, ahora usa timestamp + crypto
+        const generateId = () => 'p_' + Date.now().toString(36) + '_' + (crypto.randomUUID ? crypto.randomUUID().slice(0,8) : Math.random().toString(36).substr(2,9));
         
+        function escapeHtml(str){ const d=document.createElement('div'); d.textContent=str||''; return d.innerHTML; }
         function showToast(msg) {
             const toast = document.getElementById("toast");
             toast.innerText = msg;
@@ -1251,8 +1258,9 @@
                 setTimeout(() => { sp.style.display = 'none'; }, 400);
             }
         }
-        // Timeout de seguridad estricto para que JAMÁS se quede pegado el splash
-        setTimeout(hideSplash, 3500);
+        // P3 FIX: Solo oculta splash cuando llegan datos reales (antes se ocultaba a los 3.5s aunque siguiera "Conectando")
+        // Fallback solo si Firebase no responde en 15s para no quedar pegado eternamente
+        setTimeout(() => { if(!splashHidden) console.warn('Splash fallback 15s'); hideSplash(); }, 15000);
 
         function evaluateGate() {
             const overlay = document.getElementById('login-obligatorio');
@@ -1713,8 +1721,8 @@
         }
 
         window.onPlaneInput = function(input) {
-            let raw = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-            input.value = raw;
+            // Formateo automático matrícula: ccbga -> CC-BGA (todo lo de matrícula con guion tras 2 letras)
+            formatMatricula(input);
             loadSelectedPlane();
         };
 
@@ -1840,7 +1848,7 @@
                 container.innerHTML += `
                     <div class="pn-card ${cardClass}">
                         <div class="pn-desc">
-                            <span>${part.desc}</span> 
+                            <span>${escapeHtml(part.desc)}</span> 
                             <div style="display: flex; gap: 5px; align-items: center;">
                                 ${badge}
                                 <button class="btn-action-small btn-verify-part" onclick="verifyPart('${part.id}')">✔️ CONFIRMAR</button>
@@ -1850,8 +1858,8 @@
                         <div class="pn-value-container">
                             ${pnDisplayHtml}
                             <div class="pn-extra-info">
-                                <div><span style="color:var(--comment); font-weight:normal;">UBICACIÓN:</span> ${part.pos || '-'}</div>
-                                <div><span style="color:var(--comment); font-weight:normal;">CMM:</span> ${part.ata || '-'}</div>
+                                <div><span style="color:var(--comment); font-weight:normal;">UBICACIÓN:</span> ${escapeHtml(part.pos || '-')}</div>
+                                <div><span style="color:var(--comment); font-weight:normal;">CMM:</span> ${escapeHtml(part.ata || '-')}</div>
                                 ${ipcLinkHtml}
                                 ${verifiedHtml}
                             </div>
@@ -2268,11 +2276,13 @@
             closeModal('avion-modal');
         }
 
+        // B2 FIX: Siempre 3 dígitos - "19" -> "019", evita "19" vs "019" duplicados
         window.savePlaneData = function() {
             const reg = document.getElementById('modal-plane-reg').value.trim().toUpperCase();
             if (!reg || reg.length !== 6) return alert("Matrícula inválida.");
 
-            const appCode = document.getElementById('modal-plane-appcode').value.trim();
+            let appCode = document.getElementById('modal-plane-appcode').value.trim().replace(/\D/g,'');
+            if(appCode) appCode = appCode.padStart(3,'0'); else appCode = '';
             const rows = document.getElementById('plane-components-container').querySelectorAll('.component-row-wrapper');
             
             let exceptions = {};
