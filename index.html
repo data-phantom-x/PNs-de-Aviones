@@ -448,7 +448,7 @@
                 <span id="logged-user" class="leader-only" style="font-size: 10px; font-weight: bold; color: var(--primary); border: 1px solid var(--primary); padding: 0 10px; border-radius: 4px; background: #e0f2fe; display: none; align-items: center; height: 28px; box-sizing: border-box; margin: 0;"></span>
                 <div style="display:flex; gap:5px; align-items:center;">
                     <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode leader-only" onclick="toggleCheckMode()" style="display:none;">☑️ MODO CHECK</button>
-                    <button type="button" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
+                    <button type="button" id="btn-gestor-pn" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
                     <button type="button" id="btn-admin" class="btn-outline leader-only" onclick="openAdminModal()" style="display:none;" title="Administrar usuarios autorizados">⚙ ADMIN</button>
                 </div>
             </div>
@@ -515,7 +515,7 @@
     </div>
 
     <div id="admin-modal" class="modal">
-        <div class="modal-content" style="max-width: 820px; width: 95%; min-height: 460px;">
+        <div class="modal-content" style="max-width: 880px; width: 95%; min-height: 460px;">
             <div class="modal-header" style="border:none; padding-bottom:0; margin-bottom:12px;">⚙ ADMIN · USUARIOS AUTORIZADOS</div>
             <div style="display:flex; gap:16px; align-items:stretch; flex-wrap:wrap;">
                 <!-- IZQUIERDA: controles -->
@@ -528,10 +528,11 @@
                         <strong style="font-size: 10px; color: var(--primary);">AGREGAR NUEVO USUARIO:</strong>
                         <input type="text" id="admin-name" placeholder="USUARIO · EJ: juan.perez" autocomplete="off" style="width:100%; margin:8px 0 8px; height:32px;" onkeypress="if(event.key === 'Enter') adminAddUser()">
                         <input type="text" id="admin-realname" placeholder="NOMBRE REAL · EJ: JUAN PEREZ" autocomplete="off" style="width:100%; margin:0 0 10px; height:32px;" onkeypress="if(event.key === 'Enter') adminAddUser()">
-                        <div style="display:flex; gap:15px; margin-bottom:5px; flex-wrap:wrap;">
-                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:5px;"><input type="checkbox" id="admin-is-user" checked> USUARIO (👤)</label>
-                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:5px;"><input type="checkbox" id="admin-is-tl"> TEAM LEADER</label>
-                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:5px;"><input type="checkbox" id="admin-is-admin"> ADMIN</label>
+                        <div style="display:flex; gap:10px; margin-bottom:5px; flex-wrap:wrap;">
+                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-user" checked> USUARIO (👤)</label>
+                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-tech"> TÉCNICO (🛠️)</label>
+                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-tl"> TEAM LEADER</label>
+                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-admin"> ADMIN</label>
                         </div>
                     </div>
                     <button class="btn-leader" onclick="adminAddUser()" style="width:100%; height:36px; font-size:10px; border-radius:6px;">AGREGAR USUARIO</button>
@@ -754,6 +755,7 @@
         let isCheckMode = false;
         let isInitialLoad = true; 
 
+        let techUsers = [];
         let correosAutorizados = [];
         let adminList = [];
         let superAdmins = [];
@@ -770,6 +772,7 @@
             return usuariosDB[user];
         }
         function syncRoleArrays() {
+            techUsers = Object.keys(usuariosDB).filter(u => usuariosDB[u].tech || usuariosDB[u].tl || usuariosDB[u].admin);
             correosAutorizados = Object.keys(usuariosDB).filter(u => usuariosDB[u].tl);
             adminList = Object.keys(usuariosDB).filter(u => usuariosDB[u].admin);
         }
@@ -820,6 +823,7 @@
                     usuariosDB[name] = {
                         nombre: e.nombre || '',
                         usuario: !!(e.usuario || e.acceso),
+                        tech: !!e.tech,
                         tl: !!e.tl,
                         admin: !!e.admin,
                         uid: e.uid || '',
@@ -842,11 +846,20 @@
                 evaluateGate();
             }, (e) => console.warn('usuarios:', e.code)));
         }
-        // P4 FIX: Evita carrera entre ensureAuth y lectura de roles al recargar
         auth.authStateReady().then(()=> subscribeRoles()).catch(()=> subscribeRoles());
 
+function isTechUser() {
+    const u = sessionUser() || localStorage.getItem('crt_email') || '';
+    return isSuperAdmin(u) || techUsers.includes(u) || correosAutorizados.includes(u) || adminList.includes(u);
+}
+
+function isLeaderOrAdmin() {
+    const u = sessionUser() || localStorage.getItem('crt_email') || '';
+    return isSuperAdmin(u) || correosAutorizados.includes(u) || adminList.includes(u);
+}
+        
         function isAuthorizedUser(name) {
-            return isSuperAdmin(name) || correosAutorizados.includes(name) || adminList.includes(name);
+            return isSuperAdmin(name) || techUsers.includes(name) || correosAutorizados.includes(name) || adminList.includes(name);
         }
 
         function extractUsername(email) {
@@ -1418,11 +1431,23 @@
             return isTeamLeader && (isSuperAdmin(currentUser) || adminList.includes(currentUser));
         }
 
-        function updateAdminUI() {
-    const btn = document.getElementById('btn-admin');
-    if (btn) {
-        btn.style.display = isAdminUser() ? 'inline-flex' : 'none';
-    }
+       function updateAdminUI() {
+    const currentUser = sessionUser() || localStorage.getItem('crt_email') || '';
+    
+    const btnAdmin = document.getElementById('btn-admin');
+    const btnGestorPn = document.getElementById('btn-gestor-pn');
+    const btnEditPlane = document.getElementById('btn-edit-plane');
+    const btnDeletePlane = document.getElementById('btn-delete-plane');
+    
+    // 🛡️ SOLO ADMIN / SUPER ADMIN
+    const isAdmin = isSuperAdmin(currentUser) || adminList.includes(currentUser);
+    if (btnAdmin) btnAdmin.style.display = (isTeamLeader && isAdmin) ? 'inline-flex' : 'none';
+    if (btnGestorPn) btnGestorPn.style.display = (isTeamLeader && isAdmin) ? 'inline-flex' : 'none';
+    
+    // ⚙️ SOLO TEAM LEADER O ADMIN (Técnicos NO pueden Editar o Borrar el Avión completo)
+    const isLeader = isLeaderOrAdmin();
+    if (btnEditPlane) btnEditPlane.style.display = (isTeamLeader && isLeader && currentLoadedReg) ? 'inline-flex' : 'none';
+    if (btnDeletePlane) btnDeletePlane.style.display = (isTeamLeader && isLeader && currentLoadedReg) ? 'inline-flex' : 'none';
 }
 
         function refreshAdminListIfOpen() {
@@ -1471,6 +1496,7 @@
                         ${sinAcceso ? '<span style="font-size:9px; font-weight:700; color:white; background:var(--comment); padding:1px 5px; border-radius:3px;">SIN ACCESO</span>' : ''}
                     </span>
                     <button class="btn-action-small" onclick="adminToggleUsuario('${user}')" title="Quitar/Dar acceso de usuario" style="${esUsuario ? 'background:var(--leader-color); color:white;' : ''}">👤</button>
+                    <button class="btn-action-small" onclick="adminToggleTech('${user}')" title="Quitar/Dar Rol Técnico" style="${info.tech ? 'background:var(--success); color:white;' : ''}">🛠️</button>
                     <button class="btn-action-small" onclick="adminToggleTl('${user}')" title="Quitar/Hacer Team Leader" style="${isTl ? 'background:var(--leader-color); color:white;' : ''}">TL</button>
                     <button class="btn-action-small" onclick="adminToggleAdmin('${user}')" title="Quitar/Hacer Admin" style="${isAdm ? 'background:var(--danger); color:white;' : ''}">ADMIN</button>
                     <button class="btn-action-small" onclick="adminEditNombre('${user}')" title="Editar nombre real">✎</button>
@@ -1484,25 +1510,37 @@
         window.refreshAdminList = refreshAdminList;
 
         window.adminAddUser = function() {
-            const name = extractUsername(document.getElementById('admin-name').value);
-            if (!name) return alert("INGRESE EL NOMBRE DEL USUARIO (EJ: juan.perez).");
-            const asUser = document.getElementById('admin-is-user').checked;
-            const asTl = document.getElementById('admin-is-tl').checked;
-            const asAdmin = document.getElementById('admin-is-admin').checked;
-            if (!asUser && !asTl && !asAdmin) return alert("SELECCIONE AL MENOS UN ROL.");
-            userRec(name);
-            const nombreReal = document.getElementById('admin-realname').value.trim();
-            if (nombreReal && !usuariosDB[name].nombre) usuariosDB[name].nombre = nombreReal;
-            if (asUser || asTl || asAdmin) usuariosDB[name].usuario = true;
-            if (asTl) usuariosDB[name].tl = true;
-            if (asAdmin) usuariosDB[name].admin = true;
-            syncRoleArrays();
-            document.getElementById('admin-name').value = '';
-            document.getElementById('admin-realname').value = '';
-            refreshAdminList();
-            showToast("✅ USUARIO AGREGADO: " + name.toUpperCase());
-            saveUsuarios();
-        }
+    const name = extractUsername(document.getElementById('admin-name').value);
+    if (!name) return alert("INGRESE EL NOMBRE DEL USUARIO (EJ: juan.perez).");
+    const asUser = document.getElementById('admin-is-user').checked;
+    const asTech = document.getElementById('admin-is-tech').checked;
+    const asTl = document.getElementById('admin-is-tl').checked;
+    const asAdmin = document.getElementById('admin-is-admin').checked;
+    
+    if (!asUser && !asTech && !asTl && !asAdmin) return alert("SELECCIONE AL MENOS UN ROL.");
+    userRec(name);
+    const nombreReal = document.getElementById('admin-realname').value.trim();
+    if (nombreReal && !usuariosDB[name].nombre) usuariosDB[name].nombre = nombreReal;
+    if (asUser || asTech || asTl || asAdmin) usuariosDB[name].usuario = true;
+    if (asTech) usuariosDB[name].tech = true;
+    if (asTl) usuariosDB[name].tl = true;
+    if (asAdmin) usuariosDB[name].admin = true;
+    syncRoleArrays();
+    document.getElementById('admin-name').value = '';
+    document.getElementById('admin-realname').value = '';
+    refreshAdminList();
+    showToast("✅ USUARIO AGREGADO: " + name.toUpperCase());
+    saveUsuarios();
+}
+
+window.adminToggleTech = function(user) {
+    const rec = userRec(user);
+    rec.tech = !rec.tech;
+    syncRoleArrays();
+    refreshAdminList();
+    showToast("✅ ROL TÉCNICO ACTUALIZADO");
+    saveUsuarios();
+}
 
         window.adminToggleUsuario = function(user) {
             const rec = userRec(user);
