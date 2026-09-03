@@ -1545,7 +1545,7 @@ window.adminToggleTech = function(user) {
     syncRoleArrays();
     refreshAdminList();
     showToast(rec.tech ? `✅ ROL TÉCNICO ASIGNADO A ${user.toUpperCase()}` : `⚠️ ROL TÉCNICO QUITADO A ${user.toUpperCase()}`);
-    saveUsuarios(); // Guarda los cambios inmediatamente en Firebase
+    saveUsuarios();
 }
 
         window.adminToggleUsuario = function(user) {
