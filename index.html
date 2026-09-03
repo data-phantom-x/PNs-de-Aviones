@@ -784,6 +784,7 @@
                     u,
                     nombre: rec.nombre || '',
                     usuario: !!rec.usuario,
+                    tech: !!rec.tech,
                     tl: !!rec.tl,
                     admin: !!rec.admin
                 };
@@ -1536,10 +1537,15 @@ function isLeaderOrAdmin() {
 window.adminToggleTech = function(user) {
     const rec = userRec(user);
     rec.tech = !rec.tech;
+    
+    if (rec.tech) {
+        rec.usuario = true;
+    }
+
     syncRoleArrays();
     refreshAdminList();
-    showToast("✅ ROL TÉCNICO ACTUALIZADO");
-    saveUsuarios();
+    showToast(rec.tech ? `✅ ROL TÉCNICO ASIGNADO A ${user.toUpperCase()}` : `⚠️ ROL TÉCNICO QUITADO A ${user.toUpperCase()}`);
+    saveUsuarios(); // Guarda los cambios inmediatamente en Firebase
 }
 
         window.adminToggleUsuario = function(user) {
