@@ -1109,6 +1109,8 @@
 
         function deactivateLeaderUI() {
             isTeamLeader = false; document.body.classList.remove('team-leader-mode');
+            const btnAdmin = document.getElementById('btn-admin');
+            if (btnAdmin) btnAdmin.style.display = 'none';
             const connected = (typeof sessionUser === 'function' ? sessionUser() : null) || localStorage.getItem('crt_email') || localStorage.getItem('tl_email') || '';
             const btnToggle = document.getElementById('btn-mode-toggle');
             if (connected) {
@@ -1417,9 +1419,11 @@
         }
 
         function updateAdminUI() {
-            const btn = document.getElementById('btn-admin');
-            if (btn) btn.style.display = 'inline-flex';
-        }
+    const btn = document.getElementById('btn-admin');
+    if (btn) {
+        btn.style.display = isAdminUser() ? 'inline-flex' : 'none';
+    }
+}
 
         function refreshAdminListIfOpen() {
             const modal = document.getElementById('admin-modal');
