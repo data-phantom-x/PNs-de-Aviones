@@ -1074,52 +1074,55 @@ function isLeaderOrAdmin() {
         }
 
         function checkSession() {
-            const u = sessionUser();
-            if (u && isAuthorizedUser(u)) {
-                activateLeaderUI();
-                return;
-            }
-            const savedEmail = localStorage.getItem('crt_email');
-            const loginTime = localStorage.getItem('crt_login_time');
+    const u = sessionUser();
+    if (u && isAuthorizedUser(u)) {
+        activateLeaderUI();
+        return;
+    }
+    const savedEmail = localStorage.getItem('crt_email');
+    const loginTime = localStorage.getItem('crt_login_time');
 
-            if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS) {
-                if (!usuariosLoaded) return; 
+    if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS) {
+        if (!usuariosLoaded) return; // ESPERA a que Firebase cargue la lista de usuarios antes de decidir cerrar sesión
 
-                if (isAuthorizedUser(savedEmail) || loginObligatorio === false) {
-                    activateLeaderUI();
-                } else {
-                    logoutLeader();
-                }
-            } else {
-                logoutLeader();
-            }
+        if (isAuthorizedUser(savedEmail) || loginObligatorio === false) {
+            activateLeaderUI();
+        } else {
+            logoutLeader();
         }
+    } else {
+        logoutLeader();
+    }
+}
 
-        function activateLeaderUI() {
-            isTeamLeader = true; document.body.classList.add('team-leader-mode');
-            const btnToggle = document.getElementById('btn-mode-toggle');
-            
-            const activeUser = sessionUser() || localStorage.getItem('crt_email') || 'TÉCNICO';
-            const userAlias = activeUser.toUpperCase();
-            
-            btnToggle.innerText = isSuperAdmin(activeUser) ? `🛡️ ${userAlias}` : `👤 ${userAlias}`;
-            btnToggle.style.background = "";
-            btnToggle.style.color = "";
-            btnToggle.style.border = "";
-            btnToggle.classList.add('btn-mode-leader');
-            
-            const btnLogout = document.getElementById('btn-logout');
-            if (btnLogout) btnLogout.style.display = 'inline-flex';
+function activateLeaderUI() {
+    isTeamLeader = true; 
+    document.body.classList.add('team-leader-mode');
+    
+    const activeUser = sessionUser() || localStorage.getItem('crt_email') || 'TÉCNICO';
+    const userAlias = activeUser.toUpperCase();
+    const btnToggle = document.getElementById('btn-mode-toggle');
+    
+    // Configurar el botón principal de perfil
+    btnToggle.innerText = isSuperAdmin(activeUser) ? `🛡️ ${userAlias}` : `👤 ${userAlias}`;
+    btnToggle.style.background = "";
+    btnToggle.style.color = "";
+    btnToggle.style.border = "";
+    btnToggle.classList.add('btn-mode-leader');
+    
+    // 1. Mostrar botón de salir (✖)
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) btnLogout.style.display = 'inline-flex';
 
-            const btnCheckMode = document.getElementById('btn-check-mode');
-            if (btnCheckMode) btnCheckMode.style.display = 'inline-flex';
+    // 2. MOSTRAR DE INMEDIATO EL BOTÓN MODO CHECK AL INICIAR SESIÓN
+    const btnCheckMode = document.getElementById('btn-check-mode');
+    if (btnCheckMode) btnCheckMode.style.display = 'inline-flex';
 
-            const loggedUserSpan = document.getElementById('logged-user');
-            if (loggedUserSpan) {
-                loggedUserSpan.style.display = 'none';
-            }
-            updateAdminUI();
-        }
+    const loggedUserSpan = document.getElementById('logged-user');
+    if (loggedUserSpan) loggedUserSpan.style.display = 'none';
+
+    updateAdminUI();
+}
 
         function deactivateLeaderUI() {
             isTeamLeader = false; document.body.classList.remove('team-leader-mode');
@@ -1295,67 +1298,64 @@ function isLeaderOrAdmin() {
         setTimeout(() => { if(!splashHidden) console.warn('Splash fallback 15s'); hideSplash(); }, 15000);
 
         function evaluateGate() {
-            const overlay = document.getElementById('login-obligatorio');
-            if (!overlay) return;
+    const overlay = document.getElementById('login-obligatorio');
+    if (!overlay) return;
+    if (loginObligatorio === null) {
+        setTimeout(() => {
             if (loginObligatorio === null) {
-                // Si Firebase demora más de 1.5s en responder el estado del login, forzamos apertura para evitar bloqueo
-                setTimeout(() => {
-                    if (loginObligatorio === null) {
-                        loginObligatorio = false;
-                        evaluateGate();
-                    }
-                }, 1500);
-                return;
+                loginObligatorio = false;
+                evaluateGate();
             }
-            const btnLogout = document.getElementById('btn-logout');
+        }, 1500);
+        return;
+    }
+    const btnLogout = document.getElementById('btn-logout');
 
-            if (loginObligatorio === false) {
-                overlay.style.display = 'none';
-                if (!auth.currentUser) ensureAuth();
-                attachData();
-                if (btnLogout) btnLogout.onclick = handleLogoutClick;
-                checkSession();
-                updateLoginToggleUI();
-                hideSplash();
-                return;
-            }
+    if (loginObligatorio === false) {
+        overlay.style.display = 'none';
+        if (!auth.currentUser) ensureAuth();
+        attachData();
+        if (btnLogout) btnLogout.onclick = handleLogoutClick;
+        checkSession();
+        updateLoginToggleUI();
+        hideSplash();
+        return;
+    }
 
-            const u = sessionUser();
-            if (u && !usuariosLoaded) {
-                setTimeout(() => evaluateGate(), 1000);
-                return;
-            }
+    const u = sessionUser();
+    if (u && !usuariosLoaded) {
+        setTimeout(() => evaluateGate(), 500);
+        return;
+    }
 
-            if (u && canLogin(u)) {
-                overlay.style.display = 'none';
-                attachData();
-                if (hasLeaderRole(u)) {
-                    localStorage.setItem('crt_email', u);
-                    localStorage.setItem('crt_login_time', Date.now().toString());
-                    activateLeaderUI();
-                } else if (isTeamLeader) {
-                    logoutLeader();
-                }
-                updateAdminUI();
-                if (btnLogout) {
-                    btnLogout.style.display = 'inline-flex';
-                    btnLogout.onclick = handleLogoutClick;
-                }
-                hideSplash();
-                return;
-            }
-
-            detachData();
-            deactivateLeaderUI();
-            const denied = !!u;
-            document.getElementById('login-card-title').innerText = denied ? 'ACCESO NO AUTORIZADO' : 'CABIN REPORT TAPESTRIES';
-            document.getElementById('login-error-msg').innerText = denied ? `${u.toUpperCase()} NO TIENE ACCESO HABILITADO` : '';
-            const sw = document.getElementById('login-switch-btn');
-            if (sw) sw.style.display = auth.currentUser ? 'block' : 'none';
-            overlay.style.display = 'flex';
-            updateLoginToggleUI();
-            hideSplash();
+    if (u && canLogin(u)) {
+        overlay.style.display = 'none';
+        attachData();
+        if (isAuthorizedUser(u)) {
+            localStorage.setItem('crt_email', u);
+            localStorage.setItem('crt_login_time', Date.now().toString());
+            activateLeaderUI();
         }
+        updateAdminUI();
+        if (btnLogout) {
+            btnLogout.style.display = 'inline-flex';
+            btnLogout.onclick = handleLogoutClick;
+        }
+        hideSplash();
+        return;
+    }
+
+    detachData();
+    deactivateLeaderUI();
+    const denied = !!u;
+    document.getElementById('login-card-title').innerText = denied ? 'ACCESO NO AUTORIZADO' : 'CABIN REPORT TAPESTRIES';
+    document.getElementById('login-error-msg').innerText = denied ? `${u.toUpperCase()} NO TIENE ACCESO HABILITADO` : '';
+    const sw = document.getElementById('login-switch-btn');
+    if (sw) sw.style.display = auth.currentUser ? 'block' : 'none';
+    overlay.style.display = 'flex';
+    updateLoginToggleUI();
+    hideSplash();
+}
 
         window.doGoogleLogin = async function() {
             const err = document.getElementById('login-error-msg');
