@@ -1443,10 +1443,12 @@ function activateLeaderUI() {
     // 🛡️ SOLO ADMIN / SUPER ADMIN
     const isAdmin = isSuperAdmin(currentUser) || adminList.includes(currentUser);
     if (btnAdmin) btnAdmin.style.display = (isTeamLeader && isAdmin) ? 'inline-flex' : 'none';
-    if (btnGestorPn) btnGestorPn.style.display = (isTeamLeader && isAdmin) ? 'inline-flex' : 'none';
     
-    // ⚙️ SOLO TEAM LEADER O ADMIN (Técnicos NO pueden Editar o Borrar el Avión completo)
+    // ⚙️ TEAM LEADER O ADMIN (Acepta a TL e impide el acceso a Técnico solo)
     const isLeader = isLeaderOrAdmin();
+    if (btnGestorPn) btnGestorPn.style.display = (isTeamLeader && isLeader) ? 'inline-flex' : 'none'; // ✅ Ahora evalúa 'isLeader'
+    
+    // ✈️ TEAM LEADER O ADMIN (Editar o Borrar el Avión completo)
     if (btnEditPlane) btnEditPlane.style.display = (isTeamLeader && isLeader && currentLoadedReg) ? 'inline-flex' : 'none';
     if (btnDeletePlane) btnDeletePlane.style.display = (isTeamLeader && isLeader && currentLoadedReg) ? 'inline-flex' : 'none';
 }
