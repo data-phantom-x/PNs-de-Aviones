@@ -3,27 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRT - LATAM</title>
+    <title>CFR - LATAM</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 
         :root {
-            --primary: #2A0087; 
-            --accent: #EE1750; 
+            --primary: #2A0087;
+            --primary-dark: #1A0055;
+            --primary-light: #3D0DA8;
+            --accent: #EE1750;
             --cyan: #00E5FF;
-            --magenta: #D500F9;
-            --orange: #FF5252;
-            --bg: #F5F7FA;
-            --light-gray: #E6F0F8;
-            --border: #C0D0DC;
-            --leader-color: #2A0087;
-            --danger: #e53e3e;
+            --success: #10B981;
+            --success-dark: #059669;
+            --danger: #E53E3E;
             --help: #FF9900;
+            --warning: #F59E0B;
             --comment: #6B5E8A;
-            --warning: #f59e0b;
-            --success: #10b981;
-            --gradient-accent: linear-gradient(135deg, #2A0087, #3D0DA8);
-            --gradient-primary: linear-gradient(135deg, #2A0087, #1A0055);
+            --celeste: #E6F0F8;
+            --button-height: 29px;
+            --button-height-banner: 24px;
+            --button-height-admin: 20px;
+            --button-radius: 7px;
+            --black: #000000;
+            --slate-900: #1E293B;
+            --border: #C0D0DC;
+            --leader-color: var(--primary);
+            --surface: #FFFFFF;
+            --surface-soft: color-mix(in srgb, var(--celeste) 22%, #FFFFFF);
+            --surface-muted: #F3F4F6;
+            --surface-amber: #FFFAF0;
+            --surface-exception: #FFFBEB;
+            --surface-indigo: #E0E7FF;
+            --surface-violet: #F0ECF8;
+            --text-soft: #526176;
+            --indigo: #4338CA;
+            --indigo-dark: #3730A3;
+            --text-lavender: #C4B8D0;
+            --border-soft: #D8E2EA;
+            --border-subtle: #E1E8EF;
+            --border-indigo: #C7D2FE;
+            --google-blue: #4285F4;
+            --google-green: #34A853;
+            --google-yellow: #FBBC05;
+            --google-red: #EA4335;
+            --bg: color-mix(in srgb, var(--celeste) 55%, #FFFFFF);
+            --light-gray: var(--celeste);
+            --gradient-accent: linear-gradient(135deg, var(--primary), var(--primary-light));
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            --gradient-custom: linear-gradient(135deg, var(--indigo), var(--indigo-dark));
+            --gradient-brand: linear-gradient(135deg, var(--primary), var(--primary-dark), var(--primary));
+            --gradient-boot: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--primary-dark));
             --print-font-size: 14px;
         }
 
@@ -49,20 +78,20 @@
             height: 28px;
             color: var(--primary);
             transition: all 0.2s ease;
-            background-color: white;
+            background-color: var(--surface);
             margin: 0;
         }
 
         input:focus, select:focus, textarea:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(42, 0, 135, 0.1);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 10%, transparent);
         }
 
         /* Multi-Select Custom */
         .custom-multiselect { position: relative; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
         .multiselect-header {
             padding: 0 10px; border: 1px solid var(--border); border-radius: 4px;
-            font-size: 10px; height: 28px; background: white; cursor: pointer;
+            font-size: 10px; height: 28px; background: var(--surface); cursor: pointer;
             display: flex; align-items: center; justify-content: space-between;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold;
             color: var(--primary); font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -71,8 +100,8 @@
         .multiselect-header:hover { border-color: var(--primary); }
         .multiselect-options {
             display: none; position: absolute; top: 100%; left: 0; right: 0;
-            background: white; border: 1px solid var(--primary); z-index: 100;
-            max-height: 180px; overflow-y: auto; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: var(--surface); border: 1px solid var(--primary); z-index: 100;
+            max-height: 180px; overflow-y: auto; border-radius: 4px; box-shadow: 0 4px 8px color-mix(in srgb, var(--black) 10%, transparent);
             margin-top: 2px;
         }
         .multiselect-options.drop-up {
@@ -88,16 +117,16 @@
         .multiselect-options label:hover { background: var(--light-gray); }
         .multiselect-options input[type="checkbox"] { height: 14px; width: 14px !important; margin: 0; cursor: pointer; flex-shrink: 0; }
 
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 24px 0 24px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .container { max-width: 1000px; margin: 0 auto; background: var(--surface); padding: 25px; border-radius: 24px 0 24px 0; box-shadow: 0 4px 12px color-mix(in srgb, var(--black) 5%, transparent); }
 
         /* Barra superior general */
         .top-bar {
-            display: flex; justify-content: space-between; margin-bottom: 0;
-            background-color: var(--light-gray); padding: 10px 15px;
-            border-radius: 16px 0 16px 0; align-items: center; flex-wrap: wrap; gap: 15px;
+            display: flex; justify-content: space-between; margin-bottom: 8px; min-height: 32px;
+            background-color: var(--light-gray); padding: 4px 10px;
+            border-radius: 12px 0 12px 0; align-items: center; position: relative;
         }
 
-        .top-bar-left { display: flex; gap: 5px; flex-wrap: wrap; width: 100%; align-items: center; }
+        .top-bar-left { display: flex; gap: 5px; }
 
         body:not(.team-leader-mode) .leader-only { display: none !important; }
 
@@ -139,7 +168,7 @@
         .title-select { 
             font-size: 12px !important; font-weight: 900 !important; color: var(--primary) !important;
             border: 2px solid var(--primary) !important; padding: 0 12px !important; border-radius: 4px !important;
-            background: #f8fafc !important; cursor: text; flex: 1; max-width: 400px; height: 32px !important;
+            background: var(--surface-soft) !important; cursor: text; flex: 1; max-width: 400px; height: 32px !important;
         }
         
         .badge-eff {
@@ -151,7 +180,7 @@
         .selector-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
         .plane-svg-container {
-            width: 100%; background-color: white; border: 1px dashed var(--border);
+            width: 100%; background-color: var(--surface); border: 1px dashed var(--border);
             border-radius: 20px 0 20px 0; padding: 10px; margin-bottom: 10px;
             box-sizing: border-box; position: relative;
         }
@@ -162,17 +191,17 @@
         }
         
         .svg-toggle-btn { 
-            width: 140px; font-size: 11px; height: 32px; border-radius: 4px; 
+            width: 140px; font-size: 11px; height: var(--button-height); border-radius: var(--button-radius);
             border: 1px solid var(--primary); color: var(--primary); font-weight: 800; 
-            background: white; transition: all 0.3s; cursor: pointer; text-transform: uppercase;
+            background: var(--surface); transition: all 0.3s; cursor: pointer; text-transform: uppercase;
             display: inline-flex; align-items: center; justify-content: center;
             box-sizing: border-box; line-height: 1; margin: 0;
         }
         
         .svg-toggle-btn:hover { background: var(--light-gray); }
         .svg-toggle-btn.active { 
-            background: var(--gradient-primary) !important; color: white !important; 
-            border-color: var(--primary) !important; box-shadow: 0 4px 6px rgba(42,0,135,0.2); 
+            background: var(--gradient-primary) !important; color: var(--surface) !important; 
+            border-color: var(--primary) !important; box-shadow: 0 4px 6px color-mix(in srgb, var(--primary) 20%, transparent); 
         }
 
         .svg-group { cursor: pointer; transition: all 0.2s ease; }
@@ -185,76 +214,75 @@
         }
         .svg-group:hover .svg-clickable { stroke: var(--primary) !important; stroke-width: 3px !important; }
         .svg-group.active-zone .svg-clickable { 
-            fill: rgba(238, 23, 80, 0.1) !important; 
+            fill: color-mix(in srgb, var(--accent) 10%, transparent) !important; 
             stroke: var(--accent) !important; 
             stroke-width: 6px !important; 
             opacity: 1 !important;
         }
 
         button { 
-            background-color: var(--primary); color: white; border: none; cursor: pointer; 
+            background-color: var(--primary); color: var(--surface); border: none; cursor: pointer; 
             font-weight: 700; transition: all 0.2s; 
             display: inline-flex; align-items: center; justify-content: center; 
             text-align: center; line-height: 1; margin: 0; box-sizing: border-box;
-            padding: 0 10px; border-radius: 4px; font-size: 10px; height: 28px; text-transform: uppercase; font-family: inherit;
+            padding: 0 10px; border-radius: var(--button-radius); font-size: 10px; height: var(--button-height); text-transform: uppercase; font-family: inherit;
         }
         button:hover:not(:disabled) { opacity: 0.9; }
         button:disabled { cursor: not-allowed; opacity: 0.5; }
         
         .btn-accent { background: var(--gradient-primary); }
         .btn-top {
-            width: 140px; height: 28px; font-size: 10px; padding: 0; font-weight: bold;
-            border-radius: 4px; border: none; cursor: pointer; transition: opacity 0.2s;
+            width: 140px; height: var(--button-height); font-size: 10px; padding: 0; font-weight: bold;
+            border-radius: var(--button-radius); border: none; cursor: pointer; transition: opacity 0.2s;
         }
         .btn-top:hover { opacity: 0.9; }
         .btn-accent.btn-top, .btn-mode-leader { border: 1px solid transparent; }
         .btn-accent.btn-top:hover, .btn-mode-leader.btn-top:hover { background: transparent; color: var(--primary); border-color: var(--primary); opacity: 1; }
-        .btn-mode-leader { background: var(--gradient-primary); color: #fff; }
-        .btn-leader { background: var(--gradient-primary); color: #fff; }
+        .btn-mode-leader { background: var(--gradient-primary); color: var(--surface); }
+        .btn-leader { background: var(--gradient-primary); color: var(--surface); }
         .btn-outline { background-color: transparent; border: 1px solid var(--comment); color: var(--comment); }
-        .btn-outline:hover:not(:disabled) { background-color: var(--comment); color: white; }
+        .btn-outline:hover:not(:disabled) { background-color: var(--comment); color: var(--surface); }
         .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-        .btn-danger-outline:hover:not(:disabled) { background: var(--danger); color: white; }
+        .btn-danger-outline:hover:not(:disabled) { background: var(--danger); color: var(--surface); }
         #btn-logout { width: 28px; min-width: 28px; padding: 0; font-size: 14px; flex: none; }
         
         .btn-action-small { 
             background-color: var(--light-gray); color: var(--primary); border: 1px solid var(--border); 
-            height: 24px; font-size: 9px; padding: 0 8px; border-radius: 4px;
+            height: var(--button-height); font-size: 9px; padding: 0 8px; border-radius: var(--button-radius);
         }
-        .btn-action-small:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
+        .btn-action-small:hover { background-color: var(--primary); color: var(--surface); border-color: var(--primary); }
 
         .btn-check-mode { border: 1px solid var(--success) !important; color: var(--success) !important; background-color: transparent; }
-        .btn-check-mode.active { background-color: var(--success) !important; color: white !important; }
+        .btn-check-mode.active { background-color: var(--success) !important; color: var(--surface) !important; }
         body.check-mode-active .btn-verify-part { display: inline-flex !important; }
-        .btn-verify-part { display: none; background-color: var(--success); color: white; border-color: var(--success); height: 24px; font-size: 9px; padding: 0 8px; border-radius: 4px; }
-        .btn-verify-part:hover { background-color: #059669; border-color: #059669; }
+        .btn-verify-part { display: none; background-color: var(--success); color: var(--surface); border-color: var(--success); height: var(--button-height); font-size: 9px; padding: 0 8px; border-radius: var(--button-radius); }
+        .btn-verify-part:hover { background-color: var(--success-dark); border-color: var(--success-dark); }
 
         /* Badges */
         .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: 800; margin-left: 6px; display: inline-block; }
-        .badge-exception { background: #fffaf0; color: var(--help); border-left: 4px solid var(--help); }
-        .badge-custom { background: #e0e7ff; color: #4338ca; border-left: 4px solid #4338ca; }
-        .badge-app { background: var(--primary); color: white; border-radius: 20px; padding: 2px 8px; font-size: 0.8em; }
+        .badge-exception { background: var(--surface-amber); color: var(--help); border-left: 4px solid var(--help); }
+        .badge-custom { background: var(--surface-indigo); color: var(--indigo); border-left: 4px solid var(--indigo); }
+        .badge-app { background: var(--primary); color: var(--surface); border-radius: 20px; padding: 2px 8px; font-size: 0.8em; }
 
         .pn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
 
         .pn-card {
-            border: 1px solid var(--border); border-radius: 20px 0 20px 0; background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column;
-            overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border); border-radius: 20px 0 20px 0; background: var(--surface);
+            box-shadow: 0 2px 4px color-mix(in srgb, var(--black) 4%, transparent); display: flex; flex-direction: column;
+            overflow: hidden;
         }
-        .pn-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); border-color: var(--primary); }
         .pn-card.card-exception { border-left: 4px solid var(--help); }
-        .pn-card.card-custom { border-left: 4px solid #4338ca; }
+        .pn-card.card-custom { border-left: 4px solid var(--indigo); }
 
         .pn-desc {
-            background: var(--gradient-primary); color: white; padding: 10px 14px;
+            background: var(--gradient-primary); color: var(--surface); padding: 10px 14px;
             font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;
             border-radius: 20px 0 0 0;
         }
         .pn-card.card-exception .pn-desc { background: var(--gradient-accent); }
-        .pn-card.card-custom .pn-desc { background: linear-gradient(135deg, #4338ca, #3730a3); }
+        .pn-card.card-custom .pn-desc { background: var(--gradient-custom); }
 
-        .pn-value-container { padding: 12px; display: flex; flex-direction: column; gap: 8px; background: #fafbfc; flex: 1; }
+        .pn-value-container { padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--surface-soft); flex: 1; }
         .pn-main-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .pn-value { font-size: 16px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
 
@@ -265,22 +293,22 @@
         }
 
         .btn-copy {
-            background-color: var(--light-gray); color: var(--primary); padding: 0 10px; height: 24px;
-            font-size: 9px; border: 1px solid var(--border); border-radius: 4px; font-weight: 700;
+            background-color: var(--light-gray); color: var(--primary); padding: 0 10px; height: var(--button-height);
+            font-size: 9px; border: 1px solid var(--border); border-radius: var(--button-radius); font-weight: 700;
         }
-        .btn-copy:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
+        .btn-copy:hover { background-color: var(--primary); color: var(--surface); border-color: var(--primary); }
 
         .no-results {
             text-align: center; padding: 30px; color: var(--comment); font-style: italic; font-size: 11px;
-            border: 1px dashed var(--border); border-radius: 6px; background: white;
+            border: 1px dashed var(--border); border-radius: 6px; background: var(--surface);
             grid-column: 1 / -1;
         }
 
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(30, 41, 59, 0.6); backdrop-filter: blur(4px); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: color-mix(in srgb, var(--slate-900) 60%, transparent); backdrop-filter: blur(4px); }
         .modal-content {
-            background-color: white; margin: 6% auto; padding: 20px;
+            background-color: var(--surface); margin: 6% auto; padding: 20px;
             border: none; width: 95%; max-width: 1000px; border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto;
+            box-shadow: 0 10px 30px color-mix(in srgb, var(--black) 30%, transparent); max-height: 85vh; overflow-y: auto;
             box-sizing: border-box;
         }
         .modal-header { 
@@ -302,9 +330,9 @@
             background: transparent; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--light-gray);
             transition: background-color 0.2s;
         }
-        .component-row-wrapper:nth-child(even) { background-color: #fafbfc; }
+        .component-row-wrapper:nth-child(even) { background-color: var(--light-gray); }
         
-        .row-exception { border-left: 4px solid var(--help) !important; background: #fffbeb !important; border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .row-exception { border-left: 4px solid var(--help) !important; background: var(--surface-exception) !important; border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         
         .component-row-main { display: flex; gap: 8px; width: 100%; align-items: center; }
         
@@ -316,11 +344,11 @@
         .col-app { flex: 1.5; }
         
         .btn-remove-row { 
-            background: transparent; color: var(--danger); font-size: 14px; padding: 0; 
-            height: 28px; width: 28px; border: 1px solid var(--danger); border-radius: 4px; 
+            background: transparent; color: var(--danger); font-size: 14px; padding: 0;
+            height: var(--button-height); width: 28px; border: 1px solid var(--danger); border-radius: var(--button-radius);
             flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-weight: bold;
         }
-        .btn-remove-row:hover { background: var(--danger); color: white; transform: scale(1.05); }
+        .btn-remove-row:hover { background: var(--danger); color: var(--surface); }
         
         .override-controls { display: flex; gap: 10px; margin-top: 5px; padding-top: 5px; border-top: 1px dashed var(--border); justify-content: flex-end; align-items: center;}
         
@@ -328,12 +356,48 @@
 
         #prompt-modal input { width: 100%; margin-bottom: 12px; box-sizing: border-box; }
         #prompt-modal .modal-footer { margin-top: 5px; justify-content: stretch; }
-        #prompt-modal .btn-modal-action { flex: 1; padding: 0; height: 30px; font-size: 10px; border-radius: 4px; }
+        #prompt-modal .btn-modal-action { flex: 1; padding: 0; height: var(--button-height); font-size: 10px; border-radius: var(--button-radius); }
+        .admin-modal-content { padding: 0 !important; width: 95%; max-width: 860px; min-height: 540px; border-radius: 12px; overflow-x: hidden; overflow-y: auto; background-color: var(--surface); }
+        .admin-modal-header { margin: 0; padding: 10px 14px 8px; background: var(--surface); color: var(--primary); border: 0; border-bottom: 2px solid var(--accent); font-size: 1.05em; font-weight: 800; letter-spacing: 0; }
+        .admin-modal-layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 10px; padding: 10px; align-items: start; }
+        .admin-side { display: flex; flex-direction: column; gap: 8px; }
+        .admin-card { border: 1px solid var(--border-soft); border-radius: 7px; padding: 7px; background: var(--light-gray); }
+        .admin-card-title { color: var(--primary); font-size: 9px; font-weight: 800; letter-spacing: 0.3px; }
+        .modal-content .admin-field { width: 100%; height: 28px; margin: 4px 0 0; background: var(--surface); }
+        .admin-role-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; margin-top: 5px; }
+        .admin-role-option { display: flex; align-items: center; justify-content: center; gap: 2px; min-height: 24px; padding: 2px; border: 1px solid var(--border-soft); border-radius: 4px; background: var(--surface); color: var(--primary); font-size: 8px; font-weight: 800; cursor: pointer; }
+        .admin-role-option:has(input:checked) { border-color: var(--primary); background: var(--surface-violet); color: var(--primary); }
+        .admin-role-option input { margin: 0; accent-color: var(--primary); }
+        .admin-add-button { width: 100%; height: var(--button-height); border-radius: var(--button-radius); font-size: 9px; box-shadow: none; }
+        .admin-list-panel { min-width: 0; }
+        .admin-list-title { margin-bottom: 4px; color: var(--text-soft); font-size: 9px; font-weight: 800; letter-spacing: 0.3px; }
+        .modal-content .admin-search { width: 100%; height: 30px; flex: none; box-sizing: border-box; margin: 0 0 6px; background: var(--surface); }
+        .admin-user-list { height: 400px; max-height: 60vh; overflow-y: auto; font-size: 10px; border: 1px solid var(--border-soft); border-radius: 8px; padding: 5px; background: var(--light-gray); }
+        .admin-empty { padding: 12px 6px; text-align: center; color: var(--comment); font-size: 9px; font-weight: 800; }
+        .admin-user-row { display: flex; align-items: center; gap: 5px; padding: 5px 6px; border: 1px solid var(--border-subtle); border-radius: 6px; margin-bottom: 4px; background: var(--surface); }
+        .admin-user-row.no-access { background: var(--surface-muted); }
+        .admin-user-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 5px; }
+        .admin-user-copy { min-width: 0; display: flex; flex-direction: column; gap: 0; }
+        .admin-username { color: var(--primary); font-size: 10px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .admin-user-row.no-access .admin-username { color: var(--comment); }
+        .admin-realname { color: var(--comment); font-size: 9px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .admin-role-badge { flex: none; padding: 1px 4px; border-radius: 8px; color: var(--surface); font-size: 7px; font-weight: 800; letter-spacing: 0.2px; }
+        .admin-role-badge.admin { background: var(--danger); }
+        .admin-user-actions { display: flex; flex: none; gap: 2px; }
+        .admin-user-actions .btn-action-small { width: 24px; min-width: 24px; height: var(--button-height-admin) !important; padding: 0; border-radius: var(--button-radius); font-size: 8px; }
+        .admin-user-actions .admin-action-wide { width: 38px; }
+        .admin-user-action.active-user { background: var(--primary); border-color: var(--primary); color: var(--surface); }
+        .admin-user-action.active-tech { background: var(--success); border-color: var(--success); color: var(--surface); }
+        .admin-user-action.active-tl { background: var(--comment); border-color: var(--comment); color: var(--surface); }
+        .admin-user-action.active-admin { background: var(--danger); border-color: var(--danger); color: var(--surface); }
+        .admin-user-action.delete-user:hover { background: var(--danger); border-color: var(--danger); color: var(--surface); }
+        .admin-modal-footer { justify-content: flex-end; margin: 0; padding: 8px 10px; background: var(--surface-soft); border-top: 1px solid var(--border-soft); }
+        .admin-modal-footer button { height: var(--button-height); padding: 0 14px; border-radius: var(--button-radius); font-size: 9px; }
         
         #toast {
-            visibility: hidden; min-width: 250px; background-color: var(--primary); color: #fff;
+            visibility: hidden; min-width: 250px; background-color: var(--primary); color: var(--surface);
             text-align: center; border-radius: 4px; padding: 10px; position: fixed; z-index: 1001;
-            bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: bold; box-shadow: 0 4px 12px color-mix(in srgb, var(--black) 20%, transparent);
             opacity: 0; transition: opacity 0.3s, visibility 0.3s; border-left: 4px solid var(--accent);
         }
         #toast.show { visibility: visible; opacity: 1; }
@@ -342,11 +406,10 @@
             body { padding: 8px; }
             .container { padding: 12px; }
 
-            .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
-            .top-bar-left { flex-direction: column; width: 100%; align-items: stretch;}
-            .top-bar-left button { width: 100%; }
-            .top-bar-left > div { flex-direction: row; width: 100%; }
-            .top-bar-left > div button { width: auto; flex: 1; min-width: 0; }
+            .top-bar { flex-direction: column; gap: 8px; }
+            .top-bar-left { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 5px; }
+            .top-bar-left > * { flex: 1; min-width: 0; }
+            #btn-mode-toggle { flex: 1 1 0; max-width: none; min-width: 0; }
 
             .main-header-wrapper { flex-direction: column; text-align: center; gap: 12px; padding-bottom: 15px; }
             .logo-container { position: relative; transform: none; top: auto; left: auto; }
@@ -362,61 +425,73 @@
             .pn-grid { grid-template-columns: 1fr; }
 
             .table-headers { display: none; }
-            .component-row-main { flex-direction: column; gap: 8px; align-items: stretch; background: white; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
+            .component-row-main { flex-direction: column; gap: 8px; align-items: stretch; background: var(--surface); padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
             .col-desc, .col-pn, .col-pos, .col-ata, .col-ipc, .col-app { width: 100% !important; flex: none !important; margin: 0 !important; box-sizing: border-box; }
-            .btn-remove-row { width: 100%; height: 28px; margin-top: 5px; }
+            .btn-remove-row { width: 100%; height: var(--button-height); margin-top: 5px; }
             .component-row-wrapper { padding: 10px; background: var(--light-gray); border-radius: 6px; }
 
             .modal-content { width: 92%; padding: 16px; margin: 10% auto; }
+            .admin-modal-content { width: 98% !important; min-height: 0; max-height: 92vh; margin: 4% auto; padding: 0 !important; }
+            .admin-modal-layout { grid-template-columns: minmax(0, 1fr); padding: 10px; gap: 10px; }
+            .admin-user-list { height: 300px; max-height: 46vh; }
+            .admin-user-row { align-items: flex-start; flex-wrap: wrap; }
+            .admin-user-main { width: 100%; }
+            .admin-user-actions { width: 100%; justify-content: flex-end; }
             .modal-footer button { width: 100%; }
+            .admin-modal-footer button { width: auto; }
             .override-controls { flex-direction: column; align-items: stretch; }
             .override-controls button { width: 100%; }
+        }
+
+        button {
+            height: var(--button-height) !important;
+            border-radius: var(--button-radius) !important;
         }
 
         @media print {
             @page { size: letter; margin: 1.2cm; } 
             body .no-print { display: none !important; }
-            body { padding: 0 !important; background-color: white; font-size: var(--print-font-size); line-height: 1.15; }
+            body { padding: 0 !important; background-color: var(--surface); font-size: var(--print-font-size); line-height: 1.15; }
             .container { padding: 0 !important; box-shadow: none; max-width: 100%; }
             
             .main-header-wrapper { flex-direction: row !important; text-align: center !important; gap: normal !important; padding: 6px 0 8px 0 !important; margin-bottom: 8px; min-height: 36px; }
             .logo-container img { height: 28px !important; }
             .logo-container { position: absolute !important; left: 0 !important; top: 50% !important; transform: translateY(-50%) !important; }
-            .document-header { font-size: 1.1em; padding: 0 85px !important; } 
+            .document-header { font-size: 1.1em; padding: 0 85px !important; }
             
             .pn-card { box-shadow: none; }
             .pn-desc { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
     </style>
     <style>
-        .login-screen { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(135deg, #2A0087, #1A0055, #2A0087); display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: white; border-radius: 16px 0 16px 0; box-shadow: 0 20px 60px rgba(0,0,0,0.35); padding: 32px 28px 24px; width: 100%; max-width: 360px; text-align: center; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+        .login-screen { position: fixed; inset: 0; z-index: 9999; background: var(--gradient-brand); display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: var(--surface); border-radius: 16px 0 16px 0; box-shadow: 0 20px 60px color-mix(in srgb, var(--black) 35%, transparent); padding: 32px 28px 24px; width: 100%; max-width: 360px; text-align: center; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
         .login-card img { height: 52px; width: auto; margin: 0 auto; }
         .login-title { font-size: 1.15em; font-weight: 900; color: var(--primary); }
         .login-sub { font-size: 10px; font-weight: 700; color: var(--comment); margin-bottom: 6px; }
         .login-card input { width: 100%; height: 40px; font-size: 12px; padding: 0 12px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; flex: none; }
-        .login-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(42,0,135,0.1); outline: none; }
-        .login-btn { width: 100%; height: 40px; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 800; color: white; transition: opacity 0.2s; flex: none; }
+        .login-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 10%, transparent); outline: none; }
+        .login-btn { width: 100%; height: 40px !important; border: none; border-radius: var(--button-radius); cursor: pointer; font-size: 11px; font-weight: 800; color: var(--surface); transition: opacity 0.2s; flex: none; }
         .login-btn:hover { opacity: 0.88; }
         .login-btn-primary { background: var(--gradient-primary); }
-        .login-btn-google { background: #4285F4; display: inline-flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; box-shadow: 0 2px 6px rgba(66,133,244,.35); }
-        .login-btn-google .g-icon { background: white; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+        .login-btn-google { background: var(--google-blue); display: inline-flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; box-shadow: 0 2px 6px color-mix(in srgb, var(--google-blue) 35%, transparent); }
+        .login-btn-google .g-icon { background: var(--surface); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
         .login-btn-danger { background: var(--danger); }
         .login-error { color: var(--danger); font-size: 10px; font-weight: 700; min-height: 14px; }
 
-        #boot-splash { position: fixed; inset: 0; z-index: 10000; background: linear-gradient(135deg, #1A0055, #2A0087, #1A0055); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; transition: opacity .35s ease; }
+        #boot-splash { position: fixed; inset: 0; z-index: 10000; background: var(--gradient-boot); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; transition: opacity .35s ease; }
         #boot-splash.hide { opacity: 0; pointer-events: none; }
-        #boot-splash img { height: 56px; width: auto; filter: drop-shadow(0 4px 12px rgba(0,0,0,.35)); }
-        #boot-splash .boot-title { color: white; font-weight: 900; font-size: 1.05em; letter-spacing: 2px; }
-        #boot-splash .boot-sub { color: #C4B8D0; font-size: 10px; font-weight: 700; letter-spacing: 1px; }
-        .boot-spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid rgba(255,255,255,.15); border-top-color: var(--cyan); animation: bootspin .8s linear infinite; }
+        #boot-splash img { height: 56px; width: auto; filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--black) 35%, transparent)); }
+        #boot-splash .boot-title { color: var(--surface); font-weight: 900; font-size: 1.05em; letter-spacing: 2px; }
+        #boot-splash .boot-sub { color: var(--text-lavender); font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+        .boot-spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid color-mix(in srgb, var(--surface) 15%, transparent); border-top-color: var(--cyan); animation: bootspin .8s linear infinite; }
         @keyframes bootspin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <div id="boot-splash">
         <img src="https://raw.githubusercontent.com/data-phantom-x/PNs-de-Aviones/refs/heads/main/Latam-airlines-logo-light.svg" alt="LATAM Airlines">
-        <div class="boot-title">CABIN REPORT TAPESTRIES</div>
+        <div class="boot-title">CABIN FURNISHINGS REPORT</div>
         <div class="boot-spinner"></div>
         <div class="boot-sub" id="boot-sub-text">CONECTANDO CON EL SERVIDOR...</div>
     </div>
@@ -430,9 +505,9 @@
     <div id="login-obligatorio" class="login-screen" style="display:none;">
         <div class="login-card">
             <img src="https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/latam-airlines-logo.svg" alt="LATAM Airlines">
-            <div id="login-card-title" class="login-title">CABIN REPORT TAPESTRIES</div>
+            <div id="login-card-title" class="login-title">CABIN FURNISHINGS REPORT</div>
             <div class="login-sub">ACCESO RESTRINGIDO · PERSONAL AUTORIZADO</div>
-            <button id="login-google-btn" class="login-btn login-btn-google" onclick="doGoogleLogin()"><span class="g-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg></span> ENTRAR CON GOOGLE</button>
+            <button id="login-google-btn" class="login-btn login-btn-google" onclick="doGoogleLogin()"><span class="g-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"><path fill="var(--google-blue)" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="var(--google-green)" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="var(--google-yellow)" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="var(--google-red)" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg></span> ENTRAR CON GOOGLE</button>
             <div id="login-google-sub" class="login-sub" style="font-size: 9px; margin-top: 2px;">USA TU CUENTA CORPORATIVA DE GOOGLE</div>
             <div id="login-error-msg" class="login-error"></div>
         </div>
@@ -441,16 +516,12 @@
     <div class="container">
         <div class="top-bar no-print">
             <div class="top-bar-left">
-                <div style="display:flex; gap:5px; align-items:center;">
-                    <button type="button" id="btn-mode-toggle" class="btn-accent btn-top" onclick="toggleMode()">MODO TÉCNICO</button>
-                    <button type="button" id="btn-logout" class="btn-danger-outline" onclick="logoutLeader()" style="display:none;">✖</button>
-                </div>
-                <span id="logged-user" class="leader-only" style="font-size: 10px; font-weight: bold; color: var(--primary); border: 1px solid var(--primary); padding: 0 10px; border-radius: 4px; background: #e0f2fe; display: none; align-items: center; height: 28px; box-sizing: border-box; margin: 0;"></span>
-                <div style="display:flex; gap:5px; align-items:center;">
-                    <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode leader-only" onclick="toggleCheckMode()" style="display:none;">☑️ MODO CHECK</button>
-                    <button type="button" id="btn-gestor-pn" class="btn-outline leader-only" onclick="openEffManager()">⚙️ GESTOR DE P/N</button>
-                    <button type="button" id="btn-admin" class="btn-outline leader-only" onclick="openAdminModal()" style="display:none;" title="Administrar usuarios autorizados">⚙ ADMIN</button>
-                </div>
+                <button type="button" id="btn-mode-toggle" class="btn-accent btn-top" onclick="toggleMode()">👤 USUARIO</button>
+                <span id="logged-user" class="leader-only" style="font-size: 10px; font-weight: bold; color: var(--primary); border: 1px solid var(--primary); padding: 0 10px; border-radius: var(--button-radius); background: var(--surface-soft); display: none; align-items: center; height: var(--button-height); box-sizing: border-box; margin: 0;"></span>
+                <button type="button" id="btn-logout" class="btn-danger-outline" onclick="logoutFull()" style="width:28px; min-width:28px; padding:0; display:none; font-size:14px; flex:none;">✖</button>
+                <button type="button" id="btn-check-mode" class="btn-outline btn-check-mode leader-only" onclick="toggleCheckMode()" style="display:none; padding:0 10px; font-size:10px;">☑️ MODO CHECK</button>
+                <button type="button" id="btn-gestor-pn" class="btn-outline leader-only" onclick="openEffManager()" style="padding:0 10px; font-size:10px;">⚙️ GESTOR DE P/N</button>
+                <button type="button" id="btn-admin" class="btn-outline leader-only" onclick="openAdminModal()" style="display:none; padding:0 10px; font-size:10px;" title="Administrar usuarios autorizados">⚙ ADMIN</button>
             </div>
         </div>
 
@@ -458,7 +529,7 @@
             <div class="logo-container">
                 <img src="https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/latam-airlines-logo.svg" alt="LATAM Logo">
             </div>
-            <h1 class="document-header">Cabin Report Tapestries</h1>
+            <h1 class="document-header" title="Cabin Furnishings Report">CFR<span style="font-size: 9px; font-weight: 600; color: var(--comment); letter-spacing: 1.2px;">CABIN FURNISHINGS REPORT</span></h1>
         </div>
 
         <div class="plane-selector-card">
@@ -505,7 +576,7 @@
 
     <div id="prompt-modal" class="modal" style="z-index: 1200;">
         <div class="modal-content" style="max-width: 420px;">
-            <div class="modal-header" id="prompt-title" style="margin-bottom:15px; border:none; padding-bottom:0;">INGRESA EL NOMBRE</div>
+            <div class="modal-header" id="prompt-title">INGRESA EL NOMBRE</div>
             <input type="text" id="prompt-input" autocomplete="off" onkeypress="if(event.key === 'Enter') document.getElementById('prompt-save-btn').click()">
             <div class="modal-footer">
                 <button class="btn-outline btn-modal-action" onclick="closePromptModal()">CANCELAR</button>
@@ -515,47 +586,42 @@
     </div>
 
     <div id="admin-modal" class="modal">
-        <div class="modal-content" style="max-width: 880px; width: 95%; min-height: 460px;">
-            <div class="modal-header" style="border:none; padding-bottom:0; margin-bottom:12px;">⚙ ADMIN · USUARIOS AUTORIZADOS</div>
-            <div style="display:flex; gap:16px; align-items:stretch; flex-wrap:wrap;">
-                <!-- IZQUIERDA: controles -->
-                <div style="flex:1 1 300px; min-width:280px; display:flex; flex-direction:column; gap:12px;">
-                    <div id="admin-login-toggle" style="display:none; align-items:center; justify-content:space-between; gap:8px; border:1px solid var(--border); border-radius:6px; padding:10px 12px; background:var(--light-gray);">
-                        <span style="font-weight:800; font-size:11px; color:var(--leader-color);">🔒 INICIO DE SESIÓN</span>
-                        <button id="btn-login-obligatorio" class="btn-action-small" onclick="toggleLoginObligatorio()">🔓 DESACTIVADO</button>
+    <div class="modal-content admin-modal-content">
+        <div class="modal-header admin-modal-header">⚙ ADMIN · USUARIOS AUTORIZADOS</div>
+        <div class="admin-modal-layout">
+            <div class="admin-side">
+                <div class="admin-card">
+                    <div class="admin-card-title">AGREGAR NUEVO USUARIO</div>
+                    <input type="text" id="admin-name" class="admin-field" placeholder="USUARIO · EJ: juan.perez@latam.cl" autocomplete="off" onkeypress="if(event.key === 'Enter') adminAddUser()">
+                    <input type="text" id="admin-realname" class="admin-field" placeholder="NOMBRE REAL · EJ: JUAN PEREZ" autocomplete="off" onkeypress="if(event.key === 'Enter') adminAddUser()">
+                    <div class="admin-role-grid">
+                        <label class="admin-role-option"><input type="checkbox" id="admin-is-user" checked> USUARIO</label>
+                        <label class="admin-role-option"><input type="checkbox" id="admin-is-tech"> TÉCNICO</label>
+                        <label class="admin-role-option"><input type="checkbox" id="admin-is-tl"> TL</label>
+                        <label class="admin-role-option"><input type="checkbox" id="admin-is-admin"> ADMIN</label>
                     </div>
-                    <div style="border:1px solid var(--border); border-radius:6px; padding:12px; background:var(--light-gray);">
-                        <strong style="font-size: 10px; color: var(--primary);">AGREGAR NUEVO USUARIO:</strong>
-                        <input type="text" id="admin-name" placeholder="USUARIO · EJ: juan.perez" autocomplete="off" style="width:100%; margin:8px 0 8px; height:32px;" onkeypress="if(event.key === 'Enter') adminAddUser()">
-                        <input type="text" id="admin-realname" placeholder="NOMBRE REAL · EJ: JUAN PEREZ" autocomplete="off" style="width:100%; margin:0 0 10px; height:32px;" onkeypress="if(event.key === 'Enter') adminAddUser()">
-                        <div style="display:flex; gap:10px; margin-bottom:5px; flex-wrap:wrap;">
-                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-user" checked> USUARIO (👤)</label>
-                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-tech"> TÉCNICO (🛠️)</label>
-                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-tl"> TEAM LEADER</label>
-                            <label style="font-size:10px; font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:4px;"><input type="checkbox" id="admin-is-admin"> ADMIN</label>
-                        </div>
-                    </div>
-                    <button class="btn-leader" onclick="adminAddUser()" style="width:100%; height:36px; font-size:10px; border-radius:6px;">AGREGAR USUARIO</button>
                 </div>
-                <!-- DERECHA: lista -->
-                <div style="flex:1 1 320px; min-width:280px; display:flex; flex-direction:column; gap:12px; justify-content:flex-start;">
-                    <input type="text" id="admin-search" placeholder="🔍 BUSCAR USUARIO O NOMBRE REAL..." autocomplete="off" oninput="refreshAdminList()" style="width:100%; height:32px; flex:none; box-sizing:border-box; margin:0;">
-                    <div id="admin-list" style="height: 300px; max-height: 48vh; overflow-y: auto; font-size: 11px; border:1px solid var(--border); border-radius:6px; padding:8px; background:white;"></div>
-                </div>
+                <button class="btn-leader admin-add-button" onclick="adminAddUser()">AGREGAR USUARIO</button>
             </div>
-            <div class="modal-footer" style="justify-content:flex-end; margin-top:12px;">
-                <button class="btn-outline" onclick="closeModal('admin-modal')" style="height:32px; padding:0 18px; font-size:10px;">CERRAR</button>
+            <div class="admin-list-panel">
+                <div class="admin-list-title">USUARIOS DEL SISTEMA</div>
+                <input type="text" id="admin-search" class="admin-search" placeholder="🔍 BUSCAR USUARIO O NOMBRE REAL..." autocomplete="off" oninput="refreshAdminList()">
+                <div id="admin-list" class="admin-user-list"></div>
             </div>
         </div>
+        <div class="modal-footer admin-modal-footer">
+            <button class="btn-outline" onclick="closeModal('admin-modal')">CERRAR</button>
+        </div>
     </div>
+</div>
 
     <div id="confirm-modal" class="modal" style="z-index: 1200;">
         <div class="modal-content" style="max-width: 380px;">
-            <div style="font-size: 26px; text-align: center; margin-bottom: 8px;">⚠️</div>
+            <div class="modal-header">⚠️ CONFIRMACIÓN</div>
             <p id="confirm-message" style="text-align:center; font-weight:800; color:var(--primary); font-size:13px; margin-bottom:18px;"></p>
             <div class="modal-footer">
                 <button class="btn-outline" id="confirm-cancel-btn" onclick="closeConfirm(false)">CANCELAR</button>
-                <button id="confirm-ok-btn" style="background: var(--danger); color: white;" onclick="closeConfirm(true)">CONFIRMAR</button>
+                <button id="confirm-ok-btn" style="background: var(--danger); color: var(--surface);" onclick="closeConfirm(true)">CONFIRMAR</button>
             </div>
         </div>
     </div>
@@ -564,7 +630,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <span style="color: var(--leader-color);">⚙️ GESTOR DE EFECTIVIDAD</span>
-                <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: 28px; box-shadow: none;">✖</button>
+                <button onclick="closeModal('eff-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: var(--button-height); box-shadow: none;">✖</button>
             </div>
             
             <div class="modal-form-row">
@@ -611,7 +677,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <span id="modal-title" style="color: var(--leader-color);">✈️ AGREGAR / EDITAR AVIÓN</span>
-                <button onclick="closeModal('avion-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: 28px; box-shadow: none;">✖</button>
+                <button onclick="closeModal('avion-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: var(--button-height); box-shadow: none;">✖</button>
             </div>
             
             <div class="modal-form-row">
@@ -621,7 +687,7 @@
                 </div>
                 <div class="modal-form-group">
                     <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">EFECTIVIDAD DEL AVIÓN (EJ: 019):</label>
-                    <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="border-color: var(--leader-color); background-color: #f0f4ff;">
+                    <input type="text" id="modal-plane-appcode" placeholder="019" maxlength="3" onchange="handleEffChange()" style="border-color: var(--leader-color); background-color: var(--surface-soft);">
                 </div>
                 <div style="flex:1; text-align:right; font-size:10px; color:var(--comment); min-width: 250px;">
                     El sistema asociará automáticamente las partes que cumplan el código de aplicabilidad configurado en el Gestor.
@@ -641,7 +707,7 @@
 
             <div id="plane-components-container"></div>
 
-            <button class="btn-outline" onclick="addComponentRow('plane-components-container', '', false, 'custom', '', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed; color: #4338ca; border-color: #c7d2fe;">+ AÑADIR P/N CUSTOM (SOLO ESTE AVIÓN)</button>
+            <button class="btn-outline" onclick="addComponentRow('plane-components-container', '', false, 'custom', '', '', '', '', '', '', null)" style="width: 100%; margin-top: 10px; border-style: dashed; color: var(--indigo); border-color: var(--border-indigo);">+ AÑADIR P/N CUSTOM (SOLO ESTE AVIÓN)</button>
             
             <div class="modal-footer">
                 <button class="btn-outline" onclick="closeModal('avion-modal')">CANCELAR</button>
@@ -654,7 +720,7 @@
         <div class="modal-content" style="max-width: 400px; margin: 10% auto;">
             <div class="modal-header">
                 <span id="sp-modal-title" style="color: var(--leader-color);">✏️ EDITAR COMPONENTE</span>
-                <button onclick="closeModal('single-part-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: 28px; box-shadow: none;">✖</button>
+                <button onclick="closeModal('single-part-modal')" style="background:none; color:var(--comment); font-size:18px; padding:0; width: 28px; height: var(--button-height); box-shadow: none;">✖</button>
             </div>
             <div class="modal-form-group" style="margin-bottom: 12px;">
                 <label style="font-size: 10px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px;">DESCRIPCIÓN:</label>
@@ -706,7 +772,7 @@
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
         // C5 App Check: igual que PD, dominios autorizados solo protege Login. Para proteger DB activa ReCaptcha en Firebase > App Check
         // import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app-check.js";
-        import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
         // C4 CORREGIDO: Tu número de proyecto real es 449926089536 (confirmado)
         const firebaseConfig = {
@@ -726,24 +792,10 @@
 
         setPersistence(auth, browserLocalPersistence).catch((e) => console.warn('Persistence error:', e));
 
-        let ensuringAuth = false;
-        async function ensureAuth() {
-            try { await auth.authStateReady(); } catch (e) {}
-            if (auth.currentUser || ensuringAuth) return;
-            ensuringAuth = true;
-            try {
-                await signInAnonymously(auth);
-                console.log("Conectado a la Base de Datos de forma segura 🔒");
-            } catch (error) {
-                console.error("Error al obtener el pase de Firebase:", error);
-                setTimeout(ensureAuth, 10000);
-            }
-            ensuringAuth = false;
-        }
-        ensureAuth();
+        // El acceso es SIEMPRE con Google (obligatorio y permanente).
         
-        const flotaRef = ref(db, 'mantenimiento/crt/pns_aviones');
-        const effRef = ref(db, 'mantenimiento/crt/efectividades');
+        const flotaRef = ref(db, 'mantenimiento/cfr/pns_aviones');
+        const effRef = ref(db, 'mantenimiento/cfr/efectividades');
 
         let flotaDB = {};
         let efectividadesDB = {};
@@ -762,21 +814,70 @@
 
         const superAdminsRef = ref(db, 'mantenimiento/super_admin');
 
+        // La identidad es SIEMPRE el correo completo. Se aceptan también el alias sin
+        // dominio para no dejar fuera cuentas antiguas ni listas ya cargadas en Firebase.
+        function normalizeEmail(email) {
+            return (email || '').trim().toLowerCase();
+        }
+        function aliasCandidates(id) {
+            const n = normalizeEmail(id);
+            return n.includes('@') ? [n, n.split('@')[0]] : [n];
+        }
         function isSuperAdmin(name) {
-            return Array.isArray(superAdmins) ? superAdmins.includes(name) : Object.values(superAdmins||{}).includes(name);
+            if (!name) return false;
+            const lista = Array.isArray(superAdmins) ? superAdmins : Object.values(superAdmins||{});
+            const correo = normalizeEmail(name);
+            if (!correo.includes('@')) return false; // el super admin solo se reconoce por su correo completo, nunca por el alias
+            return lista.some(v => {
+                const superCorreo = normalizeEmail(v);
+                return superCorreo === correo || sanitizeKey(superCorreo) === sanitizeKey(correo);
+            });
         }
 
+        let uidLinked = false;   // el indice de uids solo se escribe una vez por carga
         let usuariosDB = {};
+        // Resuelve la clave del registro: correo completo y, si la cuenta viene del formato
+        // antiguo (guardada sin dominio), su alias. Evita que nadie quede fuera tras el cambio.
+        function sanitizeKey(k) {
+            return String(k).replace(/[.#$\[\]\/]/g, '_');
+        }
+            function userKeyFor(id) {
+            const n = normalizeEmail(id);
+            const alias = n.split('@')[0];
+            // las claves guardadas en firebase van sanitizadas: hay que probar ambas formas
+            const cands = (alias && alias !== n) ? [n, sanitizeKey(n), alias, sanitizeKey(alias)] : [n, sanitizeKey(n)];
+            return cands.find(k => usuariosDB[k]) || cands[0];
+        }
+        function displayNameFor(id) {
+            const rec = usuariosDB[userKeyFor(id)];
+            if (rec && rec.nombre) return rec.nombre.trim().toUpperCase();
+            return normalizeEmail(id).split('@')[0].replace(/[._]+/g, ' ').toUpperCase();
+        }
+    function updateUserButton() {
+        const btn = document.getElementById('btn-mode-toggle');
+        if (!btn) return;
+        const connected = sessionUser() || '';
+        const alias = displayNameFor(connected) || 'USUARIO';
+        const superAdmin = isSuperAdmin(connected);
+        if (isTeamLeader) {
+            btn.innerText = superAdmin ? `🛡️ ${alias}` : `👤 ${alias}`;
+            btn.title = `TEAM LEADER: ${alias}${superAdmin ? ' (SUPER ADMIN)' : ''}`;
+        } else {
+            btn.innerText = `👤 ${alias}`;
+            btn.title = connected ? `CONECTADO: ${alias}` : '';
+        }
+    }
         function userRec(user) {
-            if (!usuariosDB[user]) usuariosDB[user] = { nombre: '', usuario: false, tl: false, admin: false };
-            return usuariosDB[user];
+            const key = userKeyFor(user);
+            if (!usuariosDB[key]) usuariosDB[key] = { nombre: '', usuario: false, tech: false, tl: false, admin: false, uid: '', email: normalizeEmail(user) };
+            return usuariosDB[key];
         }
         function syncRoleArrays() {
             techUsers = Object.keys(usuariosDB).filter(u => usuariosDB[u].tech || usuariosDB[u].tl || usuariosDB[u].admin);
             correosAutorizados = Object.keys(usuariosDB).filter(u => usuariosDB[u].tl);
             adminList = Object.keys(usuariosDB).filter(u => usuariosDB[u].admin);
         }
-        function saveUsuarios() {
+        function buildUsuarios() {
             const out = {};
             Object.keys(usuariosDB).sort().forEach(u => {
                 const rec = usuariosDB[u];
@@ -790,11 +891,14 @@
                 };
                 if (rec.uid) item.uid = rec.uid;
                 if (rec.email) item.email = rec.email;
-                out[u.replace(/\./g, '_')] = item;
+                out[sanitizeKey(u)] = item;
             });
-            dbSet(ref(db, 'mantenimiento/crt/usuarios'), out);
+            return out;
         }
-        const tlUsersRef = ref(db, 'mantenimiento/crt/usuarios');
+        function saveUsuarios() {
+            dbSet(ref(db, 'mantenimiento/cfr/usuarios'), buildUsuarios());
+        }
+        const tlUsersRef = ref(db, 'mantenimiento/cfr/usuarios');
 
         let rolesUnsubs = [];
         let lastRolesUid = '__none__';
@@ -809,7 +913,6 @@
                 if(Array.isArray(v)) superAdmins = v;
                 else if(v && typeof v==='object') superAdmins = Object.values(v);
                 else superAdmins = [];
-                checkSession();
                 updateAdminUI();
                 refreshAdminListIfOpen();
                 if (typeof evaluateGate === 'function') evaluateGate();
@@ -819,16 +922,22 @@
                 usuariosLoaded = true;
                 usuariosDB = {};
                 const ingest = (name, e) => {
-                    if (!name || isSuperAdmin(name)) return;
+                    if (!name) return;
                     if (typeof e === 'string') e = {};
-                    usuariosDB[name] = {
+                    const email = normalizeEmail(e.email || '');
+                    const legacy = normalizeEmail(name);
+                    const key = email || legacy;   // clave canónica = correo completo
+                    if (isSuperAdmin(key)) return;
+                    // Si el registro antiguo traía correo, su clave vieja se sustituye por la nueva
+                    if (email && legacy !== email && usuariosDB[legacy]) delete usuariosDB[legacy];
+                    usuariosDB[key] = {
                         nombre: e.nombre || '',
                         usuario: !!(e.usuario || e.acceso),
                         tech: !!e.tech,
                         tl: !!e.tl,
                         admin: !!e.admin,
                         uid: e.uid || '',
-                        email: e.email || ''
+                        email: email
                     };
                 };
                 if (Array.isArray(raw)) {
@@ -841,7 +950,6 @@
                     });
                 }
                 syncRoleArrays();
-                checkSession();
                 updateAdminUI();
                 refreshAdminListIfOpen();
                 evaluateGate();
@@ -850,25 +958,22 @@
         auth.authStateReady().then(()=> subscribeRoles()).catch(()=> subscribeRoles());
 
 function isTechUser() {
-    const u = sessionUser() || localStorage.getItem('crt_email') || '';
-    return isSuperAdmin(u) || techUsers.includes(u) || correosAutorizados.includes(u) || adminList.includes(u);
+    const u = sessionUser() || '';
+    if (isSuperAdmin(u)) return true;
+    const rec = usuariosDB[userKeyFor(u)] || {};
+    return !!(rec.tech || rec.tl || rec.admin);
 }
 
 function isLeaderOrAdmin() {
-    const u = sessionUser() || localStorage.getItem('crt_email') || '';
-    return isSuperAdmin(u) || correosAutorizados.includes(u) || adminList.includes(u);
+    const u = sessionUser() || '';
+    if (isSuperAdmin(u)) return true;
+    const rec = usuariosDB[userKeyFor(u)] || {};
+    return !!(rec.tl || rec.admin);
 }
         
-        function isAuthorizedUser(name) {
-            return isSuperAdmin(name) || techUsers.includes(name) || correosAutorizados.includes(name) || adminList.includes(name);
-        }
 
-        function extractUsername(email) {
-            return email.trim().toLowerCase().split('@')[0];
-        }
 
-        const SESSION_EXPIRATION_MS = 12 * 60 * 60 * 1000;
-        
+            
         const SVG_URLS = {
             'CABINA': "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320.svg",
             'COCKPIT': "https://raw.githubusercontent.com/nfuentes-cloud/PNs-de-Aviones/refs/heads/main/A320%20COCKPIT.svg"
@@ -891,6 +996,7 @@ function isLeaderOrAdmin() {
         const generateId = () => 'p_' + Date.now().toString(36) + '_' + (crypto.randomUUID ? crypto.randomUUID().slice(0,8) : Math.random().toString(36).substr(2,9));
         
         function escapeHtml(str){ const d=document.createElement('div'); d.textContent=str||''; return d.innerHTML; }
+        function escapeAttr(str){ return escapeHtml(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
         function showToast(msg) {
             const toast = document.getElementById("toast");
             toast.innerText = msg;
@@ -911,7 +1017,7 @@ function isLeaderOrAdmin() {
                 console.error('FIREBASE WRITE ERROR', e);
                 let msg = '⚠️ NO SE GUARDÓ' + (label ? ' (' + label + ')' : '') + ': ' + (e.code || e.message);
                 if ((e.code || '').includes('permission')) {
-                    msg = loginObligatorio && !googleUser()
+                    msg = !googleUser()
                         ? '🔒 SIN PERMISO DE ESCRITURA: CIERRA SESIÓN Y ENTRA CON GOOGLE'
                         : '🔒 SIN PERMISO DE ESCRITURA (' + (e.code || '') + ')';
                 }
@@ -921,7 +1027,7 @@ function isLeaderOrAdmin() {
 
         function readErr(err) {
             console.error('FIREBASE READ ERROR', err);
-            if ((err.code || '').includes('permission') && !auth.currentUser) ensureAuth();
+            if ((err.code || '').includes('permission') && !googleUser()) evaluateGate(); // sesión caída: vuelve a la puerta de Google
             toastThrottled('⚠️ SIN ACCESO DE LECTURA (' + err.code + ')');
         }
 
@@ -962,10 +1068,9 @@ function isLeaderOrAdmin() {
 
         window.verifyPart = function(partId) {
             if (!currentLoadedReg) return;
-            const userEmail = localStorage.getItem('crt_email') || 'USUARIO';
-            const userAlias = userEmail.toUpperCase();
-            const timestamp = `${get24hTimestamp()} | 👤 ${userAlias}`;
-            dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
+            const userName = displayNameFor(sessionUser()) || 'USUARIO';
+            const timestamp = `${get24hTimestamp()} | 👤 ${userName}`;
+            dbSet(ref(db, `mantenimiento/cfr/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
                 showToast("✅ Tarjeta Verificada");
             });
         };
@@ -1073,38 +1178,13 @@ function isLeaderOrAdmin() {
             renderPlaneData();
         }
 
-        function checkSession() {
-    const u = sessionUser();
-    if (u && isAuthorizedUser(u)) {
-        activateLeaderUI();
-        return;
-    }
-    const savedEmail = localStorage.getItem('crt_email');
-    const loginTime = localStorage.getItem('crt_login_time');
-
-    if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS) {
-        if (!usuariosLoaded) return; // ESPERA a que Firebase cargue la lista de usuarios antes de decidir cerrar sesión
-
-        if (isAuthorizedUser(savedEmail) || loginObligatorio === false) {
-            activateLeaderUI();
-        } else {
-            logoutLeader();
-        }
-    } else {
-        logoutLeader();
-    }
-}
 
 function activateLeaderUI() {
     isTeamLeader = true; 
     document.body.classList.add('team-leader-mode');
     
-    const activeUser = sessionUser() || localStorage.getItem('crt_email') || 'TÉCNICO';
-    const userAlias = activeUser.toUpperCase();
     const btnToggle = document.getElementById('btn-mode-toggle');
-    
-    // Configurar el botón principal de perfil
-    btnToggle.innerText = isSuperAdmin(activeUser) ? `🛡️ ${userAlias}` : `👤 ${userAlias}`;
+    updateUserButton();
     btnToggle.style.background = "";
     btnToggle.style.color = "";
     btnToggle.style.border = "";
@@ -1128,15 +1208,8 @@ function activateLeaderUI() {
             isTeamLeader = false; document.body.classList.remove('team-leader-mode');
             const btnAdmin = document.getElementById('btn-admin');
             if (btnAdmin) btnAdmin.style.display = 'none';
-            const connected = (typeof sessionUser === 'function' ? sessionUser() : null) || localStorage.getItem('crt_email') || localStorage.getItem('tl_email') || '';
             const btnToggle = document.getElementById('btn-mode-toggle');
-            if (connected) {
-                btnToggle.innerText = `👤 ${connected.toUpperCase()}`;
-                btnToggle.title = `CONECTADO: ${connected.toUpperCase()}`;
-            } else {
-                btnToggle.innerText = "MODO TÉCNICO";
-                btnToggle.title = "";
-            }
+            updateUserButton();
             btnToggle.style.background = "";
             btnToggle.style.color = "";
             btnToggle.style.border = "";
@@ -1157,63 +1230,40 @@ function activateLeaderUI() {
 
         function toggleMode() {
             if (isTeamLeader) { deactivateLeaderUI(); return; }
+            // La identidad viene solo de Google: si no hay sesión, se muestra la pantalla de login.
             const u = sessionUser();
-            if (u) {
-                if (isAuthorizedUser(u)) { activateLeaderUI(); return; }
-                return; // sin rol TL: sin acción
+            if (!u) {
+                showToast('🔒 INICIO DE SESIÓN OBLIGATORIO: USA LA PANTALLA DE LOGIN');
+                return;
             }
-            const savedEmail = localStorage.getItem('crt_email');
-                const loginTime = localStorage.getItem('crt_login_time');
-
-                if (loginObligatorio === false) {
-                    const email = prompt("🔒 ACCESO MODO LÍDER (LIBRE)\nIngrese su usuario o correo:", savedEmail || '');
-                    if (!email) return;
-                    const username = extractUsername(email);
-                    
-                    // 🔥 FIX DE SEGURIDAD: Validar contra la base de datos antes de entrar 🔥
-                    if (isAuthorizedUser(username)) {
-                        localStorage.setItem('crt_email', username);
-                        localStorage.setItem('crt_login_time', Date.now().toString());
-                        activateLeaderUI();
-                        showToast("✅ MODO LÍDER HABILITADO");
-                    } else {
-                        alert(`ACCESO DENEGADO.\nEl usuario '${username}' no está autorizado en CRT.`);
-                    }
-                } else if (savedEmail && loginTime && (Date.now() - parseInt(loginTime)) < SESSION_EXPIRATION_MS && isAuthorizedUser(savedEmail)) { 
-                    activateLeaderUI(); 
-                } else {
-                    showToast('🔒 INICIO DE SESIÓN OBLIGATORIO: USA LA PANTALLA DE LOGIN');
-                }
-        }
-        function logoutLeader() { 
-            localStorage.removeItem('crt_email'); 
-            localStorage.removeItem('crt_login_time'); 
-            deactivateLeaderUI(); 
-            showToast("Sesión cerrada");
+            if (isAuthorizedUser(u)) activateLeaderUI();
         }
 
-        let loginObligatorio = null;
         let usuariosLoaded = false;
         let dataAttached = false;
         let splashHidden = false;
         const staticUnsubs = [];
-
-        onValue(ref(db, 'mantenimiento/crt/login_obligatorio'), (snapshot) => {
-            loginObligatorio = !!snapshot.val();
-            evaluateGate();
-            refreshAdminListIfOpen();
-        }, (e) => {
-            console.warn('login_obligatorio read error:', e.code);
-            loginObligatorio = false; // Fallback para abrir la app si la regla de estado falla
-            evaluateGate();
-        });
+        let sesionVigente = '';
 
         onAuthStateChanged(auth, (user) => {
+            sesionVigente = (user && user.email) || '';
             subscribeRoles();
-            if (!user) ensureAuth();
             evaluateGate();
         });
 
+        // La sesion de Google se comparte entre PD y CFR (mismo dominio). Esta app no recibe el aviso
+        // cuando el login o el logout ocurre en la otra, asi que al volver a enfocarla se compara.
+        // Aviso entre PD y CFR: localStorage dispara 'storage' en las OTRAS pestanas del mismo dominio,
+        // que es la unica via fiable (auth.currentUser queda congelado en memoria si la sesion cambia fuera).
+        const AVISO_SESION = 'aviso_sesion_compartida';
+        function avisarCambioSesion() { try { localStorage.setItem(AVISO_SESION, String(Date.now())); } catch (e) {} }
+        function sincronizarSesion() {
+            const actual = (auth.currentUser && auth.currentUser.email) || '';
+            if (actual !== sesionVigente) location.reload();
+        }
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) sincronizarSesion(); });
+        window.addEventListener('focus', sincronizarSesion);
+        window.addEventListener('storage', (e) => { if (e.key === AVISO_SESION) location.reload(); });
         function googleUser() {
             try {
                 const cu = auth.currentUser;
@@ -1223,16 +1273,26 @@ function activateLeaderUI() {
         }
         function sessionUser() {
             const g = googleUser();
-            return (g && g.email) ? extractUsername(g.email) : null;
+            return (g && g.email) ? normalizeEmail(g.email) : null;
         }
         function canLogin(u) {
             if (!u) return false;
             if (isSuperAdmin(u)) return true;
-            const rec = usuariosDB[u];
-            return !!(rec && (rec.usuario || rec.tl || rec.admin));
+            const rec = usuariosDB[userKeyFor(u)];
+            return !!(rec && (rec.usuario || rec.tech || rec.tl || rec.admin));
         }
         function hasLeaderRole(u) {
-            return isSuperAdmin(u) || correosAutorizados.includes(u) || adminList.includes(u);
+            if (!u) return false;
+            if (isSuperAdmin(u)) return true;
+            const rec = usuariosDB[userKeyFor(u)] || {};
+            return !!rec.tl || !!rec.admin;
+        }
+        // Un tecnico tambien entra a la UI completa: modo check, crear avion y tarjetas de componentes
+        function isAuthorizedUser(u) {
+            if (!u) return false;
+            if (isSuperAdmin(u)) return true;
+            const rec = usuariosDB[userKeyFor(u)] || {};
+            return !!(rec.tech || rec.tl || rec.admin);
         }
 
         function attachData() {
@@ -1300,28 +1360,9 @@ function activateLeaderUI() {
         function evaluateGate() {
     const overlay = document.getElementById('login-obligatorio');
     if (!overlay) return;
-    if (loginObligatorio === null) {
-        setTimeout(() => {
-            if (loginObligatorio === null) {
-                loginObligatorio = false;
-                evaluateGate();
-            }
-        }, 1500);
-        return;
-    }
     const btnLogout = document.getElementById('btn-logout');
 
-    if (loginObligatorio === false) {
-        overlay.style.display = 'none';
-        if (!auth.currentUser) ensureAuth();
-        attachData();
-        if (btnLogout) btnLogout.onclick = handleLogoutClick;
-        checkSession();
-        updateLoginToggleUI();
-        hideSplash();
-        return;
-    }
-
+    // INICIO DE SESIÓN CON GOOGLE OBLIGATORIO (único modo)
     const u = sessionUser();
     if (u && !usuariosLoaded) {
         setTimeout(() => evaluateGate(), 500);
@@ -1329,18 +1370,20 @@ function activateLeaderUI() {
     }
 
     if (u && canLogin(u)) {
+        // La sesion puede venir restaurada (compartida con la otra app) sin pasar por el boton:
+        // hay que asegurar el indice de uids o las reglas no dareian permisos.
+        const g = googleUser();
+        if (g && !uidLinked) { uidLinked = true; linkUid(g, u).catch(() => {}); }
         overlay.style.display = 'none';
         attachData();
         if (isAuthorizedUser(u)) {
-            localStorage.setItem('crt_email', u);
-            localStorage.setItem('crt_login_time', Date.now().toString());
             activateLeaderUI();
+        } else {
+            if (isTeamLeader) deactivateLeaderUI();
+            updateUserButton();
         }
         updateAdminUI();
-        if (btnLogout) {
-            btnLogout.style.display = 'inline-flex';
-            btnLogout.onclick = handleLogoutClick;
-        }
+        if (btnLogout) btnLogout.style.display = 'inline-flex';
         hideSplash();
         return;
     }
@@ -1348,12 +1391,9 @@ function activateLeaderUI() {
     detachData();
     deactivateLeaderUI();
     const denied = !!u;
-    document.getElementById('login-card-title').innerText = denied ? 'ACCESO NO AUTORIZADO' : 'CABIN REPORT TAPESTRIES';
+    document.getElementById('login-card-title').innerText = denied ? 'ACCESO NO AUTORIZADO' : 'CABIN FURNISHINGS REPORT';
     document.getElementById('login-error-msg').innerText = denied ? `${u.toUpperCase()} NO TIENE ACCESO HABILITADO` : '';
-    const sw = document.getElementById('login-switch-btn');
-    if (sw) sw.style.display = auth.currentUser ? 'block' : 'none';
     overlay.style.display = 'flex';
-    updateLoginToggleUI();
     hideSplash();
 }
 
@@ -1365,75 +1405,47 @@ function activateLeaderUI() {
                 provider.setCustomParameters({ prompt: 'select_account' });
                 const result = await signInWithPopup(auth, provider);
                 err.innerText = 'VERIFICANDO PERMISOS...';
-                const email = ((result.user && result.user.email) || '').toLowerCase();
-                const username = extractUsername(email);
-                if (!username) throw new Error('SIN CORREO EN LA CUENTA GOOGLE');
-                await linkUid(result.user, username);
+                const email = normalizeEmail(result.user && result.user.email);
+                if (!email || !email.includes('@')) throw new Error('SIN CORREO EN LA CUENTA GOOGLE');
+                await linkUid(result.user, email);
+                avisarCambioSesion();
                 location.reload();
             } catch (e) {
                 err.innerText = 'NO SE PUDO INICIAR SESIÓN (' + (e.code || e.message) + '). INTENTA DE NUEVO.';
             }
         }
-        async function linkUid(fu, username) {
-            await dbSet(ref(db, 'mantenimiento/uids/' + fu.uid), username.replace(/\./g, '_'), 'REGISTRAR UID');
-            const rec = usuariosDB[username];
+        async function linkUid(fu, email) {
+            const correo = normalizeEmail(fu.email || email);
+            const key = userKeyFor(correo);
+            // el indice de las reglas debe apuntar siempre a la clave real del registro
+            await dbSet(ref(db, 'mantenimiento/uids/' + fu.uid), sanitizeKey(key), 'REGISTRAR UID');
+            const rec = usuariosDB[key];
             if (!rec) return;
             let dirty = false;
             if (fu.uid && rec.uid !== fu.uid) { rec.uid = fu.uid; dirty = true; }
-            if (fu.email && rec.email !== fu.email.toLowerCase()) { rec.email = fu.email.toLowerCase(); dirty = true; }
-            if (dirty) await saveUsuarios();
+            if (rec.email !== correo) { rec.email = correo; dirty = true; }
+            if (dirty) {
+                // solo un admin puede escribir usuarios: si no lo es, el indice ya quedo listo
+                try { await set(ref(db, 'mantenimiento/cfr/usuarios'), buildUsuarios()); } catch (e) {}
+            }
         }
         let loggingOut = false;
         window.logoutFull = async function() {
             if (loggingOut) return;
             loggingOut = true;
-            ['crt_email', 'crt_login_time', 'login_email', 'login_time'].forEach(k => localStorage.removeItem(k));
             try { await signOut(auth); } catch (e) {}
             deactivateLeaderUI();
+            avisarCambioSesion();
             location.reload();
-        }
-        window.handleLogoutClick = function() {
-            if (loginObligatorio !== false && sessionUser()) {
-                logoutFull();
-            } else {
-                logoutLeader();
-                if (loginObligatorio !== false) evaluateGate();
-            }
-        }
-        window.toggleLoginObligatorio = function() {
-            const me = sessionUser() || localStorage.getItem('crt_email') || '';
-            if (loginObligatorio === null) return showToast('⏳ ESPERA: CARGANDO ESTADO DEL INICIO DE SESIÓN...');
-            const nuevo = !loginObligatorio;
-            showConfirm(nuevo
-                ? '¿ACTIVAR INICIO DE SESIÓN OBLIGATORIO PARA TODOS? Nadie podrá ver la app sin iniciar sesión.'
-                : '¿DESACTIVAR EL INICIO DE SESIÓN OBLIGATORIO? Volverá al acceso libre como siempre.', () => {
-                loginObligatorio = nuevo;
-                updateLoginToggleUI();
-                evaluateGate();
-                dbSet(ref(db, 'mantenimiento/crt/login_obligatorio'), nuevo)
-                    .catch(() => showToast('⚠️ ERROR AL GUARDAR EL CAMBIO'));
-                showToast(nuevo ? '🔒 LOGIN OBLIGATORIO ACTIVADO' : '🔓 LOGIN OBLIGATORIO DESACTIVADO');
-            });
-        }
-        function updateLoginToggleUI() {
-            const sec = document.getElementById('admin-login-toggle');
-            if (!sec) return;
-            sec.style.display = 'flex';
-            const b = document.getElementById('btn-login-obligatorio');
-            if (b) {
-                b.innerText = loginObligatorio === null ? '⏳ CARGANDO...' : (loginObligatorio ? '🔒 ACTIVADO' : '🔓 DESACTIVADO');
-                b.style.background = loginObligatorio ? 'var(--danger)' : '';
-                b.style.color = loginObligatorio ? 'white' : '';
-            }
         }
 
        function isAdminUser() {
-            const currentUser = sessionUser() || localStorage.getItem('crt_email') || '';
+            const currentUser = sessionUser() || '';
             return isTeamLeader && (isSuperAdmin(currentUser) || adminList.includes(currentUser));
         }
 
        function updateAdminUI() {
-    const currentUser = sessionUser() || localStorage.getItem('crt_email') || '';
+    const currentUser = sessionUser() || '';
     
     const btnAdmin = document.getElementById('btn-admin');
     const btnGestorPn = document.getElementById('btn-gestor-pn');
@@ -1451,6 +1463,9 @@ function activateLeaderUI() {
     // ✈️ TEAM LEADER O ADMIN (Editar o Borrar el Avión completo)
     if (btnEditPlane) btnEditPlane.style.display = (isTeamLeader && isLeader && currentLoadedReg) ? 'inline-flex' : 'none';
     if (btnDeletePlane) btnDeletePlane.style.display = (isTeamLeader && isLeader && currentLoadedReg) ? 'inline-flex' : 'none';
+    // ↺ Revertir excepcion/pieza custom: solo TL o admin (el tecnico edita la tarjeta, pero no elimina)
+    const btnSpRevert = document.getElementById('btn-sp-revert');
+    if (btnSpRevert) btnSpRevert.style.display = (isTeamLeader && isLeader) ? 'inline-flex' : 'none';
 }
 
         function refreshAdminListIfOpen() {
@@ -1463,71 +1478,90 @@ function activateLeaderUI() {
             document.getElementById('admin-realname').value = '';
             document.getElementById('admin-search').value = '';
             document.getElementById('admin-is-user').checked = true;
+            document.getElementById('admin-is-tech').checked = false;
             document.getElementById('admin-is-tl').checked = false;
             document.getElementById('admin-is-admin').checked = false;
             document.getElementById('admin-modal').style.display = 'block';
             refreshAdminList();
         }
 
-        function refreshAdminList() {
+            // Orden del panel: admin, TL, tecnico y despues solo lectura; dentro de cada grupo por nombre
+    function rangoUsuario(u) {
+        const r = usuariosDB[u] || {};
+        return r.admin ? 0 : r.tl ? 1 : r.tech ? 2 : r.usuario ? 3 : 4;
+    }
+    function ordenUsuarios(lista) {
+        return lista.slice().sort((a, b) => {
+            const d = rangoUsuario(a) - rangoUsuario(b);
+            if (d) return d;
+            const na = ((usuariosDB[a] || {}).nombre || a).toLowerCase();
+            const nb = ((usuariosDB[b] || {}).nombre || b).toLowerCase();
+            return na.localeCompare(nb) || a.localeCompare(b);
+        });
+    }
+function refreshAdminList() {
             const listEl = document.getElementById('admin-list');
             const q = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
             const all = new Set([...Object.keys(usuariosDB), ...correosAutorizados, ...adminList].filter(u => !isSuperAdmin(u)));
             if (all.size === 0) {
-                listEl.innerHTML = '<div style="font-weight:800; color:var(--comment); padding:8px 0;">SIN USUARIOS AÚN</div>';
+                listEl.innerHTML = '<div class="admin-empty">SIN USUARIOS AÚN</div>';
                 updateAdminUI();
-                updateLoginToggleUI();
                 return;
             }
             let html = '';
-            for (const user of Array.from(all).sort()) {
+            for (const user of ordenUsuarios(Array.from(all))) {
                 if (!user) continue;
                 const info = usuariosDB[user] || {};
                 if (q && !user.toLowerCase().includes(q) && !(info.nombre || '').toLowerCase().includes(q)) continue;
                 const nombreReal = (info.nombre || '').trim();
+                const isTech = !!info.tech;
                 const isTl = correosAutorizados.includes(user);
                 const isAdm = adminList.includes(user);
                 const esUsuario = !!info.usuario;
-                const sinAcceso = !isTl && !isAdm && !esUsuario;
-                html += `<div style="display:flex; align-items:center; gap:6px; padding:6px 8px; border:1px solid var(--light-gray); border-radius:4px; margin-bottom:5px; background:${sinAcceso ? '#f8f8f8' : 'white'};">
-                    <span style="flex:1; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                        <span style="display:flex; flex-direction:column; gap:1px; min-width:0;">
-                            <span style="font-weight:700; color:${sinAcceso ? 'var(--comment)' : 'var(--primary)'}; font-size:11px;">${user.toUpperCase()}</span>
-                            ${nombreReal ? `<span style="font-weight:600; color:var(--comment); font-size:10px;">${nombreReal}</span>` : ''}
-                        </span>
-                        ${isAdm ? '<span style="font-size:9px; font-weight:700; color:white; background:var(--danger); padding:1px 5px; border-radius:3px;">ADMIN</span>' : ''}
-                        ${sinAcceso ? '<span style="font-size:9px; font-weight:700; color:white; background:var(--comment); padding:1px 5px; border-radius:3px;">SIN ACCESO</span>' : ''}
-                    </span>
-                    <button class="btn-action-small" onclick="adminToggleUsuario('${user}')" title="Quitar/Dar acceso de usuario" style="${esUsuario ? 'background:var(--leader-color); color:white;' : ''}">👤</button>
-                    <button class="btn-action-small" onclick="adminToggleTech('${user}')" title="Quitar/Dar Rol Técnico" style="${info.tech ? 'background:var(--success); color:white;' : ''}">🛠️</button>
-                    <button class="btn-action-small" onclick="adminToggleTl('${user}')" title="Quitar/Hacer Team Leader" style="${isTl ? 'background:var(--leader-color); color:white;' : ''}">TL</button>
-                    <button class="btn-action-small" onclick="adminToggleAdmin('${user}')" title="Quitar/Hacer Admin" style="${isAdm ? 'background:var(--danger); color:white;' : ''}">ADMIN</button>
-                    <button class="btn-action-small" onclick="adminEditNombre('${user}')" title="Editar nombre real">✎</button>
-                    <button class="btn-action-small" onclick="adminRemoveUser('${user}')" title="Eliminar usuario definitivamente">✖</button>
+                const sinAcceso = !isTech && !isTl && !isAdm && !esUsuario;
+                html += `<div class="admin-user-row ${sinAcceso ? 'no-access' : ''}">
+                    <div class="admin-user-main">
+                        <div class="admin-user-copy">
+                            <span class="admin-username">${user.toUpperCase()}</span>
+                            ${nombreReal ? `<span class="admin-realname">${nombreReal}</span>` : ''}
+                        </div>
+                        ${isAdm ? '<span class="admin-role-badge admin">ADMIN</span>' : ''}
+                    </div>
+                    <div class="admin-user-actions">
+                        <button class="btn-action-small admin-user-action ${esUsuario ? 'active-user' : ''}" onclick="adminToggleUsuario('${user}')" title="Quitar/Dar acceso de usuario" aria-pressed="${esUsuario}">👤</button>
+                        <button class="btn-action-small admin-user-action ${isTech ? 'active-tech' : ''}" onclick="adminToggleTech('${user}')" title="Quitar/Dar Rol Técnico" aria-pressed="${isTech}">🛠️</button>
+                        <button class="btn-action-small admin-user-action ${isTl ? 'active-tl' : ''}" onclick="adminToggleTl('${user}')" title="Quitar/Hacer Team Leader" aria-pressed="${isTl}">TL</button>
+                        <button class="btn-action-small admin-user-action admin-action-wide ${isAdm ? 'active-admin' : ''}" onclick="adminToggleAdmin('${user}')" title="Quitar/Hacer Admin" aria-pressed="${isAdm}">ADMIN</button>
+                        <button class="btn-action-small admin-user-action" onclick="adminEditNombre('${user}')" title="Editar nombre real">✎</button>
+                        <button class="btn-action-small admin-user-action delete-user" onclick="adminRemoveUser('${user}')" title="Eliminar usuario definitivamente">✖</button>
+                    </div>
                 </div>`;
             }
-            listEl.innerHTML = html || '<div style="font-weight:800; color:var(--comment); padding:8px 0;">SIN COINCIDENCIAS PARA LA BÚSQUEDA</div>';
+            listEl.innerHTML = html || '<div class="admin-empty">SIN COINCIDENCIAS PARA LA BÚSQUEDA</div>';
             updateAdminUI();
-            updateLoginToggleUI();
         }
         window.refreshAdminList = refreshAdminList;
 
         window.adminAddUser = function() {
-    const name = extractUsername(document.getElementById('admin-name').value);
-    if (!name) return alert("INGRESE EL NOMBRE DEL USUARIO (EJ: juan.perez).");
+    if (!isAdminUser()) return;
+    const name = normalizeEmail(document.getElementById('admin-name').value);
+    if (!name) return alert("INGRESE EL CORREO DEL USUARIO (EJ: juan.perez@latam.cl).");
+    if (!name.includes('@')) return alert("INGRESE EL CORREO COMPLETO, INCLUYENDO EL DOMINIO (EJ: juan.perez@latam.cl).");
+    if (isSuperAdmin(name)) return showToast('⚠️ ESE USUARIO YA ES SUPER ADMIN');
     const asUser = document.getElementById('admin-is-user').checked;
     const asTech = document.getElementById('admin-is-tech').checked;
     const asTl = document.getElementById('admin-is-tl').checked;
     const asAdmin = document.getElementById('admin-is-admin').checked;
     
     if (!asUser && !asTech && !asTl && !asAdmin) return alert("SELECCIONE AL MENOS UN ROL.");
-    userRec(name);
+    const rec = userRec(name);
+    rec.email = name;
     const nombreReal = document.getElementById('admin-realname').value.trim();
-    if (nombreReal && !usuariosDB[name].nombre) usuariosDB[name].nombre = nombreReal;
-    if (asUser || asTech || asTl || asAdmin) usuariosDB[name].usuario = true;
-    if (asTech) usuariosDB[name].tech = true;
-    if (asTl) usuariosDB[name].tl = true;
-    if (asAdmin) usuariosDB[name].admin = true;
+    if (nombreReal && !rec.nombre) rec.nombre = nombreReal;
+    if (asUser || asTech || asTl || asAdmin) rec.usuario = true;
+    if (asTech) rec.tech = true;
+    if (asTl) rec.tl = true;
+    if (asAdmin) rec.admin = true;
     syncRoleArrays();
     document.getElementById('admin-name').value = '';
     document.getElementById('admin-realname').value = '';
@@ -1537,29 +1571,45 @@ function activateLeaderUI() {
 }
 
 window.adminToggleTech = function(user) {
-    const rec = userRec(user);
-    rec.tech = !rec.tech;
-    
-    if (rec.tech) {
-        rec.usuario = true;
-    }
-
-    syncRoleArrays();
-    refreshAdminList();
-    showToast(rec.tech ? `✅ ROL TÉCNICO ASIGNADO A ${user.toUpperCase()}` : `⚠️ ROL TÉCNICO QUITADO A ${user.toUpperCase()}`);
-    saveUsuarios();
-}
-
-        window.adminToggleUsuario = function(user) {
+            if (!isAdminUser()) return;
+            if (isSuperAdmin(user)) return showToast('⚠️ NO SE PUEDE MODIFICAR AL SUPER ADMIN');
             const rec = userRec(user);
-            rec.usuario = !rec.usuario;
+            const nuevoEstado = !rec.tech;
+            const teniaSuperior = !!(rec.tl || rec.admin);
+            if (nuevoEstado) activarRol(rec, 'tech'); else quitarRol(rec, 'tech');
             syncRoleArrays();
             refreshAdminList();
-            showToast("✅ ESTADO ACTUALIZADO");
+            showToast(nuevoEstado ? `✅ ROL TÉCNICO ASIGNADO A ${user.toUpperCase()}`
+                : teniaSuperior ? `⚠️ SE QUITARON TÉCNICO, TL Y ADMIN A ${user.toUpperCase()}`
+                : `⚠️ ROL TÉCNICO QUITADO A ${user.toUpperCase()}: QUEDA SOLO LECTURA`);
+            saveUsuarios();
+        }
+
+            // Jerarquia de roles: usuario < tecnico < TL < admin.
+    // Activar un rol activa todos los inferiores; quitarlo arrastra a los superiores que lo necesitan.
+    const ROLES_ORDEN = ['usuario', 'tech', 'tl', 'admin'];
+    function activarRol(rec, rol) {
+        for (const r of ROLES_ORDEN) { if (r === rol) break; rec[r] = true; }
+        rec[rol] = true;
+    }
+    function quitarRol(rec, rol) {
+        const i = ROLES_ORDEN.indexOf(rol);
+        for (let k = i; k < ROLES_ORDEN.length; k++) rec[ROLES_ORDEN[k]] = false;
+    }
+window.adminToggleUsuario = function(user) {
+            if (!isAdminUser()) return;
+            if (isSuperAdmin(user)) return showToast('⚠️ NO SE PUEDE MODIFICAR AL SUPER ADMIN');
+            const rec = userRec(user);
+            const nuevoEstado = !rec.usuario;
+            if (nuevoEstado) activarRol(rec, 'usuario'); else quitarRol(rec, 'usuario');
+            syncRoleArrays();
+            refreshAdminList();
+            showToast(nuevoEstado ? `✅ ACCESO ACTIVADO: ${user.toUpperCase()}` : `⚠️ ${user.toUpperCase()} SE QUEDÓ SIN NINGÚN ACCESO`);
             saveUsuarios();
         }
 
         window.adminEditNombre = function(user) {
+            if (!isAdminUser()) return;
             showPromptModal(`NOMBRE REAL DE ${user.toUpperCase()}:`, userRec(user).nombre || '', (valor) => {
                 usuariosDB[user].nombre = valor;
                 refreshAdminList();
@@ -1591,24 +1641,35 @@ window.adminToggleTech = function(user) {
         };
 
         window.adminToggleTl = function(user) {
+            if (!isAdminUser()) return;
+            if (isSuperAdmin(user)) return showToast('⚠️ NO SE PUEDE MODIFICAR AL SUPER ADMIN');
             const rec = userRec(user);
-            rec.tl = !rec.tl;
+            const nuevoEstado = !rec.tl;
+            const teniaAdmin = !!rec.admin;
+            if (nuevoEstado) activarRol(rec, 'tl'); else quitarRol(rec, 'tl');
             syncRoleArrays();
             refreshAdminList();
-            showToast("✅ ROL TL ACTUALIZADO");
+            showToast(nuevoEstado ? `✅ TL OTORGADO A ${user.toUpperCase()}`
+                : teniaAdmin ? `⚠️ SE QUITARON TL Y ADMIN A ${user.toUpperCase()}`
+                : `⚠️ TL QUITADO A ${user.toUpperCase()}`);
             saveUsuarios();
         }
 
         window.adminToggleAdmin = function(user) {
+            if (!isAdminUser()) return;
+            if (isSuperAdmin(user)) return showToast('⚠️ NO SE PUEDE MODIFICAR AL SUPER ADMIN');
             const rec = userRec(user);
-            rec.admin = !rec.admin;
+            const nuevoEstado = !rec.admin;
+            if (nuevoEstado) activarRol(rec, 'admin'); else quitarRol(rec, 'admin');
             syncRoleArrays();
             refreshAdminList();
-            showToast("✅ ROL ADMIN ACTUALIZADO");
+            showToast(nuevoEstado ? `✅ ADMIN OTORGADO A ${user.toUpperCase()}` : `⚠️ ADMIN QUITADO A ${user.toUpperCase()}`);
             saveUsuarios();
         }
 
         window.adminRemoveUser = function(user) {
+            if (!isAdminUser()) return;
+            if (isSuperAdmin(user)) return showToast('⚠️ EL SUPER ADMIN NO PUEDE SER ELIMINADO');
             showConfirm(`¿ELIMINAR A ${user.toUpperCase()} DEFINITIVAMENTE?`, () => {
                 delete usuariosDB[user];
                 syncRoleArrays();
@@ -1848,7 +1909,7 @@ window.adminToggleTech = function(user) {
             if (currentZoneFilter && Array.isArray(parts)) {
                 alertZoneEl.innerHTML = `<div style="background: var(--light-gray); padding: 8px 12px; border-radius: 4px; font-weight: bold; color: var(--accent); border: 1px solid var(--border); margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size: 10px;">
                     <span>🔍 FILTRO DE ZONA ACTIVO: ${currentZoneFilter}</span>
-                    <button onclick="toggleZoneFilter('${currentZoneFilter}')" style="height: 24px; padding: 0 8px; font-size: 9px; background: white; color: var(--primary); border: 1px solid var(--primary);">✖ QUITAR FILTRO</button>
+                    <button onclick="toggleZoneFilter('${currentZoneFilter}')" style="height: var(--button-height); padding: 0 8px; font-size: 9px; background: var(--surface); color: var(--primary); border: 1px solid var(--primary);">✖ QUITAR FILTRO</button>
                 </div>`;
                 parts = parts.filter(p => (p.pos || "").toUpperCase().includes(currentZoneFilter) || (p.desc || "").toUpperCase().includes(currentZoneFilter));
             } else {
@@ -1879,23 +1940,23 @@ window.adminToggleTech = function(user) {
                         <div class="pn-main-row" style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--border);">
                             <div>
                                 <span style="font-size: 8px; color: var(--comment); display: block; font-weight: bold;">P/N EFECTIVIDAD:</span>
-                                <div class="pn-value" style="font-size: 12px; color: var(--comment); text-decoration: line-through;">${part.originalPn}</div>
+                                <div class="pn-value" style="font-size: 12px; color: var(--comment); text-decoration: line-through;">${escapeHtml(part.originalPn)}</div>
                             </div>
-                            <button class="btn-copy" onclick="copyPN('${part.originalPn}')" style="height: 22px; font-size: 8px;">📋 COPIAR</button>
+                            <button class="btn-copy" onclick="copyPN('${escapeAttr(part.originalPn)}')" style="height: var(--button-height); font-size: 8px;">📋 COPIAR</button>
                         </div>
                         <div class="pn-main-row">
                             <div>
                                 <span style="font-size: 9px; color: var(--accent); font-weight: bold; display: block;">P/N FÍSICO:</span>
-                                <div class="pn-value">${part.pn}</div>
+                                <div class="pn-value">${escapeHtml(part.pn)}</div>
                             </div>
-                            <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
+                            <button class="btn-copy" onclick="copyPN('${escapeAttr(part.pn)}')">📋 COPIAR</button>
                         </div>
                     `;
                 } else {
                     pnDisplayHtml = `
                         <div class="pn-main-row">
-                            <div class="pn-value">${part.pn}</div>
-                            <button class="btn-copy" onclick="copyPN('${part.pn}')">📋 COPIAR</button>
+                            <div class="pn-value">${escapeHtml(part.pn)}</div>
+                            <button class="btn-copy" onclick="copyPN('${escapeAttr(part.pn)}')">📋 COPIAR</button>
                         </div>
                     `;
                 }
@@ -1908,7 +1969,7 @@ window.adminToggleTech = function(user) {
                 let ipcLinkHtml = '';
                 if (part.ipc) {
                     const urlIpc = 'en' + part.ipc.replace(/-/g, '').toLowerCase();
-                    ipcLinkHtml = `<div><span style="color:var(--comment); font-weight:normal;">IPC:</span> <a href="https://toolbox.appslatam.com/a320/ToolboxRemote.html#/AIPC/da/AIPC/bid/31774841/data/${urlIpc}" target="_blank" style="color: var(--leader-color); text-decoration: underline; font-weight: 800;">${part.ipc}</a></div>`;
+                    ipcLinkHtml = `<div><span style="color:var(--comment); font-weight:normal;">IPC:</span> <a href="https://toolbox.appslatam.com/a320/ToolboxRemote.html#/AIPC/da/AIPC/bid/31774841/data/${encodeURIComponent(urlIpc)}" target="_blank" style="color: var(--leader-color); text-decoration: underline; font-weight: 800;">${escapeHtml(part.ipc)}</a></div>`;
                 }
 
                 container.innerHTML += `
@@ -1918,7 +1979,7 @@ window.adminToggleTech = function(user) {
                             <div style="display: flex; gap: 5px; align-items: center;">
                                 ${badge}
                                 <button class="btn-action-small btn-verify-part" onclick="verifyPart('${part.id}')">✔️ CONFIRMAR</button>
-                                <button class="btn-action-small leader-only" style="height: 24px; font-size: 9px; padding: 0 6px;" onclick="editSinglePart('${part.id}')">✏️ EDITAR</button>
+                                <button class="btn-action-small leader-only" style="height: var(--button-height); font-size: 9px; padding: 0 6px;" onclick="editSinglePart('${part.id}')">✏️ EDITAR</button>
                             </div>
                         </div>
                         <div class="pn-value-container">
@@ -2029,11 +2090,10 @@ window.adminToggleTech = function(user) {
                 desc, pn, pos, ata, ipc
             };
 
-            dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}/exceptions`), exceptions).then(() => {
-                const userEmail = localStorage.getItem('crt_email') || 'USUARIO';
-                const userAlias = userEmail.split('@')[0].toUpperCase();
-                const timestamp = `${get24hTimestamp()} | 👤 ${userAlias}`;
-                dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
+            dbSet(ref(db, `mantenimiento/cfr/pns_aviones/${currentLoadedReg}/exceptions`), exceptions).then(() => {
+                const userName = displayNameFor(sessionUser()) || 'USUARIO';
+                const timestamp = `${get24hTimestamp()} | 👤 ${userName}`;
+                dbSet(ref(db, `mantenimiento/cfr/pns_aviones/${currentLoadedReg}/verifications/${partId}`), timestamp).then(() => {
                     closeModal('single-part-modal');
                     showToast("✅ Componente Guardado y Verificado");
                 });
@@ -2041,10 +2101,10 @@ window.adminToggleTech = function(user) {
         }
 
         window.revertSinglePart = function() {
-            if (!isTeamLeader || !currentLoadedReg) return;
+            if (!isLeaderOrAdmin() || !currentLoadedReg) return;
             const partId = document.getElementById('sp-id').value;
             if(confirm("¿Seguro que desea eliminar esta excepción/pieza custom? Si aplica, se revertirá al estándar del catálogo.")) {
-                dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}/exceptions/${partId}`), null).then(() => {
+                dbSet(ref(db, `mantenimiento/cfr/pns_aviones/${currentLoadedReg}/exceptions/${partId}`), null).then(() => {
                     closeModal('single-part-modal');
                     showToast("✅ Pieza revertida / eliminada");
                 });
@@ -2052,7 +2112,7 @@ window.adminToggleTech = function(user) {
         }
 
         window.openEffManager = function() {
-            if (!isTeamLeader) return;
+            if (!isLeaderOrAdmin()) return;
             document.getElementById('eff-components-area').style.display = 'none';
             document.getElementById('eff-modal').style.display = 'block';
         }
@@ -2063,7 +2123,7 @@ window.adminToggleTech = function(user) {
             const code = name.trim().toUpperCase();
             if(efectividadesDB[code]) return alert("Ese catálogo ya existe.");
             
-            dbSet(ref(db, `mantenimiento/crt/efectividades/${code}`), { catalogCode: code, parts: {} }).then(() => {
+            dbSet(ref(db, `mantenimiento/cfr/efectividades/${code}`), { catalogCode: code, parts: {} }).then(() => {
                 showToast("Catálogo Creado");
                 document.getElementById('modal-eff-select').value = code;
                 loadEffIntoModal(code);
@@ -2079,8 +2139,8 @@ window.adminToggleTech = function(user) {
             if(efectividadesDB[newCode]) return alert("Ese código de catálogo ya existe.");
 
             if(confirm(`¿Confirmar cambio de nombre de "${currentEditingCatalog}" a "${newCode}"?`)) {
-                const oldRef = ref(db, `mantenimiento/crt/efectividades/${currentEditingCatalog}`);
-                const newRef = ref(db, `mantenimiento/crt/efectividades/${newCode}`);
+                const oldRef = ref(db, `mantenimiento/cfr/efectividades/${currentEditingCatalog}`);
+                const newRef = ref(db, `mantenimiento/cfr/efectividades/${newCode}`);
                 const data = efectividadesDB[currentEditingCatalog];
                 data.catalogCode = newCode;
                 
@@ -2141,7 +2201,7 @@ window.adminToggleTech = function(user) {
                 }
             });
             
-            dbSet(ref(db, `mantenimiento/crt/efectividades/${currentEditingCatalog}`), { catalogCode: currentEditingCatalog, parts: partsData }).then(() => {
+            dbSet(ref(db, `mantenimiento/cfr/efectividades/${currentEditingCatalog}`), { catalogCode: currentEditingCatalog, parts: partsData }).then(() => {
                 showToast("Catálogo Guardado");
                 closeModal('eff-modal');
                 if(currentLoadedReg) loadSelectedPlane(); 
@@ -2151,7 +2211,7 @@ window.adminToggleTech = function(user) {
         window.deleteEfectividad = function() {
             if(!currentEditingCatalog) return;
             if(confirm(`⚠️ ¿Eliminar el catálogo ${currentEditingCatalog}?`)) {
-                dbSet(ref(db, `mantenimiento/crt/efectividades/${currentEditingCatalog}`), null).then(() => {
+                dbSet(ref(db, `mantenimiento/cfr/efectividades/${currentEditingCatalog}`), null).then(() => {
                     showToast("Catálogo Eliminado"); closeModal('eff-modal');
                     currentEditingCatalog = null;
                 });
@@ -2229,26 +2289,26 @@ window.adminToggleTech = function(user) {
             let overrideHtml = '';
             const isPlaneModal = containerId === 'plane-components-container';
             
-            let appInputHtml = isPlaneModal ? '' : `<input type="text" class="part-app col-app" placeholder="APP" value="${app || ''}">`;
+            let appInputHtml = isPlaneModal ? '' : `<input type="text" class="part-app col-app" placeholder="APP" value="${escapeAttr(app)}">`;
 
             if (isPlaneModal && status === 'exception') {
                 overrideHtml = `
                     <div class="override-controls">
                         <span style="font-size:9px; color:var(--warning); margin-right:auto; font-weight:bold;">⚠️ EXCEPCIÓN LOCAL</span>
                         <button class="btn-action-small" onclick="revertRowToStandard(this)">↺ REVERTIR AL ESTÁNDAR</button>
-                        <button class="btn-action-small" style="background: var(--primary); color:white; border-color: var(--primary);" onclick="forceUpdateStandard(this)">⬆️ FORZAR A FLOTA</button>
+                        <button class="btn-action-small" style="background: var(--primary); color:var(--surface); border-color: var(--primary);" onclick="forceUpdateStandard(this)">⬆️ FORZAR A FLOTA</button>
                     </div>`;
             } else if (isPlaneModal && status === 'custom') {
-                 overrideHtml = `<div class="override-controls"><span style="font-size:9px; color:#4338ca; font-weight:bold;">➕ PIEZA CUSTOM (No existe en catálogo)</span></div>`;
+                 overrideHtml = `<div class="override-controls"><span style="font-size:9px; color:var(--indigo); font-weight:bold;">➕ PIEZA CUSTOM (No existe en catálogo)</span></div>`;
             }
 
             row.innerHTML = `
                 <div class="component-row-main">
-                    <input type="text" class="part-desc col-desc" placeholder="DESC" list="descripciones-list" value="${desc || ''}">
-                    <input type="text" class="part-pn col-pn" placeholder="P/N" list="pn-list" value="${pn || ''}">
+                    <input type="text" class="part-desc col-desc" placeholder="DESC" list="descripciones-list" value="${escapeAttr(desc)}">
+                    <input type="text" class="part-pn col-pn" placeholder="P/N" list="pn-list" value="${escapeAttr(pn)}">
                     
                     <div class="custom-multiselect col-pos">
-                        <div class="multiselect-header" onclick="toggleMulti(this)">${headerText}<span style="font-size:8px; float:right;"> ▼</span></div>
+                        <div class="multiselect-header" onclick="toggleMulti(this)">${escapeHtml(headerText)}<span style="font-size:8px; float:right;"> ▼</span></div>
                         <div class="multiselect-options">
                             <label><input type="checkbox" value="FWD" onchange="updateMultiValue(this)" ${isChecked('FWD')}> FWD</label>
                             <label><input type="checkbox" value="AFT" onchange="updateMultiValue(this)" ${isChecked('AFT')}> AFT</label>
@@ -2260,11 +2320,11 @@ window.adminToggleTech = function(user) {
                             <label><input type="checkbox" value="3RD OCCUPANT SEAT" onchange="updateMultiValue(this)" ${isChecked('3RD OCCUPANT SEAT')}> 3RD OCCUPANT SEAT</label>
                             <label><input type="checkbox" value="4TH OCCUPANT SEAT" onchange="updateMultiValue(this)" ${isChecked('4TH OCCUPANT SEAT')}> 4TH OCCUPANT SEAT</label>
                         </div>
-                        <input type="hidden" class="part-pos" value="${pos || ''}">
+                        <input type="hidden" class="part-pos" value="${escapeAttr(pos)}">
                     </div>
                     
-                    <input type="text" class="part-ata col-ata" placeholder="CMM" list="ata-list" value="${ata || ''}">
-                    <input type="text" class="part-ipc col-ipc" placeholder="IPC" list="ipc-list" value="${ipc || ''}">
+                    <input type="text" class="part-ata col-ata" placeholder="CMM" list="ata-list" value="${escapeAttr(ata)}">
+                    <input type="text" class="part-ipc col-ipc" placeholder="IPC" list="ipc-list" value="${escapeAttr(ipc)}">
                     ${appInputHtml}
                     
                     <button class="btn-remove-row" onclick="this.parentElement.parentElement.remove()" title="Eliminar">✖</button>
@@ -2332,11 +2392,11 @@ window.adminToggleTech = function(user) {
                 app: appEl ? appEl.value.trim().toUpperCase() : baseApp
             };
 
-            await dbSet(ref(db, `mantenimiento/crt/efectividades/${catalogCode}/parts/${id}`), newData);
+            await dbSet(ref(db, `mantenimiento/cfr/efectividades/${catalogCode}/parts/${id}`), newData);
             
             const reg = document.getElementById('modal-plane-reg').value.trim().toUpperCase();
             if (flotaDB[reg] && flotaDB[reg].exceptions && flotaDB[reg].exceptions[id]) {
-                await dbSet(ref(db, `mantenimiento/crt/pns_aviones/${reg}/exceptions/${id}`), null);
+                await dbSet(ref(db, `mantenimiento/cfr/pns_aviones/${reg}/exceptions/${id}`), null);
             }
             showToast("Catálogo Sincronizado");
             closeModal('avion-modal');
@@ -2399,7 +2459,7 @@ window.adminToggleTech = function(user) {
                 if (!rowsInDom.has(baseId)) exceptions[baseId] = { _deleted: true }; 
             });
 
-            dbSet(ref(db, `mantenimiento/crt/pns_aviones/${reg}`), { reg, appCode, exceptions }).then(() => {
+            dbSet(ref(db, `mantenimiento/cfr/pns_aviones/${reg}`), { reg, appCode, exceptions }).then(() => {
                 closeModal('avion-modal');
                 document.getElementById('plane-select').value = reg;
                 loadSelectedPlane(); 
@@ -2408,6 +2468,7 @@ window.adminToggleTech = function(user) {
         }
 
         window.openPlaneModal = function(isEdit = false) {
+            if (isEdit && !isLeaderOrAdmin()) return;   // el tecnico crea aviones, no edita el avion completo
             const regInput = document.getElementById('modal-plane-reg');
             const appCodeInput = document.getElementById('modal-plane-appcode');
             const container = document.getElementById('plane-components-container');
@@ -2440,9 +2501,9 @@ window.adminToggleTech = function(user) {
         }
 
         window.deleteAvion = function() {
-            if (!currentLoadedReg) return;
+            if (!isLeaderOrAdmin() || !currentLoadedReg) return;
             if (prompt(`⚠️ Eliminar ${currentLoadedReg}.\nEscriba la matrícula para confirmar:`) === currentLoadedReg) {
-                dbSet(ref(db, `mantenimiento/crt/pns_aviones/${currentLoadedReg}`), null).then(() => {
+                dbSet(ref(db, `mantenimiento/cfr/pns_aviones/${currentLoadedReg}`), null).then(() => {
                     showToast("Avión Eliminado"); resetView();
                 });
             }
@@ -2454,7 +2515,7 @@ window.adminToggleTech = function(user) {
         }
         window.copyPN = function(text) { navigator.clipboard.writeText(text).then(() => showToast("📋 Copiado al Portapapeles")); }
         window.closeModal = function(modalId) { document.getElementById(modalId).style.display = 'none'; }
-        window.toggleMode = toggleMode; window.logoutLeader = logoutLeader;
+        window.toggleMode = toggleMode;
     </script>
 </body>
 </html>
